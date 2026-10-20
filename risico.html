@@ -247,6 +247,11 @@ footer .f-inner a:hover { color: var(--gold); }
   background: rgba(6,6,12,.8); color: #eee;
 }
 .frog-overlay.hidden { display: none; }
+.frog-overlay > * { position: relative; z-index: 1; }
+.frog-overlay > .frog-duo {
+  position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0;
+  image-rendering: pixelated; pointer-events: none;
+}
 .frog-overlay.compact { inset: 0 0 auto 0; flex-direction: row; flex-wrap: wrap; gap: .5rem 1rem; padding: .7rem 1rem 2.2rem; background: linear-gradient(rgba(6,6,12,.88) 55%, rgba(6,6,12,0)); }
 .frog-overlay.compact .frog-ov-btns { margin: 0; }
 .frog-overlay.compact .frog-btn { padding: .6rem .9rem; min-height: 40px; }
@@ -449,6 +454,9 @@ footer .f-inner a:hover { color: var(--gold); }
   .frog-overlay p { font-size: .78rem; }
   .frog-ov-title { font-size: .85rem; }
   .frog-ov-keys { display: none; }
+  /* op een gsm is er te weinig plaats: Jan en Lowie krijgen voorrang, de cijfers staan ook in de analyse */
+  .frog-overlay.end { justify-content: flex-start; padding-top: 1.2rem; }
+  .frog-overlay.end p, .frog-overlay.end .frog-ov-stats { display: none; }
   .frog-btn { font-size: .6rem; padding: .7rem .9rem; }
   .frog-analysis { padding: 1.1rem 1rem; }
   .frog-scale button small { font-size: .6rem; }
@@ -1181,6 +1189,11 @@ var FrogAudio = {
       });
     }
     else if (name === 'tunnel') A.noise({ d: 1.6, f: 180, f2: 2000, filter: 'bandpass', v: 0.5 });
+    else if (name === 'thud') {
+      var k = arg || 1;
+      A.tone({ f: 130, f2: 38, d: 0.28, type: 'triangle', v: 0.5 * k });
+      A.noise({ d: 0.12, f: 900, f2: 120, v: 0.3 * k });
+    }
   },
   startMusic: function(owner, tempo) {
     var A = this;
@@ -1222,6 +1235,196 @@ var FrogAudio = {
   }
 };
 FrogAudio.load();
+
+// ══ Jan en Lowie: de docenten dansen bij "GEHAALD!" en vallen achterover bij "GAME OVER" ══
+// Sprites van 24 × 32 eenheden (1 eenheid = 1 pixel op een kleine canvas, in het spel 2 px groot).
+
+var DUO_PAL = { o: '#141414', S: '#f1c27d', w: '#ffffff', m: '#7a2e24', t: '#fff8ee', P: '#2b2b38', p: '#1f1f29', K: '#101010' };
+var DUO = {
+  jan: {
+    name: 'JAN', x: 44, fallDir: 1,
+    pal: { H: '#4a2e1c', h: '#6b4428', B: '#3a2a1e', b: '#5a4a3e', J: '#22304d', j: '#18233a', N: '#22304d', n: '#3a4a6e' },
+    // 18 breed (kolommen 3 tot 20), rijen 0 tot 14. Ogen en mond worden apart getekend.
+    head: [
+      '....oooooooooo....',
+      '...oHHHHHHHHHHo...',
+      '..oHHHhHHHHhHHHo..',
+      '..oHHSSSSSSSSHHo..',
+      '.oHHSSSSSSSSSSHHo.',
+      '.oHSSSSSSSSSSSSHo.',
+      '.oSSHHHSSSSHHHSSo.',
+      'oSoSSSSSSSSSSSSoSo',
+      'oSoSSSSSSSSSSSSoSo',
+      '.ooBSSSSSSSSSSBoo.',
+      '..oBBSBBBBBBSBBo..',
+      '..oBBSSSSSSSSBBo..',
+      '...oBBSSSSSSBBo...',
+      '....oBBbBBbBBo....',
+      '.....oBBBBBBo.....'
+    ],
+    nose: [[11, 8], [11, 9]], eyes: [[7, 7], [14, 7]], eyeColor: '#3b2a1a', mouth: { x: 8, y: 11, w: 8, teeth: true }
+  },
+  lowie: {
+    name: 'LOWIE', x: 372, fallDir: -1, longHair: true,
+    pal: { H: '#c8742e', h: '#e39a52', r: '#9c5520', B: '#b5622a', b: '#d27f3f', J: '#1c1c1f', j: '#121214', N: '#1c1c1f', n: '#1c1c1f', W: '#8a8a90' },
+    head: [
+      '....oooooooooo....',
+      '...oHHHHhHHHHHo...',
+      '..oHHHHHHrHHHHHo..',
+      '.oHHHHSSrSSHHHHHo.',
+      '.oHHHSSSSSSSSHHHo.',
+      'oHHHSSSSSSSSSSHHHo',
+      'oHHSSBBSSSSBBSSHHo',
+      'oHHSSSSSSSSSSSSHHo',
+      'oHHSSSSSSSSSSSSHHo',
+      'oHHSSSSSSSSSSSSHHo',
+      'oHHSSBBBBBBBBSSHHo',
+      'oHHSSSSSSSSSSSSHHo',
+      'oHHHSSSSBBSSSSHHHo',
+      'oHHHHSSSBBSSSHHHHo',
+      'oHHHHoSSSSSSoHHHHo'
+    ],
+    nose: [[11, 8], [11, 9]], eyes: [[7, 7], [14, 7]], eyeColor: '#4a8fd6', mouth: { x: 9, y: 11, w: 6, teeth: false }
+  }
+};
+var DUO_ARM = {
+  down:  { e: [5, 21], h: [5, 24] },
+  hip:   { e: [4, 21], h: [6, 23] },
+  chest: { e: [4, 20], h: [7, 18] },
+  back:  { e: [5, 21], h: [3, 23] },
+  up:    { e: [3, 14], h: [2, 10] }
+};
+// Klassieke two-step: stap links, door de knieën, stap rechts, door de knieën
+var DUO_DANCE = [
+  { legs: 'left',  arms: ['chest', 'back'], dx: -1, dy: 0, eyes: 'happy', sway: 1 },
+  { legs: 'bent',  arms: ['hip', 'hip'],    dx: 0,  dy: 1, eyes: 'happy', sway: 0 },
+  { legs: 'right', arms: ['back', 'chest'], dx: 1,  dy: 0, eyes: 'happy', sway: -1 },
+  { legs: 'bent',  arms: ['hip', 'hip'],    dx: 0,  dy: 1, eyes: 'happy', sway: 0 }
+];
+var DUO_SHOCK = { legs: 'stand', arms: ['up', 'up'], eyes: 'wide', mouth: 'o' };
+var DUO_DAZED = { legs: 'stand', arms: ['up', 'up'], eyes: 'x', mouth: 'o' };
+var DUO_SW = 26, DUO_SH = 34, DUO_CACHE = {};
+
+function duoPainter(ctx) {
+  var a = {
+    r: function(x, y, w, h, c) { ctx.fillStyle = c; ctx.fillRect(x, y, w, h); },
+    line: function(x0, y0, x1, y1, c, th) {
+      var dx = Math.abs(x1 - x0), sx = x0 < x1 ? 1 : -1, dy = -Math.abs(y1 - y0), sy = y0 < y1 ? 1 : -1, err = dx + dy;
+      for (var guard = 0; guard < 200; guard++) {
+        a.r(x0, y0, th, th, c);
+        if (x0 === x1 && y0 === y1) break;
+        var e2 = 2 * err;
+        if (e2 >= dy) { err += dy; x0 += sx; }
+        if (e2 <= dx) { err += dx; y0 += sy; }
+      }
+    }
+  };
+  return a;
+}
+function duoDrawPerson(a, who, pose) {
+  var P = DUO[who], pal = Object.assign({}, DUO_PAL, P.pal), ox = pose.dx || 0, oy = pose.dy || 0;
+  function R(x, y, w, h, c) { a.r(x + ox, y + oy, w, h, c); }
+  // lang haar achter de schouders (Lowie), zwiept mee met de pas
+  if (P.longHair) {
+    var sw = pose.sway || 0;
+    R(3 + sw, 14, 4, 8, pal.o); R(17 + sw, 14, 4, 8, pal.o);
+    R(4 + sw, 14, 3, 7, pal.H); R(17 + sw, 14, 3, 7, pal.H);
+    R(4 + sw, 15, 1, 5, pal.h); R(19 + sw, 15, 1, 5, pal.h);
+  }
+  // benen en schoenen
+  var legs = pose.legs || 'stand', ly = legs === 'bent' ? 1 : 0;
+  var L = legs === 'left' ? -2 : legs === 'bent' ? -1 : 0, Rr = legs === 'right' ? 2 : legs === 'bent' ? 1 : 0;
+  R(8 + L, 26, 4, 5 - ly, pal.o); R(12 + Rr, 26, 4, 5 - ly, pal.o);
+  R(9 + L, 26, 2, 4 - ly, pal.P); R(13 + Rr, 26, 2, 4 - ly, pal.P);
+  R(7 + L, 30 - ly, 4, 2, pal.K); R(13 + Rr, 30 - ly, 4, 2, pal.K);
+  R(7, 24, 10, 3, pal.o); R(8, 24, 8, 2, pal.P); R(11, 25, 2, 1, pal.p);
+  // romp: Jan in een polo, Lowie in een zwarte T-shirt met grijze strepen
+  R(9, 15, 6, 1, pal.o); R(10, 15, 4, 1, pal.S);
+  R(6, 16, 12, 9, pal.o); R(7, 16, 10, 8, pal.J);
+  R(10, 16, 4, 2, pal.N); R(10, 18, 3, 1, pal.N); R(11, 19, 2, 1, pal.N);
+  R(9, 16, 6, 1, pal.n); R(8, 23, 8, 1, pal.j);
+  if (pal.W) { R(8, 19, 8, 1, pal.W); R(8, 21, 8, 1, pal.W); }
+  // armen
+  [0, 1].forEach(function(side) {
+    var ap = DUO_ARM[pose.arms[side]];
+    function X(x) { return side ? 23 - x : x; }
+    var ex = X(ap.e[0]), ey = ap.e[1], hx = X(ap.h[0]), hy = ap.h[1], shx = side ? 17 : 5;
+    a.line(shx + ox, 17 + oy, ex + ox, ey + oy, pal.o, 3); a.line(ex + ox, ey + oy, hx + ox, hy + oy, pal.o, 3);
+    a.line(shx + ox, 17 + oy, ex + ox, ey + oy, pal.j, 2); a.line(ex + ox, ey + oy, hx + ox, hy + oy, pal.j, 2);
+    R(hx - (side ? 0 : 1), hy, 3, 3, pal.o); R(hx - (side ? 0 : 1), hy, 2, 2, pal.S);
+  });
+  // hoofd, neus, ogen en mond
+  P.head.forEach(function(row, j) { for (var i = 0; i < row.length; i++) { var c = pal[row[i]]; if (c) a.r(3 + i + ox, j + oy, 1, 1, c); } });
+  P.nose.forEach(function(n) { R(n[0], n[1], 2, 1, '#d9a066'); });
+  P.eyes.forEach(function(e) {
+    var x = e[0], y = e[1];
+    if (pose.eyes === 'happy') { R(x, y, 1, 1, pal.o); R(x + 1, y - 1, 1, 1, pal.o); R(x + 2, y, 1, 1, pal.o); }
+    else if (pose.eyes === 'x') { R(x, y - 1, 1, 1, pal.o); R(x + 2, y - 1, 1, 1, pal.o); R(x + 1, y, 1, 1, pal.o); R(x, y + 1, 1, 1, pal.o); R(x + 2, y + 1, 1, 1, pal.o); }
+    else if (pose.eyes === 'wide') { R(x, y - 1, 3, 2, pal.w); R(x + 1, y - 1, 1, 2, P.eyeColor); }
+    else { R(x, y, 3, 1, pal.w); R(x + 1, y, 1, 1, P.eyeColor); }
+  });
+  var M = P.mouth;
+  if (pose.mouth === 'o') R(M.x + M.w / 2 - 1, M.y, 2, 2, pal.m);
+  else if (M.teeth) { R(M.x, M.y, M.w, 1, pal.m); R(M.x + 1, M.y, M.w - 2, 1, pal.t); R(M.x + 1, M.y + 1, M.w - 2, 1, pal.m); }
+  else { R(M.x, M.y, 1, 1, pal.m); R(M.x + 1, M.y + 1, M.w - 2, 1, pal.m); R(M.x + M.w - 1, M.y, 1, 1, pal.m); }
+}
+function duoFrame(who, key, pose) {
+  var id = who + key;
+  if (DUO_CACHE[id]) return DUO_CACHE[id];
+  var c = document.createElement('canvas');
+  c.width = DUO_SW; c.height = DUO_SH;
+  duoDrawPerson(duoPainter(c.getContext('2d')), who, Object.assign({}, pose, { dx: (pose.dx || 0) + 1, dy: (pose.dy || 0) + 1 }));
+  DUO_CACHE[id] = c;
+  return c;
+}
+// Valcurve: schrikken, achterover kantelen (versnellen), landen, klein bonsje, liggen
+var DUO_LAND = 0.8, DUO_BOUNCE = 0.22;
+function duoFall(t) {
+  if (t < 0.35) return { ang: 0, lift: 0, pose: 'shock' };
+  var u = t - 0.35;
+  if (u < 0.45) { var k = u / 0.45; return { ang: 90 * k * k, lift: 0, pose: 'shock' }; }
+  u -= 0.45;
+  if (u < DUO_BOUNCE) { var b = Math.sin(u / DUO_BOUNCE * Math.PI); return { ang: 90 - 9 * b, lift: 3 * b, pose: 'dazed' }; }
+  return { ang: 90, lift: 0, pose: 'dazed', stars: true };
+}
+// Tekent beide docenten op een canvas van 416 × 288 (zelfde grootte als het speelveld), t = seconden sinds het einde
+function duoRender(ctx, win, t, fx, dt) {
+  var u = 2, floor = 282;
+  ctx.clearRect(0, 0, FW, FH);
+  ctx.imageSmoothingEnabled = false;
+  if (win) {
+    if (Math.random() < 0.6) fx.push({ x: Math.random() * FW, y: -4, v: 50 + Math.random() * 60, c: frogPick(Math.random, ['#ffd60a', '#7ee0b5', '#ffffff', '#AE9A64', '#ef476f']) });
+    for (var i = fx.length - 1; i >= 0; i--) {
+      var p = fx[i];
+      p.y += p.v * dt;
+      if (p.y > FH) fx.splice(i, 1); else { ctx.fillStyle = p.c; ctx.fillRect(Math.round(p.x), Math.round(p.y), 3, 3); }
+    }
+  }
+  ['jan', 'lowie'].forEach(function(who) {
+    var P = DUO[who], img, ang = 0, lift = 0, st = null;
+    if (win) { var f = Math.floor(t / 0.25) % 4; img = duoFrame(who, 'd' + f, DUO_DANCE[f]); }
+    else { st = duoFall(t); ang = st.ang * P.fallDir; lift = st.lift; img = duoFrame(who, st.pose, st.pose === 'shock' ? DUO_SHOCK : DUO_DAZED); }
+    var lie = Math.sin(Math.abs(ang) * Math.PI / 180) * (DUO_SW / 2 - 3);
+    ctx.save();
+    ctx.translate(P.x, floor - (lift + lie) * u);
+    ctx.rotate(ang * Math.PI / 180);
+    ctx.drawImage(img, -DUO_SW / 2 * u, -(DUO_SH - 1) * u, DUO_SW * u, DUO_SH * u);
+    ctx.restore();
+    if (st && st.stars) {
+      var hx = P.x + P.fallDir * 25 * u, hy = floor - 12 * u;
+      for (var s = 0; s < 3; s++) {
+        var a = t * 4 + s * 2.1, sx = hx + Math.cos(a) * 7 * u, sy = hy - 7 * u + Math.sin(a) * 2.5 * u;
+        ctx.fillStyle = s === 1 ? '#ffffff' : '#ffd60a';
+        ctx.fillRect(Math.round(sx - u), Math.round(sy), u * 3, u); ctx.fillRect(Math.round(sx), Math.round(sy - u), u, u * 3);
+      }
+    }
+    // naam boven het hoofd; bij het vallen zakt de naam mee tot boven het liggende lichaam
+    var k = Math.sin(Math.abs(ang) * Math.PI / 180), nx = P.x + P.fallDir * 14 * u * k, ny = floor - DUO_SH * u - 4 + 40 * k;
+    ctx.font = '8px "Press Start 2P", monospace'; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+    ctx.fillStyle = '#7a6535'; ctx.fillText(P.name, nx + 1, ny + 1);
+    ctx.fillStyle = '#AE9A64'; ctx.fillText(P.name, nx, ny);
+  });
+}
 
 // ══ Het spel ═════════════════════════════════════════════════════════════════
 
@@ -1441,6 +1644,12 @@ FrogGame.prototype.update = function(dt) {
   }
   var active = g.state === 'play' || g.state === 'hit' || g.state === 'cross' || g.state === 'tunnel';
   if (active) g.elapsed += dt;
+  if (g.duo) {
+    var d = g.duo;
+    d.t += dt;
+    if (!d.win && d.thud === 0 && d.t >= DUO_LAND) { d.thud = 1; FrogAudio.play('thud', 1); }
+    if (!d.win && d.thud === 1 && d.t >= DUO_LAND + DUO_BOUNCE) { d.thud = 2; FrogAudio.play('thud', 0.5); }
+  }
   if (g.state === 'play') {
     if (g.hop) {
       g.hop.t = Math.min(1, g.hop.t + dt / 0.12);
@@ -1490,7 +1699,7 @@ FrogGame.prototype.render = function() {
       ctx.drawImage(img, Math.round(v.x), L.row * FT);
     });
   });
-  if (!g.inTunnel && g.state !== 'idle') {
+  if (!g.inTunnel && g.state !== 'idle' && g.state !== 'done' && g.state !== 'over') {
     var spr = frogNico(), frame = g.hop ? spr[1] : spr[0];
     if (g.crash) {
       var cx = Math.round(g.crash.x) + 16, cy = Math.round(g.crash.y) + 16, a = frogPainter(ctx, 0), ux = cx / FP, uy = cy / FP;
@@ -1502,6 +1711,7 @@ FrogGame.prototype.render = function() {
     }
   }
   g.fx.forEach(function(p) { ctx.fillStyle = p.col; ctx.fillRect(Math.round(p.x), Math.round(p.y), 3, 3); });
+  if (g.duo) duoRender(g.duo.ctx, g.duo.win, g.duo.t, g.duo.fx, g.lastDt || 0);
 };
 
 FrogGame.prototype.kick = function() {
@@ -1514,6 +1724,7 @@ FrogGame.prototype.kick = function() {
     if (!g.visible || document.hidden) { g.raf = 0; FrogAudio.stopMusic(g); return; }
     var dt = Math.min(0.05, Math.max(0, (t - last) / 1000));
     last = t;
+    g.lastDt = dt;
     g.update(dt); g.render();
     g.raf = requestAnimationFrame(step);
   }
@@ -1562,8 +1773,16 @@ FrogGame.prototype.showOverlay = function(kind) {
       '<div class="frog-ov-btns">' + (g.opts.analysis ? '<button type="button" class="frog-btn" data-act="analysis">NAAR DE ANALYSE</button>' : '') +
       '<button type="button" class="frog-btn' + (g.opts.analysis ? ' ghost' : '') + '" data-act="retry">OPNIEUW</button></div>';
   }
+  if (kind !== 'ready') h = '<canvas class="frog-duo" width="' + FW + '" height="' + FH + '" aria-hidden="true"></canvas>' + h;
   g.overlay.innerHTML = h;
   g.overlay.classList.remove('hidden');
+  g.overlay.classList.toggle('end', kind !== 'ready');
+  g.duo = null;
+  if (kind !== 'ready') {
+    var dc = g.overlay.querySelector('.frog-duo');
+    g.duo = { ctx: dc.getContext('2d'), win: kind === 'done', t: 0, fx: [], thud: 0 };
+    duoRender(g.duo.ctx, g.duo.win, 0, g.duo.fx, 0);
+  }
 };
 function frogClock(s) {
   s = Math.floor(s);
