@@ -1,0 +1,1988 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Risicomanagement · Hogeschool PXL</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='5' fill='%23030203'/><polygon points='16,4 28,16 16,28 4,16' fill='%23AE9A64'/></svg>" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@600;700;800;900&family=Press+Start+2P&display=swap" rel="stylesheet" />
+<style>
+:root {
+  --primary: #030203;
+  --gold: #AE9A64;
+  --gold-dark: #7a6535;
+  --gold-bg: rgba(174,154,100,0.12);
+  --accent: #e63946;
+  --green: #2a9d8f;
+  --bg: #f8f7f5;
+  --card: #ffffff;
+  --border: #e0ddd6;
+  --text: #1a1a1a;
+  --muted: #666;
+
+  /* Vaste kleur per begrip, overal op de pagina dezelfde */
+  --c-kans: #3b74c4;
+  --c-gevolg: #c2410c;
+  --c-risico: #030203;
+
+  /* Zones van de risicomatrix */
+  --z-laag: #2a9d8f;    --z-laag-bg: #dcefeb;    --z-laag-ink: #1b655c;
+  --z-middel: #AE9A64;  --z-middel-bg: #f1ead6;  --z-middel-ink: #5f4f24;
+  --z-hoog: #e07a2e;    --z-hoog-bg: #f9e0cb;    --z-hoog-ink: #8a4211;
+  --z-kritiek: #e63946; --z-kritiek-bg: #f8d3d6; --z-kritiek-ink: #9b1c26;
+
+  --arcade: 'Press Start 2P', ui-monospace, monospace;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: Arial, system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
+/* NAV */
+.nav {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--primary); color: white;
+  display: flex; align-items: center; gap: 10px;
+  padding: 0 2rem; height: 54px;
+}
+.nav img { width: 34px; height: 34px; object-fit: contain; }
+.nav-brand { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: 1rem; letter-spacing: .06em; color: var(--gold); }
+.nav-sep { color: #555; margin: 0 2px; }
+.nav-page { font-family: 'Raleway', sans-serif; font-weight: 600; font-size: .92rem; color: #bbb; }
+.nav-hamburger {
+  margin-left: auto; background: none; border: none; cursor: pointer;
+  display: flex; flex-direction: column; justify-content: center;
+  gap: 5px; padding: 6px; border-radius: 4px; transition: background .15s;
+}
+.nav-hamburger:hover { background: rgba(255,255,255,.08); }
+.nav-hamburger span {
+  display: block; width: 22px; height: 2px; background: #bbb;
+  transition: transform .2s, opacity .2s, background .15s;
+}
+.nav-hamburger:hover span { background: var(--gold); }
+.nav-hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.nav-hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.nav-dropdown {
+  display: none; flex-direction: column;
+  position: fixed; top: 54px; right: 0;
+  background: var(--primary); border-top: 2px solid var(--gold);
+  min-width: 240px; z-index: 200; box-shadow: 0 4px 16px rgba(0,0,0,.35);
+}
+.nav-dropdown.open { display: flex; }
+.nav-dropdown a {
+  font-family: 'Raleway', sans-serif; font-weight: 700; font-size: .85rem;
+  letter-spacing: .04em; text-transform: uppercase; text-decoration: none;
+  color: #bbb; padding: .85rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,.07);
+  transition: color .15s, background .15s;
+}
+.nav-dropdown a:last-child { border-bottom: none; }
+.nav-dropdown a:hover { color: var(--gold); background: rgba(255,255,255,.04); }
+.nav-dropdown a.spy-active { color: var(--gold); border-left: 3px solid var(--gold); padding-left: calc(1.5rem - 3px); background: rgba(174,154,100,.1); }
+
+/* LAYOUT */
+main { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem 5rem; }
+section { padding: 4rem 0; }
+section + section { border-top: 1px solid var(--border); }
+
+/* TYPOGRAPHY */
+.badge {
+  display: inline-block;
+  font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .7rem;
+  letter-spacing: .12em; text-transform: uppercase;
+  background: var(--gold); color: var(--primary);
+  padding: 3px 10px; border-radius: 2px; margin-bottom: .75rem;
+}
+h2 { font-family: 'Raleway', sans-serif; font-weight: 900; font-size: 2rem; color: var(--primary); margin-bottom: 1rem; }
+h3.sub-title {
+  font-family: 'Raleway', sans-serif; font-weight: 800; font-size: 1.15rem;
+  color: var(--primary); margin: 3rem 0 .75rem; padding-top: 2rem;
+  border-top: 1px solid var(--border); scroll-margin-top: 70px;
+}
+h3.sub-title .sub-step {
+  display: inline-block; font-size: .7rem; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--gold-dark); margin-right: .5rem;
+}
+p { color: var(--text); margin-bottom: 1rem; }
+.lead { font-size: 1.08rem; color: var(--muted); margin-bottom: 1.25rem; }
+.callout {
+  border-left: 4px solid var(--gold); background: var(--gold-bg);
+  padding: .9rem 1.2rem; margin: 1.5rem 0; border-radius: 0 4px 4px 0;
+}
+.callout p { margin: 0; font-style: italic; color: var(--primary); }
+
+/* Gedeelde knoppen */
+.btn-nav {
+  font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .85rem;
+  padding: .45rem 1.2rem; background: var(--primary); color: white;
+  border: 2px solid var(--primary); border-radius: 5px;
+  min-height: 44px; cursor: pointer; transition: background .12s;
+}
+.btn-nav:hover { background: #222; }
+.btn-nav:disabled { opacity: .35; cursor: not-allowed; }
+.btn-nav.outline { background: transparent; color: var(--primary); }
+.btn-nav.outline:hover:not(:disabled) { background: rgba(0,0,0,.04); }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+.progress { display: flex; align-items: center; gap: .75rem; margin: 1.25rem 0 .5rem; }
+.progress-track { flex: 1; height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; }
+.progress-fill { height: 100%; width: 0; background: var(--gold); border-radius: 3px; transition: width .4s; }
+.progress-label { font-family: 'Raleway', sans-serif; font-weight: 700; font-size: .8rem; color: var(--muted); white-space: nowrap; }
+
+.summary {
+  background: var(--gold-bg); border: 2px solid var(--gold); border-radius: 10px;
+  padding: 1.5rem; margin-top: 1.5rem; display: none; animation: fadeIn .4s ease;
+}
+.summary.visible { display: block; }
+.summary h4 { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: 1rem; color: var(--primary); margin-bottom: .5rem; }
+.summary p { font-size: .92rem; color: var(--text); margin: 0 0 .5rem; line-height: 1.5; }
+.summary p:last-child { margin-bottom: 0; }
+.summary ul { margin: .25rem 0 .5rem 1.25rem; font-size: .92rem; }
+.summary li { margin-bottom: .35rem; }
+
+.feedback { font-size: .9rem; line-height: 1.5; padding: .75rem 1rem; border-radius: 6px; margin-top: .75rem; animation: fadeIn .25s ease; }
+.feedback.hint { background: rgba(174,154,100,.1); border-left: 3px solid var(--gold); color: var(--primary); }
+.feedback.success { background: rgba(42,157,143,.08); border-left: 3px solid var(--green); color: var(--text); }
+.feedback p { margin: 0 0 .4rem; }
+.feedback p:last-child { margin: 0; }
+
+/* FOOTER */
+footer { background: var(--primary); padding: 1.25rem 2rem; }
+footer .f-inner { display: flex; align-items: center; gap: 14px; max-width: 1100px; margin: 0 auto; }
+footer .f-inner img { width: 36px; height: 36px; object-fit: contain; flex-shrink: 0; }
+footer .f-inner span { font-family: 'Raleway', sans-serif; font-weight: 600; font-size: .88rem; color: #999; }
+footer .f-inner a { color: #999; text-decoration: none; }
+footer .f-inner a:hover { color: var(--gold); }
+
+/* ── INTRO: NICO EN DE FORMULE ──────────────────────────────────────────────── */
+
+.nico-intro { display: grid; grid-template-columns: 1fr 150px; gap: 2rem; align-items: center; }
+.nico-portrait {
+  width: 150px; height: 150px; image-rendering: pixelated; display: block;
+  background: #0b0b0f; border: 3px solid var(--gold); border-radius: 14px; padding: 11px;
+}
+
+.formula { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: .75rem; align-items: stretch; margin: 1.75rem 0 .5rem; }
+.formula-card {
+  background: var(--card); border: 1.5px solid var(--border); border-top: 5px solid var(--fc);
+  border-radius: 10px; padding: 1.1rem 1.1rem 1rem;
+}
+.formula-card[data-c="kans"] { --fc: var(--c-kans); }
+.formula-card[data-c="gevolg"] { --fc: var(--c-gevolg); }
+.formula-card[data-c="risico"] { --fc: var(--c-risico); background: var(--primary); color: white; border-color: var(--primary); border-top-color: var(--gold); }
+.formula-q { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .95rem; color: var(--fc); margin-bottom: .2rem; }
+.formula-card[data-c="risico"] .formula-q { color: var(--gold); }
+.formula-name { font-family: 'Raleway', sans-serif; font-weight: 900; font-size: 1.6rem; line-height: 1.15; color: var(--primary); margin-bottom: .45rem; }
+.formula-card[data-c="risico"] .formula-name { color: white; }
+.formula-card p { font-size: .85rem; color: var(--muted); line-height: 1.45; margin: 0; }
+.formula-card[data-c="risico"] p { color: #ccc; }
+.formula-op { align-self: center; font-family: 'Raleway', sans-serif; font-weight: 900; font-size: 2rem; color: var(--gold); }
+
+.zone-legend { display: flex; flex-wrap: wrap; gap: .5rem; margin: .5rem 0 1rem; }
+.zone-chip {
+  display: inline-flex; align-items: center; gap: .4rem;
+  font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .78rem;
+  padding: .25rem .65rem; border-radius: 999px;
+  background: var(--zbg); color: var(--zink); border: 1.5px solid var(--zc);
+}
+.zone-chip .zone-range { font-weight: 700; opacity: .8; }
+[data-zone="laag"] { --zc: var(--z-laag); --zbg: var(--z-laag-bg); --zink: var(--z-laag-ink); }
+[data-zone="middel"] { --zc: var(--z-middel); --zbg: var(--z-middel-bg); --zink: var(--z-middel-ink); }
+[data-zone="hoog"] { --zc: var(--z-hoog); --zbg: var(--z-hoog-bg); --zink: var(--z-hoog-ink); }
+[data-zone="kritiek"] { --zc: var(--z-kritiek); --zbg: var(--z-kritiek-bg); --zink: var(--z-kritiek-ink); }
+
+/* ── HET SPEL (gedeeld door de levels en het vrije spel) ────────────────────── */
+
+.frog-game {
+  background: #0b0b0f; border: 3px solid var(--gold); border-radius: 14px;
+  padding: 10px 10px 12px; max-width: 860px; margin: 1.25rem auto 0;
+  box-shadow: 0 10px 30px rgba(0,0,0,.18); outline: none;
+}
+.frog-game:focus-visible { box-shadow: 0 0 0 4px rgba(174,154,100,.45), 0 10px 30px rgba(0,0,0,.18); }
+.frog-hud {
+  display: flex; justify-content: space-between; align-items: center; gap: .6rem 1rem; flex-wrap: wrap;
+  font-family: var(--arcade); font-size: .6rem; color: #f2f2f2; padding: 2px 4px 10px; letter-spacing: .02em;
+}
+.frog-hud [data-hud="level"] { color: var(--gold); }
+.frog-snd-wrap { display: inline-flex; gap: 6px; }
+.frog-snd {
+  width: 30px; height: 26px; padding: 0; cursor: pointer; position: relative;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: #1b1b22; border: 2px solid #3a3a44; border-radius: 4px; color: var(--gold);
+}
+.frog-snd:hover { border-color: var(--gold); }
+.frog-snd svg { width: 14px; height: 14px; }
+.frog-snd[aria-pressed="false"] { color: #666; }
+.frog-snd[aria-pressed="false"]::after {
+  content: ''; position: absolute; left: 4px; right: 4px; top: 50%; height: 2px; margin-top: -1px;
+  background: #ff5c69; transform: rotate(-38deg);
+}
+.frog-snd:focus-visible { outline: 2px solid #fff; outline-offset: 1px; }
+.frog-hearts { display: inline-flex; gap: 4px; }
+.frog-heart {
+  width: 14px; height: 12px; display: inline-block;
+  background: no-repeat center / contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 7 6' shape-rendering='crispEdges'%3E%3Cpath fill='%23e63946' d='M1 0h2v1H1zM4 0h2v1H4zM0 1h7v2H0zM1 3h5v1H1zM2 4h3v1H2zM3 5h1v1H3z'/%3E%3C/svg%3E");
+}
+.frog-heart.empty {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 7 6' shape-rendering='crispEdges'%3E%3Cpath fill='%23444' d='M1 0h2v1H1zM4 0h2v1H4zM0 1h7v2H0zM1 3h5v1H1zM2 4h3v1H2zM3 5h1v1H3z'/%3E%3C/svg%3E");
+}
+.frog-heart.lost { animation: heartLost .5s steps(4) 2; }
+@keyframes heartLost { 50% { transform: scale(1.6); filter: brightness(2); } }
+
+.frog-stage { position: relative; aspect-ratio: 416 / 288; border-radius: 6px; overflow: hidden; background: #000; }
+.frog-stage canvas { width: 100%; height: 100%; display: block; image-rendering: pixelated; }
+.frog-stage::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: repeating-linear-gradient(to bottom, rgba(0,0,0,.09) 0 1px, transparent 1px 3px);
+}
+.frog-game.playing .frog-stage { touch-action: none; }
+
+.frog-overlay {
+  position: absolute; inset: 0; z-index: 2;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 1rem 1.5rem; gap: .55rem;
+  background: rgba(6,6,12,.8); color: #eee;
+}
+.frog-overlay.hidden { display: none; }
+.frog-overlay.compact { inset: 0 0 auto 0; flex-direction: row; flex-wrap: wrap; gap: .5rem 1rem; padding: .7rem 1rem 2.2rem; background: linear-gradient(rgba(6,6,12,.88) 55%, rgba(6,6,12,0)); }
+.frog-overlay.compact .frog-ov-btns { margin: 0; }
+.frog-overlay.compact .frog-btn { padding: .6rem .9rem; min-height: 40px; }
+.frog-overlay p { color: #ddd; font-size: .9rem; line-height: 1.5; margin: 0; max-width: 520px; }
+.frog-overlay p strong { color: #fff; }
+.frog-ov-kicker { font-family: var(--arcade); font-size: .6rem; color: var(--gold); letter-spacing: .08em; }
+.frog-ov-title { font-family: var(--arcade); font-size: 1.25rem; color: #fff; line-height: 1.4; text-shadow: 3px 3px 0 #7a6535; margin-bottom: .2rem; }
+.frog-ov-title.bad { color: #ff5c69; text-shadow: 3px 3px 0 #5a0d14; }
+.frog-ov-title.good { color: #7ee0b5; text-shadow: 3px 3px 0 #11524a; }
+.frog-ov-keys { font-size: .75rem; color: #999; margin-top: .25rem; }
+.frog-ov-stats { display: flex; gap: 1.25rem; flex-wrap: wrap; justify-content: center; font-family: var(--arcade); font-size: .55rem; color: #bbb; line-height: 1.9; }
+.frog-ov-stats b { display: block; font-size: .95rem; color: #fff; font-weight: 400; }
+.frog-ov-btns { display: flex; gap: .6rem; flex-wrap: wrap; justify-content: center; margin-top: .35rem; }
+.frog-btn {
+  font-family: var(--arcade); font-size: .7rem; letter-spacing: .04em;
+  padding: .85rem 1.2rem; min-height: 44px; cursor: pointer;
+  background: var(--gold); color: var(--primary); border: none; border-radius: 4px;
+  box-shadow: 0 4px 0 var(--gold-dark); transition: transform .06s, box-shadow .06s;
+}
+.frog-btn:hover { filter: brightness(1.08); }
+.frog-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--gold-dark); }
+.frog-btn.ghost { background: transparent; color: #ddd; box-shadow: inset 0 0 0 2px #555; }
+.frog-btn.ghost:active { box-shadow: inset 0 0 0 2px #777; }
+.frog-btn:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+
+.frog-toast {
+  position: absolute; z-index: 1; top: 7%; left: 50%; transform: translate(-50%, -6px);
+  font-family: var(--arcade); text-align: center; pointer-events: none;
+  background: rgba(6,6,12,.85); border: 2px solid var(--gold); border-radius: 4px;
+  padding: .55rem .9rem; opacity: 0; transition: opacity .15s, transform .15s; white-space: nowrap;
+}
+.frog-toast.show { opacity: 1; transform: translate(-50%, 0); }
+.frog-toast b { display: block; font-weight: 400; font-size: .7rem; color: #fff; }
+.frog-toast span { display: block; font-size: .55rem; color: var(--gold); margin-top: .35rem; }
+.frog-toast.bad { border-color: #ff5c69; }
+.frog-toast.bad span { color: #ff8a93; }
+.frog-toast.good { border-color: #7ee0b5; }
+.frog-toast.good span { color: #7ee0b5; }
+
+.frog-pad { display: none; grid-template-columns: repeat(3, 58px); grid-template-rows: repeat(2, 50px); gap: 6px; justify-content: center; margin-top: 10px; }
+.frog-pad button {
+  font-family: var(--arcade); font-size: .9rem; color: #ddd; cursor: pointer;
+  background: #1b1b22; border: 2px solid #3a3a44; border-radius: 8px; touch-action: manipulation;
+}
+.frog-pad button:active { background: var(--gold); color: var(--primary); }
+.frog-pad [data-move="up"] { grid-column: 2; grid-row: 1; }
+.frog-pad [data-move="left"] { grid-column: 1; grid-row: 2; }
+.frog-pad [data-move="down"] { grid-column: 2; grid-row: 2; }
+.frog-pad [data-move="right"] { grid-column: 3; grid-row: 2; }
+@media (pointer: coarse) { .frog-pad { display: grid; } }
+
+/* ── DEEL 1: DE VIER OVERSTEKEN ─────────────────────────────────────────────── */
+
+.frog-tabs { display: flex; gap: .5rem; margin: 1.25rem 0 0; flex-wrap: wrap; justify-content: center; }
+.frog-tab {
+  font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .88rem;
+  padding: .5rem 1rem; border-radius: 5px; cursor: pointer; min-height: 44px;
+  border: 2px solid var(--border); background: white; color: var(--primary);
+  display: inline-flex; align-items: center; gap: .5rem; transition: border-color .15s, background .15s;
+}
+.frog-tab:hover { border-color: #aaa; }
+.frog-tab .tab-nr {
+  font-family: var(--arcade); font-size: .55rem; width: 22px; height: 22px; border-radius: 4px;
+  display: inline-flex; align-items: center; justify-content: center; background: var(--gold-bg); color: var(--gold-dark);
+}
+.frog-tab[aria-selected="true"] { border-color: var(--primary); background: var(--primary); color: white; }
+.frog-tab[aria-selected="true"] .tab-nr { background: var(--gold); color: var(--primary); }
+.frog-tab .tab-done { color: var(--green); font-weight: 900; }
+.frog-tab[aria-selected="true"] .tab-done { color: var(--gold); }
+
+.frog-analysis {
+  background: var(--card); border: 1.5px solid var(--border); border-radius: 12px;
+  padding: 1.4rem 1.5rem; margin-top: 1.5rem; scroll-margin-top: 70px;
+}
+.frog-analysis h4 { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: 1rem; color: var(--primary); margin-bottom: .6rem; }
+.frog-an-empty { display: flex; align-items: center; gap: 1rem; color: var(--muted); font-size: .95rem; }
+.frog-an-empty p { margin: 0; color: var(--muted); }
+.frog-an-empty .frog-an-icon { font-family: var(--arcade); font-size: 1.1rem; color: var(--gold); }
+.frog-an-grid { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 2rem; align-items: start; }
+
+.frog-stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: .5rem; margin-bottom: 1.4rem; }
+.frog-stat { background: var(--bg); border-radius: 8px; padding: .55rem .7rem; }
+.frog-stat-val { font-family: 'Raleway', sans-serif; font-weight: 900; font-size: 1.25rem; color: var(--primary); line-height: 1.2; }
+.frog-stat-lbl { font-size: .74rem; color: var(--muted); line-height: 1.3; }
+.frog-stat.kans .frog-stat-val { color: var(--c-kans); }
+.frog-stat.gevolg .frog-stat-val { color: var(--c-gevolg); }
+
+.frog-scale-block { margin-bottom: 1rem; }
+.frog-scale-label { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .88rem; margin-bottom: .35rem; }
+.frog-scale-label.kans { color: var(--c-kans); }
+.frog-scale-label.gevolg { color: var(--c-gevolg); }
+.frog-scale-label span { font-family: Arial, system-ui, sans-serif; font-weight: 400; color: var(--muted); font-size: .82rem; }
+.frog-scale { display: grid; grid-template-columns: repeat(5, 1fr); gap: .35rem; }
+.frog-scale button {
+  border: 2px solid var(--border); background: white; border-radius: 7px; cursor: pointer;
+  padding: .4rem .25rem; min-height: 54px; text-align: center; transition: border-color .12s, background .12s;
+  font-family: Arial, system-ui, sans-serif; color: var(--text);
+}
+.frog-scale button b { display: block; font-family: 'Raleway', sans-serif; font-weight: 900; font-size: 1.05rem; }
+.frog-scale button small { display: block; font-size: .68rem; color: var(--muted); line-height: 1.2; }
+.frog-scale button:hover:not(:disabled) { border-color: #aaa; }
+.frog-scale.kans button[aria-checked="true"] { border-color: var(--c-kans); background: rgba(59,116,196,.09); }
+.frog-scale.gevolg button[aria-checked="true"] { border-color: var(--c-gevolg); background: rgba(194,65,12,.08); }
+.frog-scale button:disabled { cursor: default; }
+.frog-scale button.expert { box-shadow: inset 0 0 0 2px var(--primary); }
+.frog-scale button.expert::after { content: 'onze inschatting'; display: block; font-size: .6rem; font-weight: 700; color: var(--primary); margin-top: 2px; }
+.frog-an-actions { display: flex; gap: .6rem; flex-wrap: wrap; align-items: center; margin-top: .5rem; }
+
+.frog-reveal { margin-top: 1rem; animation: fadeIn .3s ease; }
+.frog-formula {
+  display: flex; flex-wrap: wrap; align-items: center; gap: .5rem .7rem;
+  font-family: 'Raleway', sans-serif; font-weight: 900; font-size: 1.15rem; color: var(--primary);
+  background: var(--bg); border-radius: 10px; padding: .8rem 1rem; margin-bottom: .9rem;
+}
+.frog-formula .fk { color: var(--c-kans); }
+.frog-formula .op, .sim-calc .op { font-family: Arial, system-ui, sans-serif; font-weight: 700; color: var(--muted); }
+.frog-formula .fg { color: var(--c-gevolg); }
+.frog-formula .zone-chip { font-size: .8rem; }
+.frog-it { border: 1.5px dashed var(--border); border-radius: 8px; padding: .7rem .9rem; margin-top: .8rem; font-size: .9rem; }
+.frog-it-label { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; color: var(--gold-dark); margin-bottom: .2rem; }
+
+/* Risicomatrix */
+.frog-matrix-wrap { position: relative; }
+.frog-matrix-title { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: .4rem; text-align: center; }
+.frog-matrix { display: grid; grid-template-columns: 1.4rem 1.2rem repeat(5, minmax(0, 1fr)); grid-template-rows: repeat(5, auto) 1.2rem 1.3rem; gap: 3px; }
+.frog-mx-cell {
+  aspect-ratio: 1; border-radius: 4px; position: relative;
+  background: var(--zbg); border: 1.5px solid transparent;
+  display: flex; flex-wrap: wrap; align-content: center; justify-content: center; gap: 2px; padding: 2px;
+}
+.frog-mx-cell .mx-score { position: absolute; top: 2px; left: 4px; font-size: .62rem; font-weight: 700; color: var(--zink); opacity: .75; }
+.frog-mx-cell.cur { border-color: var(--primary); box-shadow: 0 0 0 2px var(--primary); z-index: 1; }
+.frog-mx-num { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .72rem; color: var(--muted); display: flex; align-items: center; justify-content: center; }
+.frog-mx-axis { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .72rem; letter-spacing: .06em; text-transform: uppercase; display: flex; align-items: center; justify-content: center; }
+.frog-mx-axis.y { grid-column: 1; grid-row: 1 / 6; writing-mode: vertical-rl; transform: rotate(180deg); color: var(--c-gevolg); }
+.frog-mx-axis.x { grid-column: 3 / 8; grid-row: 7; color: var(--c-kans); }
+.frog-mx-mark {
+  font-family: var(--arcade); font-size: .5rem; width: 20px; height: 20px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--primary); color: var(--gold); border: 2px solid var(--gold); animation: fadeIn .3s ease;
+}
+.frog-mx-mark.dim { background: white; color: var(--primary); border-color: var(--primary); }
+
+/* ── DEEL 2: WAT ALS? ───────────────────────────────────────────────────────── */
+
+.sb-panel { display: grid; grid-template-columns: minmax(0, 1fr) 270px; gap: 1.75rem; align-items: start; margin-top: 1.5rem; }
+.sb-sliders { display: grid; gap: 1.1rem; }
+.sb-slider label { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .92rem; margin-bottom: .2rem; }
+.sb-slider.kans label { color: var(--c-kans); }
+.sb-slider.gevolg label { color: var(--c-gevolg); }
+.sb-slider output { font-family: Arial, system-ui, sans-serif; font-weight: 700; font-size: .85rem; color: var(--text); text-align: right; }
+.sb-slider input[type="range"] { width: 100%; height: 30px; cursor: pointer; }
+.sb-slider.kans input { accent-color: var(--c-kans); }
+.sb-slider.gevolg input { accent-color: var(--c-gevolg); }
+.sb-ticks { display: flex; justify-content: space-between; font-size: .7rem; color: var(--muted); padding: 0 4px; }
+.sb-result { display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; }
+.sb-result .frog-formula { margin: 0; }
+
+.sim-box { background: var(--card); border: 1.5px solid var(--border); border-radius: 12px; padding: 1.25rem 1.4rem; margin-top: 1.5rem; }
+.sim-box h4 { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: 1rem; margin-bottom: .35rem; }
+.sim-grid-wrap[hidden] { display: none; }
+.sim-grid-wrap { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 1.5rem; align-items: start; margin-top: 1rem; }
+.sim-dots { display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px; }
+.sim-dot { aspect-ratio: 1; border-radius: 3px; background: var(--border); }
+.sim-dot.ok { background: var(--green); animation: dotIn .2s ease backwards; }
+.sim-dot.hit { background: var(--accent); animation: dotIn .2s ease backwards; }
+@keyframes dotIn { from { transform: scale(0); } to { transform: scale(1); } }
+.sim-legend { display: flex; gap: 1rem; font-size: .78rem; color: var(--muted); margin-top: .5rem; }
+.sim-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 4px; vertical-align: -1px; }
+.sim-text p { font-size: .93rem; }
+.sim-calc { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: 1.05rem; background: var(--bg); border-radius: 8px; padding: .6rem .9rem; margin-bottom: .8rem; }
+.sim-calc .fk { color: var(--c-kans); }
+.sim-calc .fg { color: var(--c-gevolg); }
+.sim-history { width: 100%; border-collapse: collapse; font-size: .85rem; margin-top: 1rem; }
+.sim-history caption { text-align: left; font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .8rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); padding-bottom: .35rem; }
+.sim-history th, .sim-history td { text-align: left; padding: .35rem .5rem; border-bottom: 1px solid var(--border); }
+.sim-history th { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .78rem; color: var(--muted); }
+.sim-history td.num { font-variant-numeric: tabular-nums; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .sim-dot.ok, .sim-dot.hit, .frog-heart.lost { animation: none; }
+}
+@media (max-width: 900px) {
+  .formula { grid-template-columns: 1fr; }
+  .formula-op { text-align: center; line-height: 1; }
+  .frog-an-grid, .sb-panel { grid-template-columns: 1fr; }
+  .frog-matrix-wrap { max-width: 320px; }
+}
+@media (max-width: 620px) {
+  .nav { padding: 0 1rem; }
+  .nav-page { display: none; }
+  main { padding: 0 1rem 4rem; }
+  h2 { font-size: 1.6rem; }
+  .nico-intro { grid-template-columns: 1fr; gap: 1rem; }
+  .nico-portrait { width: 110px; height: 110px; padding: 8px; order: -1; }
+  .frog-game { padding: 6px 6px 10px; border-radius: 10px; }
+  .frog-hud { font-size: .5rem; }
+  .frog-overlay { padding: .5rem .75rem; gap: .35rem; }
+  .frog-overlay p { font-size: .78rem; }
+  .frog-ov-title { font-size: .85rem; }
+  .frog-ov-keys { display: none; }
+  .frog-btn { font-size: .6rem; padding: .7rem .9rem; }
+  .frog-analysis { padding: 1.1rem 1rem; }
+  .frog-scale button small { font-size: .6rem; }
+  .sim-grid-wrap { grid-template-columns: 1fr; }
+  .sim-dots { max-width: 260px; }
+  footer .f-inner span { font-size: .78rem; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <img src="pxl-logo-64.png" alt="PXL" />
+  <span class="nav-brand">Projectmanagement</span>
+  <span class="nav-sep">/</span>
+  <span class="nav-page">Risicomanagement</span>
+  <button class="nav-hamburger" id="nav-hamburger" aria-label="Menu" aria-expanded="false" aria-controls="nav-dropdown" onclick="navToggle()">
+    <span></span><span></span><span></span>
+  </button>
+  <div class="nav-dropdown" id="nav-dropdown">
+    <a href="#kans-gevolg" onclick="navClose()">Risico = Kans × Gevolg</a>
+  </div>
+</nav>
+
+<main>
+
+<section id="kans-gevolg">
+  <div class="badge">Risicoanalyse</div>
+  <h2>Risico = Kans × Gevolg</h2>
+  <div class="nico-intro">
+    <div>
+      <p class="lead">Elke dag neem je risico's. Je steekt een drukke straat over, je fietst zonder licht naar huis, je gebruikt al jaren hetzelfde wachtwoord. Meestal sta je er niet bij stil. Een projectmanager doet dat wel, en gebruikt daarvoor één eenvoudige formule.</p>
+      <p>Maak kennis met <strong>Nico</strong>. Nico fietst elke dag naar de campus en moet onderweg heel wat oversteken. Bij elke oversteek stelt Nico zich (hopelijk) twee vragen.</p>
+    </div>
+    <canvas class="nico-portrait" id="nico-portrait" width="32" height="32" aria-hidden="true"></canvas>
+  </div>
+
+  <div class="formula">
+    <div class="formula-card" data-c="kans">
+      <div class="formula-q">"Haal ik het?"</div>
+      <div class="formula-name">Kans</div>
+      <p>Hoe waarschijnlijk is het dat het misloopt? Hoe druk is het, hoe snel gaat het verkeer?</p>
+    </div>
+    <div class="formula-op" aria-hidden="true">×</div>
+    <div class="formula-card" data-c="gevolg">
+      <div class="formula-q">"Wat kan er gebeuren?"</div>
+      <div class="formula-name">Gevolg</div>
+      <p>Ook <em>impact</em> genoemd. Hoe groot is de schade als het toch misloopt? Een schrammetje, of veel erger?</p>
+    </div>
+    <div class="formula-op" aria-hidden="true">=</div>
+    <div class="formula-card" data-c="risico">
+      <div class="formula-q">"Neem ik dit risico?"</div>
+      <div class="formula-name">Risico</div>
+      <p>Eén getal waarmee je risico's kan vergelijken. Zo weet je welke je eerst moet aanpakken.</p>
+    </div>
+  </div>
+
+  <div class="callout"><p>Het doel van een risicoanalyse is het bepalen van de kans dat een dreiging zich voordoet en de gevolgen daarvan.</p></div>
+
+  <p>Kans en gevolg schat je in op een schaal van <strong>1 (zeer klein)</strong> tot <strong>5 (zeer groot)</strong>. Vermenigvuldig ze en je krijgt een risicoscore tussen 1 en 25. Die score valt in een van vier zones:</p>
+  <div class="zone-legend" id="zone-legend"></div>
+
+  <!-- Deel 1: De vier oversteken -->
+  <h3 class="sub-title" id="frog-levels"><span class="sub-step">Deel 1</span>Nico steekt over</h3>
+  <p>Help Nico vier keer de overkant te bereiken: door een rustig park, over een drukke markt, over de spoorweg en over een drukke steenweg. Nico heeft <strong>5 hartjes</strong>. Hoe erger een botsing, hoe meer hartjes Nico verliest. Na elk level schat je zelf de <strong>kans</strong> en het <strong>gevolg</strong> in.</p>
+
+  <div class="frog-tabs" id="frog-tabs" role="tablist" aria-label="Levels"></div>
+
+  <div class="frog-game" id="frog-main" tabindex="0" role="application" aria-roledescription="spel" aria-label="Nico steekt over. Gebruik de pijltjestoetsen om Nico te bewegen.">
+    <div class="frog-hud">
+      <span data-hud="level">LEVEL 1</span>
+      <span class="frog-hearts" data-hud="hearts" aria-label="Hartjes"></span>
+      <span data-hud="cross">OVER 0/3</span>
+      <span class="frog-snd-wrap">
+        <button type="button" class="frog-snd" data-snd="music" aria-pressed="true" aria-label="Muziek (toets M)" title="Muziek (M)"><svg viewBox="0 0 8 8" aria-hidden="true" shape-rendering="crispEdges"><path fill="currentColor" d="M3 0h5v1H3zM3 1h1v5H3zM7 1h1v4H7zM1 5h3v3H1zM5 4h3v3H5z"/></svg></button>
+        <button type="button" class="frog-snd" data-snd="sfx" aria-pressed="true" aria-label="Geluidseffecten" title="Geluidseffecten"><svg viewBox="0 0 8 8" aria-hidden="true" shape-rendering="crispEdges"><path fill="currentColor" d="M0 3h2v2H0zM2 2h1v4H2zM3 1h1v6H3zM4 0h1v8H4zM6 2h1v1H6zM6 5h1v1H6zM7 3h1v2H7z"/></svg></button>
+      </span>
+      <span data-hud="time">00:00</span>
+    </div>
+    <div class="frog-stage">
+      <canvas width="416" height="288" aria-hidden="true"></canvas>
+      <div class="frog-toast" aria-hidden="true"></div>
+      <div class="frog-overlay"></div>
+    </div>
+    <div class="frog-pad" aria-hidden="true">
+      <button type="button" data-move="up" tabindex="-1">▲</button>
+      <button type="button" data-move="left" tabindex="-1">◀</button>
+      <button type="button" data-move="down" tabindex="-1">▼</button>
+      <button type="button" data-move="right" tabindex="-1">▶</button>
+    </div>
+  </div>
+  <div class="sr-only" aria-live="polite" id="frog-live"></div>
+
+  <div class="frog-analysis" id="frog-analysis" aria-live="polite"></div>
+
+  <div class="progress">
+    <div class="progress-track"><div class="progress-fill" id="frog-fill"></div></div>
+    <span class="progress-label" id="frog-progress-label"></span>
+  </div>
+
+  <div class="summary" id="frog-summary">
+    <h4>Vier oversteken, vier risico's</h4>
+    <div class="frog-an-grid">
+      <div>
+        <ul>
+          <li><strong>Risico = Kans × Gevolg</strong> maakt risico's vergelijkbaar. Zo zie je meteen welk risico je eerst moet aanpakken: de steenweg (25), niet het park (1).</li>
+          <li>De <strong>markt</strong> en de <strong>overweg</strong> scoren allebei 5, maar het zijn totaal verschillende risico's. Op de markt gaat het vaak een beetje mis, aan de overweg zelden maar dan meteen helemaal. Kijk dus altijd naar de kans <strong>én</strong> het gevolg apart, niet enkel naar het getal.</li>
+          <li>Met maatregelen verander je een risico. De lichten en slagbomen <strong>verkleinen de kans</strong> (preventie). Nico's fietshelm <strong>beperkt het gevolg</strong> (repressie). En de fietstunnel <strong>vermijdt</strong> het risico volledig.</li>
+          <li>Een klein risico mag je gewoon <strong>aanvaarden</strong>, zoals in het park. Een maatregel die meer kost dan de schade die hij voorkomt, is niet zinvol.</li>
+        </ul>
+      </div>
+      <div class="frog-matrix-wrap" id="frog-summary-matrix"></div>
+    </div>
+  </div>
+
+  <!-- Deel 2: Wat als? -->
+  <h3 class="sub-title" id="frog-wat-als"><span class="sub-step">Deel 2</span>Wat als de auto een trein is?</h3>
+  <p>Je staat met je fiets aan een kruispunt en ziet een auto in de verte. Wat als het geen auto is, maar een trein? Of een wandelaar? Speel zelf met de kans en het gevolg en kijk hoe de oversteek verandert. Het gevolg bepaalt <strong>wat</strong> er aankomt, de kans bepaalt <strong>hoe druk</strong> het is: meer rijstroken, meer verkeer en sneller. Speel het level daarna zelf: lukt het je nog bij kans 5?</p>
+
+  <div class="frog-game" id="frog-sb" tabindex="0" role="application" aria-roledescription="spel" aria-label="Vrij spel. Gebruik de pijltjestoetsen om Nico te bewegen.">
+    <div class="frog-hud">
+      <span data-hud="level">VRIJ SPEL</span>
+      <span class="frog-hearts" data-hud="hearts" aria-label="Hartjes"></span>
+      <span data-hud="cross">OVER 0/3</span>
+      <span class="frog-snd-wrap">
+        <button type="button" class="frog-snd" data-snd="music" aria-pressed="true" aria-label="Muziek (toets M)" title="Muziek (M)"><svg viewBox="0 0 8 8" aria-hidden="true" shape-rendering="crispEdges"><path fill="currentColor" d="M3 0h5v1H3zM3 1h1v5H3zM7 1h1v4H7zM1 5h3v3H1zM5 4h3v3H5z"/></svg></button>
+        <button type="button" class="frog-snd" data-snd="sfx" aria-pressed="true" aria-label="Geluidseffecten" title="Geluidseffecten"><svg viewBox="0 0 8 8" aria-hidden="true" shape-rendering="crispEdges"><path fill="currentColor" d="M0 3h2v2H0zM2 2h1v4H2zM3 1h1v6H3zM4 0h1v8H4zM6 2h1v1H6zM6 5h1v1H6zM7 3h1v2H7z"/></svg></button>
+      </span>
+      <span data-hud="time">00:00</span>
+    </div>
+    <div class="frog-stage">
+      <canvas width="416" height="288" aria-hidden="true"></canvas>
+      <div class="frog-toast" aria-hidden="true"></div>
+      <div class="frog-overlay"></div>
+    </div>
+    <div class="frog-pad" aria-hidden="true">
+      <button type="button" data-move="up" tabindex="-1">▲</button>
+      <button type="button" data-move="left" tabindex="-1">◀</button>
+      <button type="button" data-move="down" tabindex="-1">▼</button>
+      <button type="button" data-move="right" tabindex="-1">▶</button>
+    </div>
+  </div>
+
+  <div class="sb-panel">
+    <div class="sb-sliders">
+      <div class="sb-slider kans">
+        <label for="sb-k">Kans <output id="sb-k-out" for="sb-k"></output></label>
+        <input type="range" id="sb-k" min="1" max="5" step="1" value="2" />
+        <div class="sb-ticks" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div>
+      </div>
+      <div class="sb-slider gevolg">
+        <label for="sb-g">Gevolg <output id="sb-g-out" for="sb-g"></output></label>
+        <input type="range" id="sb-g" min="1" max="5" step="1" value="4" />
+        <div class="sb-ticks" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div>
+      </div>
+      <div class="sb-result" id="sb-result" aria-live="polite"></div>
+    </div>
+    <div class="frog-matrix-wrap" id="sb-matrix"></div>
+  </div>
+
+  <div class="sim-box">
+    <h4>Laat Nico 100 keer onvoorzichtig oversteken</h4>
+    <p style="margin:0">Hoe groot is een risico eigenlijk? Laat Nico 100 keer oversteken zoals veel mensen dat doen: snel even kijken en gaan, en na een seconde wachten toch maar gaan. Met de kans en het gevolg die je hierboven koos. Tel daarna hoeveel hartjes Nico gemiddeld per oversteek verliest.</p>
+    <div style="margin-top:.9rem"><button class="btn-nav" id="sim-run" type="button">Start de simulatie</button></div>
+    <div class="sim-grid-wrap" id="sim-out" hidden>
+      <div>
+        <div class="sim-dots" id="sim-dots" aria-hidden="true"></div>
+        <div class="sim-legend" aria-hidden="true"><span><i style="background:var(--green)"></i>veilig over</span><span><i style="background:var(--accent)"></i>geraakt</span></div>
+      </div>
+      <div class="sim-text" id="sim-text" aria-live="polite"></div>
+    </div>
+    <div id="sim-history-wrap"></div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="f-inner">
+    <img src="pxl-logo-64.png" alt="PXL" />
+    <span>Hogeschool PXL &bull; Elfde-Liniestraat 24 &bull; B-3500 HASSELT &bull; <a href="https://www.pxl.be">www.pxl.be</a></span>
+  </div>
+</footer>
+
+<script>
+// ══ Gedeeld: schalen en zones ════════════════════════════════════════════════
+
+var RISK_K = [
+  { label: 'Zeer klein', sub: 'bijna nooit' },
+  { label: 'Klein', sub: 'soms' },
+  { label: 'Gemiddeld', sub: 'regelmatig' },
+  { label: 'Groot', sub: 'vaak' },
+  { label: 'Zeer groot', sub: 'bijna altijd' }
+];
+var RISK_G = [
+  { label: 'Zeer klein', sub: 'schrammetje' },
+  { label: 'Klein', sub: 'blauwe plek' },
+  { label: 'Matig', sub: 'gebroken arm' },
+  { label: 'Groot', sub: 'ziekenhuis' },
+  { label: 'Zeer groot', sub: 'levensgevaarlijk' }
+];
+var RISK_ZONES = [
+  { id: 'laag', label: 'Laag', min: 1, max: 4 },
+  { id: 'middel', label: 'Middel', min: 5, max: 9 },
+  { id: 'hoog', label: 'Hoog', min: 10, max: 16 },
+  { id: 'kritiek', label: 'Kritiek', min: 20, max: 25 }
+];
+function riskZone(score) {
+  for (var i = 0; i < RISK_ZONES.length; i++) if (score <= RISK_ZONES[i].max) return RISK_ZONES[i];
+  return RISK_ZONES[RISK_ZONES.length - 1];
+}
+function zoneChip(score) {
+  var z = riskZone(score);
+  return '<span class="zone-chip" data-zone="' + z.id + '">' + z.label + ' risico</span>';
+}
+
+(function() {
+  document.getElementById('zone-legend').innerHTML = RISK_ZONES.map(function(z) {
+    return '<span class="zone-chip" data-zone="' + z.id + '">' + z.label + ' <span class="zone-range">' + z.min + ' tot ' + z.max + '</span></span>';
+  }).join('');
+})();
+
+// Risicomatrix: kans horizontaal, gevolg verticaal (5 bovenaan).
+// marks: [{ k, g, text, dim }], cur: { k, g } of null
+function riskMatrixHtml(title, marks, cur) {
+  var h = '<div class="frog-matrix-title">' + title + '</div><div class="frog-matrix" role="img" aria-label="' + riskMatrixLabel(marks, cur) + '">';
+  h += '<div class="frog-mx-axis y">Gevolg</div>';
+  for (var g = 5; g >= 1; g--) {
+    h += '<div class="frog-mx-num" style="grid-column:2;grid-row:' + (6 - g) + '">' + g + '</div>';
+    for (var k = 1; k <= 5; k++) {
+      var s = k * g, z = riskZone(s), isCur = cur && cur.k === k && cur.g === g;
+      h += '<div class="frog-mx-cell' + (isCur ? ' cur' : '') + '" data-zone="' + z.id + '" style="grid-column:' + (k + 2) + ';grid-row:' + (6 - g) + '"><span class="mx-score">' + s + '</span>';
+      marks.forEach(function(m) {
+        if (m.k === k && m.g === g) h += '<span class="frog-mx-mark' + (m.dim ? ' dim' : '') + '">' + m.text + '</span>';
+      });
+      h += '</div>';
+    }
+  }
+  for (var k2 = 1; k2 <= 5; k2++) h += '<div class="frog-mx-num" style="grid-column:' + (k2 + 2) + ';grid-row:6">' + k2 + '</div>';
+  h += '<div class="frog-mx-axis x">Kans</div></div>';
+  return h;
+}
+function riskMatrixLabel(marks, cur) {
+  var parts = ['Risicomatrix met kans van 1 tot 5 en gevolg van 1 tot 5'];
+  marks.forEach(function(m) { parts.push(m.aria || ('punt ' + m.text + ': kans ' + m.k + ', gevolg ' + m.g)); });
+  if (cur) parts.push('gekozen: kans ' + cur.k + ', gevolg ' + cur.g + ', risico ' + (cur.k * cur.g));
+  return parts.join('. ');
+}
+
+// ══ Pixel art ════════════════════════════════════════════════════════════════
+// Alles wordt getekend in "eenheden": 1 eenheid = 2 canvaspixels. Een tegel is 16 eenheden.
+
+var FP = 2, FT = 32, FCOLS = 13, FROWS = 9, FW = FT * FCOLS, FH = FT * FROWS;
+
+function frogRng(seed) {
+  var a = seed >>> 0;
+  return function() {
+    a = (a + 0x6D2B79F5) | 0;
+    var t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+function frogPick(rng, arr) { return arr[Math.floor(rng() * arr.length)]; }
+function frogRand(rng, mm) { return mm[0] + rng() * (mm[1] - mm[0]); }
+function frogShade(hex, f) {
+  var n = parseInt(hex.slice(1), 16);
+  var c = [(n >> 16) & 255, (n >> 8) & 255, n & 255].map(function(v) { return Math.max(0, Math.min(255, Math.round(v * f))); });
+  return '#' + ((1 << 24) | (c[0] << 16) | (c[1] << 8) | c[2]).toString(16).slice(1);
+}
+
+// Tekenhulp op een context: r = rechthoek, line = pixellijn (Bresenham), mask = patroon uit tekst
+function frogPainter(ctx, oy) {
+  oy = oy || 0;
+  var api = {
+    r: function(x, y, w, h, col) { ctx.fillStyle = col; ctx.fillRect(x * FP, oy + y * FP, w * FP, h * FP); },
+    clear: function(x, y, w, h) { ctx.clearRect(x * FP, oy + y * FP, w * FP, h * FP); },
+    line: function(x0, y0, x1, y1, col) {
+      var dx = Math.abs(x1 - x0), sx = x0 < x1 ? 1 : -1, dy = -Math.abs(y1 - y0), sy = y0 < y1 ? 1 : -1, err = dx + dy;
+      for (var guard = 0; guard < 400; guard++) {
+        api.r(x0, y0, 1, 1, col);
+        if (x0 === x1 && y0 === y1) break;
+        var e2 = 2 * err;
+        if (e2 >= dy) { err += dy; x0 += sx; }
+        if (e2 <= dx) { err += dx; y0 += sy; }
+      }
+    },
+    mask: function(x, y, rows, pal) {
+      for (var j = 0; j < rows.length; j++) for (var i = 0; i < rows[j].length; i++) {
+        var ch = rows[j][i];
+        if (ch !== '.' && pal[ch]) api.r(x + i, y + j, 1, 1, pal[ch]);
+      }
+    }
+  };
+  return api;
+}
+function frogSprite(wu, hu, draw) {
+  var c = document.createElement('canvas');
+  c.width = wu * FP; c.height = hu * FP;
+  draw(frogPainter(c.getContext('2d')));
+  return c;
+}
+function frogFlip(src) {
+  var c = document.createElement('canvas');
+  c.width = src.width; c.height = src.height;
+  var x = c.getContext('2d');
+  x.translate(src.width, 0); x.scale(-1, 1); x.drawImage(src, 0, 0);
+  return c;
+}
+
+// Nico, van achteren gezien op de fiets (rijdt "het scherm in")
+var NICO_PAL = {
+  o: '#141414', G: '#d8c27e', g: '#9c8446', W: '#f6ecc8', H: '#5a3a22', S: '#f1c27d',
+  B: '#2f6fd6', b: '#1f4fa8', P: '#e63946', D: '#2b2b38', K: '#0d0d0d', m: '#b0b6bc', w: '#f5f5f5', Y: '#ff9f1c'
+};
+var NICO_TOP = [
+  '......oooo......',
+  '.....oGGWGo.....',
+  '....oGGGWGGo....',
+  '....oGgGGgGo....',
+  '.....oHHHHo.....',
+  '.oo.oBBBBBBo.oo.',
+  'oSmmoBBBBBBommSo',
+  '.oooBBPPPPBBooo.',
+  '...oBBPPPPBBo...',
+  '...oBbPPPPbBo...',
+  '....oDDDDDDo....'
+];
+var NICO_LEGS_A = [
+  '....oDoKKoDo....',
+  '....oDoKKoDo....',
+  '....owoKKowo....',
+  '......oYYo......',
+  '.......oo.......'
+];
+var NICO_LEGS_B = [
+  '....owoKKoDo....',
+  '.....ooKKoDo....',
+  '......oKKowo....',
+  '......oYYo......',
+  '.......oo.......'
+];
+var NICO_SPR = null;
+function frogNico() {
+  if (NICO_SPR) return NICO_SPR;
+  NICO_SPR = [NICO_LEGS_A, NICO_LEGS_B].map(function(legs) {
+    return frogSprite(16, 16, function(a) { a.mask(0, 0, NICO_TOP.concat(legs), NICO_PAL); });
+  });
+  return NICO_SPR;
+}
+
+// Weggebruikers (zijaanzicht, rijden naar rechts; gespiegeld voor links)
+var FROG_DARK = '#1a1a1a';
+var FROG_RING7 = ['..xxx..', '.x...x.', 'x.....x', 'x..o..x', 'x.....x', '.x...x.', '..xxx..'];
+var FROG_DISC5 = ['.xxx.', 'xxxxx', 'xxoxx', 'xxxxx', '.xxx.'];
+var FROG_DISC6 = ['.xxxx.', 'xxxxxx', 'xxooxx', 'xxooxx', 'xxxxxx', '.xxxx.'];
+var FROG_SHIRTS = ['#e63946', '#2a9d8f', '#f4a261', '#5b7fa6', '#8b5cf6', '#e9c46a', '#ef476f', '#06d6a0', '#ffffff'];
+var FROG_PANTS = ['#2b2b38', '#3d405b', '#5c4033', '#1d3557', '#6b7280'];
+var FROG_HAIR = ['#2b1d0e', '#5a3a22', '#c9a227', '#8d5524', '#111111', '#b55239'];
+var FROG_SKIN = ['#f1c27d', '#e0ac69', '#c68642', '#8d5524', '#ffdbac'];
+var FROG_CARS = ['#e63946', '#2f6fd6', '#f4a261', '#2a9d8f', '#e9c46a', '#8b5cf6', '#d9d9d9', '#4b5563', '#06d6a0'];
+
+function frogPersonColors(rng) {
+  return { shirt: frogPick(rng, FROG_SHIRTS), pants: frogPick(rng, FROG_PANTS), hair: frogPick(rng, FROG_HAIR), skin: frogPick(rng, FROG_SKIN) };
+}
+function frogDrawPerson(a, f, c, mode, ox) {
+  ox = ox || 0;
+  var sh = frogShade(c.shirt, 0.72);
+  a.r(ox + 4, 0, 5, 2, c.hair); a.r(ox + 3, 1, 2, 3, c.hair);
+  a.r(ox + 5, 2, 4, 4, c.skin); a.r(ox + 8, 3, 1, 1, FROG_DARK);
+  if (mode === 'jog') a.r(ox + 4, 2, 5, 1, '#ffffff');
+  a.r(ox + 4, 6, 5, 6, c.shirt);
+  if (mode === 'push') { a.r(ox + 6, 7, 2, 2, sh); a.r(ox + 8, 8, 4, 1, sh); a.r(ox + 11, 7, 1, 2, c.skin); }
+  else if (f === 0) { a.r(ox + 6, 7, 2, 4, sh); a.r(ox + 6, 11, 2, 1, c.skin); }
+  else { a.r(ox + 6, 7, 2, 2, sh); a.r(ox + 8, 8, 2, 2, sh); a.r(ox + 10, 9, 1, 1, c.skin); }
+  if (mode === 'jog' && f === 0) {
+    a.r(ox + 3, 12, 2, 2, c.pants); a.r(ox + 2, 14, 2, 1, c.pants); a.r(ox + 1, 15, 2, 1, FROG_DARK);
+    a.r(ox + 7, 12, 2, 2, c.pants); a.r(ox + 9, 13, 2, 2, c.pants); a.r(ox + 10, 15, 2, 1, FROG_DARK);
+  } else if (f === 0) {
+    a.r(ox + 4, 12, 2, 3, c.pants); a.r(ox + 7, 12, 2, 3, c.pants); a.r(ox + 3, 15, 3, 1, FROG_DARK); a.r(ox + 7, 15, 3, 1, FROG_DARK);
+  } else {
+    a.r(ox + 5, 12, 3, 3, c.pants); a.r(ox + 5, 15, 4, 1, FROG_DARK);
+  }
+}
+
+var FROG_KINDS = {
+  wandelaar: { w: 12, frames: 2, colors: frogPersonColors, draw: function(a, f, c) { frogDrawPerson(a, f, c, 'walk'); } },
+  jogger: { w: 12, frames: 2, colors: frogPersonColors, draw: function(a, f, c) { frogDrawPerson(a, f, c, 'jog'); } },
+  kar: {
+    w: 26, frames: 2,
+    colors: function(rng) { var c = frogPersonColors(rng); c.f1 = frogPick(rng, ['#f4a261', '#e63946', '#e9c46a']); c.f2 = frogPick(rng, ['#6ab04c', '#8b5cf6', '#ef476f']); return c; },
+    draw: function(a, f, c) {
+      frogDrawPerson(a, f, c, 'push', 0);
+      var g1 = '#7a8088', g2 = '#9aa0a6';
+      a.r(15, 4, 3, 3, c.f1); a.r(19, 3, 3, 4, c.f2); a.r(22, 5, 2, 2, '#6ab04c');
+      a.r(12, 6, 13, 1, g1);
+      a.r(13, 7, 11, 4, '#d5dade');
+      for (var x = 14; x < 24; x += 2) a.r(x, 7, 1, 4, g2);
+      a.r(13, 9, 11, 1, g2);
+      a.r(13, 11, 12, 1, g1); a.r(14, 12, 1, 2, g1); a.r(23, 12, 1, 2, g1);
+      a.r(13, 14, 3, 2, FROG_DARK); a.r(22, 14, 3, 2, FROG_DARK);
+    }
+  },
+  fietser: {
+    w: 24, frames: 2,
+    colors: function(rng) { var c = frogPersonColors(rng); c.bike = frogPick(rng, ['#e63946', '#2f6fd6', '#2a9d8f', '#e9c46a', '#8b5cf6']); c.helmet = frogPick(rng, ['#ffffff', '#ffd60a', '#ef476f', '#06d6a0']); return c; },
+    draw: function(a, f, c) {
+      var pal = { x: '#202020', o: '#9aa0a6' };
+      a.mask(1, 9, FROG_RING7, pal); a.mask(15, 9, FROG_RING7, pal);
+      a.line(4, 12, 8, 8, c.bike); a.line(8, 8, 16, 8, c.bike); a.line(16, 8, 18, 12, c.bike);
+      a.line(9, 12, 8, 8, c.bike); a.line(4, 12, 9, 12, c.bike); a.line(9, 12, 16, 8, c.bike);
+      a.r(16, 6, 1, 2, '#555'); a.r(15, 5, 3, 1, FROG_DARK); a.r(7, 7, 3, 1, FROG_DARK);
+      a.r(8, 3, 3, 4, c.shirt); a.r(10, 2, 3, 3, c.shirt);
+      a.r(12, 0, 3, 3, c.skin); a.r(11, 0, 4, 1, c.helmet); a.r(14, 1, 1, 1, FROG_DARK);
+      a.line(12, 4, 15, 5, frogShade(c.shirt, 0.72));
+      if (f === 0) { a.line(8, 7, 11, 9, c.pants); a.line(11, 9, 10, 12, c.pants); a.r(10, 12, 2, 1, FROG_DARK); }
+      else { a.line(8, 7, 10, 10, c.pants); a.line(10, 10, 8, 12, c.pants); a.r(7, 12, 2, 1, FROG_DARK); }
+    }
+  },
+  brommer: {
+    w: 22, frames: 1,
+    colors: function(rng) { var c = frogPersonColors(rng); c.body = frogPick(rng, FROG_CARS); c.helmet = frogPick(rng, ['#111111', '#ffffff', '#e63946', '#2f6fd6']); return c; },
+    draw: function(a, f, c) {
+      var pal = { x: '#1a1a1a', o: '#9aa0a6' };
+      a.r(1, 8, 8, 4, c.body); a.r(0, 9, 1, 2, c.body); a.r(1, 9, 1, 1, '#ff4d4d');
+      a.r(7, 11, 8, 2, c.body);
+      a.r(14, 5, 3, 7, c.body); a.r(17, 6, 1, 2, '#ffe28a');
+      a.r(15, 3, 1, 2, '#555'); a.r(14, 3, 4, 1, FROG_DARK);
+      a.r(2, 7, 6, 1, FROG_DARK);
+      a.r(4, 2, 4, 5, c.shirt);
+      a.r(5, 0, 4, 3, c.helmet); a.r(8, 1, 1, 1, '#7dd3fc');
+      a.line(7, 3, 14, 3, frogShade(c.shirt, 0.72));
+      a.r(6, 7, 4, 2, c.pants); a.r(9, 9, 2, 2, c.pants); a.r(10, 10, 2, 1, FROG_DARK);
+      a.mask(2, 11, FROG_DISC5, pal); a.mask(15, 11, FROG_DISC5, pal);
+    }
+  },
+  auto: {
+    w: 32, frames: 1,
+    colors: function(rng) { return { body: frogPick(rng, FROG_CARS) }; },
+    draw: function(a, f, c) {
+      var body = c.body, sh = frogShade(body, 0.72), glass = '#a9d6f5', pal = { x: '#151515', o: '#9aa0a6' };
+      a.r(1, 7, 30, 5, body); a.r(0, 8, 1, 3, body); a.r(31, 8, 1, 3, body);
+      a.r(8, 2, 14, 5, body);
+      for (var y = 2; y < 7; y++) { a.r(22, y, y - 1, 1, body); a.r(8 - (y - 2), y, y - 1, 1, body); }
+      a.r(9, 3, 5, 3, glass); a.r(15, 3, 6, 3, glass);
+      for (var y2 = 3; y2 < 6; y2++) a.r(22, y2, y2 - 2, 1, glass);
+      a.r(14, 7, 1, 4, sh); a.r(1, 11, 30, 1, sh);
+      a.r(30, 8, 2, 2, '#ffe28a'); a.r(0, 8, 1, 2, '#ff4d4d');
+      a.mask(4, 10, FROG_DISC6, pal); a.mask(21, 10, FROG_DISC6, pal);
+    }
+  },
+  vrachtwagen: {
+    w: 48, frames: 1,
+    colors: function(rng) { return { box: frogPick(rng, ['#f1f1f1', '#e9c46a', '#d9d9d9', '#2a9d8f']), cab: frogPick(rng, ['#e63946', '#2f6fd6', '#4b5563', '#f4a261']), stripe: frogPick(rng, ['#AE9A64', '#e63946', '#2f6fd6']) }; },
+    draw: function(a, f, c) {
+      var pal = { x: '#151515', o: '#9aa0a6' };
+      a.r(1, 0, 33, 12, c.box); a.r(1, 0, 33, 1, frogShade(c.box, 0.85)); a.r(1, 7, 33, 2, c.stripe);
+      a.r(1, 12, 46, 1, '#333');
+      a.r(35, 2, 11, 10, c.cab); a.r(46, 4, 1, 8, c.cab); a.r(40, 3, 5, 4, '#a9d6f5'); a.r(36, 7, 1, 4, frogShade(c.cab, 0.72));
+      a.r(46, 9, 2, 2, '#ffe28a');
+      a.mask(3, 10, FROG_DISC6, pal); a.mask(10, 10, FROG_DISC6, pal); a.mask(26, 10, FROG_DISC6, pal); a.mask(38, 10, FROG_DISC6, pal);
+    }
+  },
+  trein: {
+    w: 240, frames: 1, variants: 2,
+    colors: function(rng) { return { band: frogPick(rng, ['#1d4e9e', '#1d3557']) }; },
+    draw: function(a, f, c) {
+      var W = 240, body = '#eef0f2', win = '#26303b', yellow = '#ffd60a';
+      a.r(0, 1, W, 12, body);
+      a.r(0, 3, W, 4, win);
+      a.r(0, 10, W, 3, c.band);
+      for (var k = 0; k < 4; k++) {
+        var x = k * 60;
+        a.r(x, 1, 1, 12, '#9aa0a6');
+        a.r(x + 12, 3, 4, 7, yellow); a.r(x + 44, 3, 4, 7, yellow);
+        for (var wx = x + 18; wx < x + 42; wx += 6) a.r(wx, 3, 1, 4, body);
+        a.r(x + 6, 13, 9, 2, '#333'); a.r(x + 45, 13, 9, 2, '#333');
+        a.r(x + 7, 14, 2, 2, '#111'); a.r(x + 12, 14, 2, 2, '#111'); a.r(x + 46, 14, 2, 2, '#111'); a.r(x + 51, 14, 2, 2, '#111');
+      }
+      // neus vooraan (rechts) en achteraan (links)
+      for (var y = 1; y < 7; y++) { a.clear(W - (7 - y), y, 7 - y, 1); a.clear(0, y, 7 - y, 1); }
+      a.r(W - 9, 6, 9, 7, yellow); a.r(W - 9, 2, 4, 4, win); a.r(W - 2, 10, 2, 1, '#fff8c4');
+      a.r(0, 6, 6, 7, yellow); a.r(0, 10, 2, 1, '#ff4d4d');
+    }
+  }
+};
+function frogGetSprites(kind) {
+  var K = FROG_KINDS[kind];
+  if (K.cache) return K.cache;
+  var rng = frogRng(kind.length * 977 + kind.charCodeAt(0)), out = [];
+  for (var v = 0; v < (K.variants || 7); v++) {
+    var col = K.colors(rng), frames = [];
+    for (var f = 0; f < K.frames; f++) frames.push(frogSprite(K.w, 16, function(a) { K.draw(a, f, col); }));
+    out.push({ r: frames, l: frames.map(frogFlip) });
+  }
+  K.cache = out;
+  return out;
+}
+
+// ══ Ondergronden ═════════════════════════════════════════════════════════════
+
+var FROG_TRAFFIC = { road: 1, bike: 1 };
+function frogDrawBg(cfg) {
+  var c = document.createElement('canvas');
+  c.width = FW; c.height = FH;
+  var ctx = c.getContext('2d'), rng = frogRng(cfg.seed || 7), UW = FW / FP;
+  function noise(a, n, cols, h) { for (var i = 0; i < n; i++) a.r(Math.floor(rng() * UW), Math.floor(rng() * 16), 1, h || 1, frogPick(rng, cols)); }
+  cfg.rows.forEach(function(spec, row) {
+    var a = frogPainter(ctx, row * FT), s = spec.s;
+    var above = row > 0 ? cfg.rows[row - 1].s : null, below = row < FROWS - 1 ? cfg.rows[row + 1].s : null;
+    if (s === 'grass' || s === 'berm') {
+      a.r(0, 0, UW, 16, '#5fa843'); noise(a, 70, ['#4c8f35', '#6fbb52'], 2);
+      for (var fl = 0; fl < 6; fl++) { var fx = Math.floor(rng() * UW), fy = 2 + Math.floor(rng() * 12); a.r(fx, fy, 1, 1, frogPick(rng, ['#ffffff', '#ffd60a', '#ff8fab'])); }
+      if (s === 'berm') { a.r(0, 0, UW, 1, '#c7c7c7'); a.r(0, 15, UW, 1, '#c7c7c7'); }
+    } else if (s === 'goal') {
+      a.r(0, 0, UW, 11, '#41464d'); a.r(0, 0, UW, 1, '#2b2f34');
+      for (var k = 0; k < FCOLS; k++) {
+        if (k === 6) continue;
+        a.r(k * 16 + 3, 3, 4, 5, rng() < 0.6 ? '#f6e7a1' : '#5b6470');
+        a.r(k * 16 + 9, 3, 4, 5, rng() < 0.6 ? '#f6e7a1' : '#5b6470');
+      }
+      a.r(6 * 16 + 2, 1, 12, 2, '#AE9A64'); a.r(6 * 16 + 4, 4, 8, 7, '#7a6535'); a.r(6 * 16 + 5, 5, 6, 6, '#AE9A64'); a.r(6 * 16 + 8, 5, 1, 6, '#7a6535');
+      a.r(0, 11, UW, 5, '#cfcfcf');
+      for (var jx = 0; jx < UW; jx += 8) a.r(jx, 11, 1, 5, '#b8b8b8');
+      a.r(0, 15, UW, 1, '#9a9a9a');
+    } else if (s === 'start') {
+      a.r(0, 0, UW, 16, '#cfcfcf'); a.r(0, 0, UW, 2, '#a3a3a3');
+      for (var sx = 0; sx < UW; sx += 16) a.r(sx, 2, 1, 14, '#b8b8b8');
+      a.r(0, 9, UW, 1, '#b8b8b8');
+    } else if (s === 'path') {
+      a.r(0, 0, UW, 16, '#5fa843'); a.r(0, 2, UW, 12, '#d8c39a'); a.r(0, 2, UW, 1, '#b7a173'); a.r(0, 13, UW, 1, '#b7a173');
+      for (var p = 0; p < 90; p++) a.r(Math.floor(rng() * UW), 3 + Math.floor(rng() * 10), 1, 1, frogPick(rng, ['#bfa878', '#e8d8b4']));
+      noise(a, 20, ['#4c8f35'], 1);
+    } else if (s === 'cobble' || s === 'plein') {
+      var base = s === 'cobble' ? '#8f8882' : '#b3aca3', stone = s === 'cobble' ? '#a59e97' : '#c9c2b9';
+      a.r(0, 0, UW, 16, base);
+      for (var cy = 0; cy < 16; cy += 4) for (var cx = -3 + ((cy / 4) % 2) * 3; cx < UW; cx += 6) a.r(cx, cy, 5, 3, stone);
+      if (s === 'plein') { a.r(0, 0, UW, 1, '#d8d2c9'); a.r(0, 15, UW, 1, '#d8d2c9'); }
+    } else if (s === 'road' || s === 'bike') {
+      var asph = s === 'road' ? '#3c4047' : '#a5524a';
+      a.r(0, 0, UW, 16, asph); noise(a, 90, [frogShade(asph, 1.12), frogShade(asph, 0.88)]);
+      if (FROG_TRAFFIC[above]) { for (var dx = 0; dx < UW; dx += 12) a.r(dx + 2, 0, 6, 1, '#e6e6e6'); }
+      else a.r(0, 1, UW, 1, '#e6e6e6');
+      if (!FROG_TRAFFIC[below]) a.r(0, 14, UW, 1, '#e6e6e6');
+    } else if (s === 'rail' || s === 'ballast') {
+      a.r(0, 0, UW, 16, '#8a8174'); noise(a, 120, ['#776f64', '#a39a8d']);
+      if (s === 'rail') {
+        for (var tx = 0; tx < UW; tx += 8) a.r(tx + 2, 2, 3, 12, '#5e4b3b');
+        a.r(0, 4, UW, 1, '#d2d6da'); a.r(0, 5, UW, 1, '#6c7075'); a.r(0, 10, UW, 1, '#d2d6da'); a.r(0, 11, UW, 1, '#6c7075');
+      }
+    }
+  });
+  // De weg die bij de overweg loodrecht over het spoor loopt
+  if (cfg.crossRoad) {
+    var x0 = cfg.crossRoad.c0 * 16, x1 = (cfg.crossRoad.c1 + 1) * 16;
+    for (var row = 1; row < FROWS - 1; row++) {
+      var a2 = frogPainter(ctx, row * FT), s2 = cfg.rows[row].s;
+      if (s2 === 'rail') {
+        a2.r(x0, 2, x1 - x0, 12, '#6b5a48');
+        for (var py = 3; py < 14; py += 3) a2.r(x0, py, x1 - x0, 1, '#594a3b');
+        a2.r(x0, 4, x1 - x0, 1, '#d2d6da'); a2.r(x0, 10, x1 - x0, 1, '#d2d6da');
+      } else {
+        a2.r(x0, 0, x1 - x0, 16, '#3c4047');
+        a2.r(x0, 0, 1, 16, '#e6e6e6'); a2.r(x1 - 1, 0, 1, 16, '#e6e6e6');
+      }
+    }
+  }
+  // De fietstunnel: ingang op de startrij, uitgang aan de overkant
+  if (cfg.tunnel) {
+    [[FROWS - 1, 0], [0, 0]].forEach(function(pos, i) {
+      var a3 = frogPainter(ctx, pos[0] * FT), top = i === 0 ? 2 : 1;
+      a3.r(1, top, 14, 16 - top, '#8e949b'); a3.r(1, top, 14, 1, '#a9aeb4');
+      a3.r(3, top + 3, 10, 13 - top - 3 + (i === 0 ? 0 : -1), '#0d0d0d'); a3.r(4, top + 2, 8, 1, '#0d0d0d');
+    });
+    var b = frogPainter(ctx, (FROWS - 1) * FT);
+    b.r(16 + 7, 8, 2, 8, '#6c7075'); b.r(16 + 2, 2, 12, 8, '#1f5fbf'); b.r(16 + 2, 2, 12, 1, '#3b7be0');
+    var wp = { x: '#ffffff' };
+    b.mask(16 + 3, 4, ['.x.....x..', 'x.x...x.x.', '.x..x..x..', '....xx....'], wp);
+  }
+  return c;
+}
+
+// ══ Rijstroken ═══════════════════════════════════════════════════════════════
+// spec: { s, kinds, dir, speed (tegels/s), gap [min,max] in tegels of period [min,max] in s }
+// treinspoor: { train: true, every [min,max] s, warn s }
+
+function frogLaneInit(spec, row, rng) {
+  var L = { spec: spec, row: row, veh: [], rng: rng, dir: spec.dir || 1, v: (spec.speed || 0) * FT, until: 0, phase: 'idle', timer: 0, warn: false };
+  if (spec.train) L.timer = frogRand(rng, spec.every);
+  else if (spec.kinds) L.until = rng() * FT * 3;
+  return L;
+}
+function frogSpawn(L, offset) {
+  var kind = frogPick(L.rng, L.spec.kinds), spr = frogGetSprites(kind), w = FROG_KINDS[kind].w * FP;
+  L.veh.push({ x: L.dir > 0 ? -w + offset : FW - offset, w: w, spr: spr[Math.floor(L.rng() * spr.length)], seed: Math.floor(L.rng() * 10) });
+  return w;
+}
+function frogGap(L, w) {
+  if (L.spec.gap) return frogRand(L.rng, L.spec.gap) * FT;
+  return Math.max(FT * 0.6, L.v * frogRand(L.rng, L.spec.period) - w);
+}
+function frogLaneUpdate(L, dt) {
+  if (!L.spec.kinds) return;
+  var dx = L.v * dt * L.dir;
+  for (var i = L.veh.length - 1; i >= 0; i--) {
+    var v = L.veh[i];
+    v.x += dx;
+    if ((L.dir > 0 && v.x > FW) || (L.dir < 0 && v.x + v.w < 0)) L.veh.splice(i, 1);
+  }
+  if (L.spec.train) {
+    if (L.phase === 'idle') { L.timer -= dt; if (L.timer <= 0) { L.phase = 'warn'; L.timer = L.spec.warn; } }
+    else if (L.phase === 'warn') { L.timer -= dt; if (L.timer <= 0) { frogSpawn(L, 0); L.phase = 'run'; } }
+    else if (L.phase === 'run' && !L.veh.length) { L.phase = 'idle'; L.timer = frogRand(L.rng, L.spec.every); }
+    L.warn = L.phase !== 'idle';
+    return;
+  }
+  L.until -= L.v * dt;
+  var guard = 0;
+  while (L.until <= 0 && guard++ < 20) { var over = -L.until, w = frogSpawn(L, over); L.until = w + frogGap(L, w) - over; }
+}
+function frogLaneHit(L, x0, x1) {
+  for (var i = 0; i < L.veh.length; i++) {
+    var v = L.veh[i];
+    if (x1 > v.x + 3 && x0 < v.x + v.w - 3) return v;
+  }
+  return null;
+}
+
+// ══ Geluid: chiptune-muziek en geluidseffecten (Web Audio, alles gesynthetiseerd) ══
+
+var FROG_SEMI = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+function frogHz(n) {
+  var m = /^([A-G])([#b]?)(\d)$/.exec(n), s = FROG_SEMI[m[1]] + (m[2] === '#' ? 1 : m[2] === 'b' ? -1 : 0);
+  return 440 * Math.pow(2, ((+m[3] + 1) * 12 + s - 69) / 12);
+}
+// Eigen deuntje: 8 maten van 8 achtsten (I, vi, IV, V). '-' = rust.
+var FROG_TUNE = {
+  lead: ('E5 G5 C6 G5 E5 D5 E5 - C5 E5 A5 E5 C5 B4 C5 - A4 C5 F5 C5 A4 C5 D5 E5 D5 - B4 - G4 A4 B4 D5 ' +
+    'E5 G5 C6 G5 E5 D5 E5 G5 A5 G5 E5 C5 E5 - A4 - F5 E5 D5 C5 D5 - F5 - G5 F5 D5 B4 G4 A4 B4 D5').split(' '),
+  bass: ['C2', 'A1', 'F1', 'G1', 'C2', 'A1', 'F1', 'G1'],
+  bassStep: [0, 12, 7, 12, 0, 12, 7, 12]
+};
+var FROG_AUDIO_KEY = 'nico-risico-audio-v1';
+
+var FrogAudio = {
+  ctx: null, music: true, sfx: true, owner: null, timer: 0, step: 0, nextT: 0, tempo: 130,
+  load: function() {
+    try {
+      var s = JSON.parse(localStorage.getItem(FROG_AUDIO_KEY) || '{}');
+      if (s.music === false) this.music = false;
+      if (s.sfx === false) this.sfx = false;
+    } catch (e) {}
+  },
+  save: function() { try { localStorage.setItem(FROG_AUDIO_KEY, JSON.stringify({ music: this.music, sfx: this.sfx })); } catch (e) {} },
+  // Mag pas na een klik of toets (autoplay-regels van de browser)
+  init: function() {
+    var A = this;
+    if (!A.ctx) {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return false;
+      A.ctx = new AC();
+      A.master = A.ctx.createGain(); A.master.gain.value = 0.5; A.master.connect(A.ctx.destination);
+      A.musicBus = A.ctx.createGain(); A.musicBus.gain.value = 0.3; A.musicBus.connect(A.master);
+      A.sfxBus = A.ctx.createGain(); A.sfxBus.gain.value = 0.75; A.sfxBus.connect(A.master);
+      var len = A.ctx.sampleRate, buf = A.ctx.createBuffer(1, len, A.ctx.sampleRate), d = buf.getChannelData(0);
+      for (var i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+      A.noiseBuf = buf;
+      // pulsgolf met 25% duty cycle, het typische geluid van oude spelconsoles
+      var n = 32, re = new Float32Array(n), im = new Float32Array(n);
+      for (var k = 1; k < n; k++) re[k] = 2 / (k * Math.PI) * Math.sin(k * Math.PI * 0.25);
+      A.pulse = A.ctx.createPeriodicWave(re, im);
+    }
+    if (A.ctx.state === 'suspended') A.ctx.resume();
+    return true;
+  },
+  ready: function() { return !!this.ctx && this.ctx.state === 'running'; },
+  tone: function(o) {
+    var A = this, c = A.ctx, t = o.at || c.currentTime, osc = c.createOscillator(), gn = c.createGain();
+    if (o.type === 'pulse') osc.setPeriodicWave(A.pulse); else osc.type = o.type || 'square';
+    osc.frequency.setValueAtTime(o.f, t);
+    if (o.f2) osc.frequency.exponentialRampToValueAtTime(o.f2, t + o.d);
+    gn.gain.setValueAtTime(0.0001, t);
+    gn.gain.exponentialRampToValueAtTime(o.v || 0.2, t + 0.006);
+    gn.gain.exponentialRampToValueAtTime(0.0001, t + o.d);
+    osc.connect(gn); gn.connect(o.bus || A.sfxBus);
+    osc.start(t); osc.stop(t + o.d + 0.03);
+  },
+  noise: function(o) {
+    var A = this, c = A.ctx, t = o.at || c.currentTime, src = c.createBufferSource(), f = c.createBiquadFilter(), gn = c.createGain();
+    src.buffer = A.noiseBuf;
+    f.type = o.filter || 'lowpass';
+    f.frequency.setValueAtTime(o.f || 2000, t);
+    if (o.f2) f.frequency.exponentialRampToValueAtTime(o.f2, t + o.d);
+    gn.gain.setValueAtTime(o.v || 0.2, t);
+    gn.gain.exponentialRampToValueAtTime(0.0001, t + o.d);
+    src.connect(f); f.connect(gn); gn.connect(o.bus || A.sfxBus);
+    src.start(t, Math.random() * 0.5); src.stop(t + o.d + 0.03);
+  },
+  notes: function(list, dur, type, v) {
+    var A = this, t = A.ctx.currentTime;
+    list.forEach(function(n, i) { if (n !== '-') A.tone({ f: frogHz(n), d: dur * 1.15, at: t + i * dur, type: type, v: v }); });
+  },
+  play: function(name, arg) {
+    var A = this;
+    if (!A.sfx || !A.ready()) return;
+    var t = A.ctx.currentTime;
+    if (name === 'hop') A.tone({ f: 380 + Math.random() * 60, f2: 720, d: 0.07, type: 'pulse', v: 0.13 });
+    else if (name === 'start') A.notes(['C5', 'E5', 'G5', 'C6'], 0.07, 'pulse', 0.15);
+    else if (name === 'cross') A.notes(['G5', 'C6', 'E6', 'G6'], 0.06, 'pulse', 0.14);
+    else if (name === 'hit') {
+      // hoe groter het gevolg, hoe zwaarder de klap
+      var sev = arg || 1;
+      A.noise({ d: 0.15 + sev * 0.09, f: 2600 + sev * 300, f2: 200, v: 0.3 + sev * 0.04 });
+      A.tone({ f: 560 - sev * 60, f2: 45, d: 0.22 + sev * 0.09, type: 'square', v: 0.16 });
+      if (sev >= 4) A.tone({ f: 110, f2: 30, d: 0.6, at: t + 0.05, type: 'triangle', v: 0.4 });
+    }
+    else if (name === 'win') {
+      A.notes(['C5', 'E5', 'G5', 'C6', '-', 'G5', 'C6'], 0.1, 'pulse', 0.15);
+      A.notes(['C3', 'G3', 'C4', 'E4', '-', 'G3', 'C4'], 0.1, 'triangle', 0.3);
+    }
+    else if (name === 'over') {
+      A.notes(['G4', 'F#4', 'F4', 'E4'], 0.24, 'pulse', 0.15);
+      A.tone({ f: frogHz('C3'), f2: frogHz('C2'), d: 1.1, at: t + 0.96, type: 'triangle', v: 0.35 });
+    }
+    else if (name === 'bell') { A.tone({ f: 1480, d: 0.22, type: 'triangle', v: 0.2 }); A.tone({ f: 2220, d: 0.12, type: 'sine', v: 0.06 }); }
+    else if (name === 'horn') {
+      [0, 0.45].forEach(function(dt) {
+        A.tone({ f: frogHz('F#4'), d: 0.38, at: t + dt, type: 'sawtooth', v: 0.07 });
+        A.tone({ f: frogHz('A#4'), d: 0.38, at: t + dt, type: 'sawtooth', v: 0.07 });
+      });
+    }
+    else if (name === 'tunnel') A.noise({ d: 1.6, f: 180, f2: 2000, filter: 'bandpass', v: 0.5 });
+  },
+  startMusic: function(owner, tempo) {
+    var A = this;
+    if (!A.music || !A.ready()) return;
+    if (A.timer && A.owner === owner) return;
+    A.stopMusic();
+    A.owner = owner; A.tempo = tempo || 130;
+    A.step = 0; A.nextT = A.ctx.currentTime + 0.08;
+    A.timer = setInterval(function() { A.schedule(); }, 25);
+  },
+  stopMusic: function(owner) {
+    var A = this;
+    if (owner && A.owner !== owner) return;
+    clearInterval(A.timer); A.timer = 0; A.owner = null;
+  },
+  // Plant de noten een fractie op voorhand in, zodat de maat strak blijft
+  schedule: function() {
+    var A = this, c = A.ctx, eighth = 60 / A.tempo / 2, T = FROG_TUNE;
+    if (A.nextT < c.currentTime - 0.05) A.nextT = c.currentTime + 0.02;
+    while (A.nextT < c.currentTime + 0.12) {
+      var s = A.step % T.lead.length, bar = Math.floor(s / 8), i = s % 8, t = A.nextT, n = T.lead[s];
+      if (n !== '-') A.tone({ f: frogHz(n), d: eighth * 0.85, at: t, type: 'pulse', v: 0.12, bus: A.musicBus });
+      A.tone({ f: frogHz(T.bass[bar]) * Math.pow(2, T.bassStep[i] / 12), d: eighth * 0.9, at: t, type: 'triangle', v: 0.32, bus: A.musicBus });
+      if (i % 2) A.noise({ d: 0.03, f: 7000, filter: 'highpass', v: 0.09, at: t, bus: A.musicBus });
+      if (i === 0 || i === 4) A.tone({ f: 150, f2: 45, d: 0.12, at: t, type: 'sine', v: 0.4, bus: A.musicBus });
+      A.step++; A.nextT += eighth;
+    }
+  },
+  toggle: function(kind) {
+    var A = this;
+    A.init();
+    A[kind] = !A[kind];
+    A.save();
+    if (kind === 'music') {
+      if (!A.music) A.stopMusic();
+      else FROG_GAMES.forEach(function(g) { if (g.isActive() && g.visible) A.startMusic(g, g.cfg.tempo); });
+    }
+    FROG_GAMES.forEach(function(g) { g.syncSound(); });
+  }
+};
+FrogAudio.load();
+
+// ══ Het spel ═════════════════════════════════════════════════════════════════
+
+var FROG_KEYS = {
+  ArrowUp: [0, -1], ArrowDown: [0, 1], ArrowLeft: [-1, 0], ArrowRight: [1, 0],
+  w: [0, -1], s: [0, 1], a: [-1, 0], d: [1, 0], W: [0, -1], S: [0, 1], A: [-1, 0], D: [1, 0]
+};
+var FROG_PAD = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
+var FROG_GAMES = [];
+// Botsvak van Nico binnen de tegel van 32 px (de fiets met handen is ongeveer 22 px breed)
+var FROG_HIT_L = 5, FROG_HIT_R = 27;
+
+function FrogGame(root, opts) {
+  var g = this;
+  g.root = root; g.opts = opts || {};
+  g.canvas = root.querySelector('canvas');
+  g.ctx = g.canvas.getContext('2d');
+  g.ctx.imageSmoothingEnabled = false;
+  g.overlay = root.querySelector('.frog-overlay');
+  g.toastEl = root.querySelector('.frog-toast');
+  g.hud = {};
+  ['level', 'hearts', 'cross', 'time'].forEach(function(k) { g.hud[k] = root.querySelector('[data-hud="' + k + '"]'); });
+  g.state = 'idle'; g.time = 0; g.fx = []; g.visible = false; g.raf = 0; g.lastSec = -1;
+
+  root.addEventListener('keydown', function(e) {
+    if (e.target === root && (e.key === 'm' || e.key === 'M')) { FrogAudio.toggle('music'); return; }
+    var d = FROG_KEYS[e.key];
+    if (!d || e.target !== root) return;
+    if (g.state === 'play') { e.preventDefault(); g.move(d[0], d[1]); }
+    else if (g.state === 'ready') { e.preventDefault(); g.start(); }
+  });
+  root.querySelectorAll('[data-move]').forEach(function(btn) {
+    btn.addEventListener('pointerdown', function(e) {
+      e.preventDefault();
+      var d = FROG_PAD[btn.getAttribute('data-move')];
+      if (g.state === 'ready') g.start(); else g.move(d[0], d[1]);
+    });
+  });
+  root.querySelectorAll('[data-snd]').forEach(function(btn) {
+    btn.addEventListener('mousedown', function(e) { e.preventDefault(); });
+    btn.addEventListener('click', function() {
+      FrogAudio.toggle(btn.getAttribute('data-snd'));
+      if (g.isActive()) g.root.focus({ preventScroll: true });
+    });
+  });
+  g.syncSound();
+  // Vegen op het speelveld (gsm)
+  var stage = root.querySelector('.frog-stage'), sw = null;
+  stage.addEventListener('pointerdown', function(e) { if (g.state === 'play' && e.pointerType !== 'mouse') sw = { x: e.clientX, y: e.clientY }; });
+  stage.addEventListener('pointerup', function(e) {
+    if (!sw) return;
+    var dx = e.clientX - sw.x, dy = e.clientY - sw.y; sw = null;
+    if (Math.abs(dx) < 18 && Math.abs(dy) < 18) { g.move(0, -1); return; }
+    if (Math.abs(dx) > Math.abs(dy)) g.move(dx > 0 ? 1 : -1, 0); else g.move(0, dy > 0 ? 1 : -1);
+  });
+  g.overlay.addEventListener('click', function(e) {
+    var b = e.target.closest('[data-act]');
+    if (!b) return;
+    var act = b.getAttribute('data-act');
+    if (act === 'start') g.start();
+    else if (act === 'retry') { g.setLevel(g.cfg); g.start(); }
+    else if (g.opts.onAction) g.opts.onAction(act);
+  });
+  new IntersectionObserver(function(entries) {
+    g.visible = entries[0].isIntersecting;
+    g.kick();
+  }).observe(root);
+  FROG_GAMES.push(g);
+}
+
+FrogGame.prototype.isActive = function() {
+  var s = this.state;
+  return s === 'play' || s === 'hit' || s === 'cross' || s === 'tunnel';
+};
+FrogGame.prototype.syncSound = function() {
+  this.root.querySelectorAll('[data-snd]').forEach(function(btn) {
+    btn.setAttribute('aria-pressed', String(!!FrogAudio[btn.getAttribute('data-snd')]));
+  });
+};
+FrogGame.prototype.setLevel = function(cfg) {
+  var g = this;
+  FrogAudio.stopMusic(g);
+  g.cfg = cfg;
+  g.rng = frogRng(cfg.seed || 1);
+  g.bg = frogDrawBg(cfg);
+  g.lanes = cfg.rows.map(function(spec, i) { return frogLaneInit(spec, i, g.rng); });
+  for (var t = 0; t < 16; t += 1 / 30) g.lanes.forEach(function(L) { if (!L.spec.train) frogLaneUpdate(L, 1 / 30); });
+  g.resetStats();
+  g.state = 'ready';
+  g.root.classList.remove('playing');
+  g.showOverlay('ready');
+  g.updateHud();
+  g.render();
+};
+FrogGame.prototype.resetStats = function() {
+  var g = this;
+  g.hearts = g.cfg.hearts; g.crossings = 0; g.attempts = 0; g.hits = 0; g.damage = 0;
+  g.elapsed = 0; g.tunnel = 0; g.attemptOpen = false; g.crash = null; g.inTunnel = false; g.fx = [];
+  g.resetNico();
+};
+FrogGame.prototype.resetNico = function() {
+  var g = this;
+  g.col = g.cfg.startCol == null ? 6 : g.cfg.startCol; g.row = FROWS - 1;
+  g.nx = g.col * FT; g.ny = g.row * FT; g.hop = null; g.queue = null;
+};
+FrogGame.prototype.start = function() {
+  var g = this;
+  g.resetStats();
+  // de eerste trein komt nooit meteen
+  g.lanes.forEach(function(L) { if (L.spec.train) { L.veh = []; L.phase = 'idle'; L.warn = false; L.timer = frogRand(g.rng, L.spec.first || [2.5, 5]); } });
+  g.state = 'play';
+  g.overlay.classList.add('hidden');
+  g.root.classList.add('playing');
+  g.root.focus({ preventScroll: true });
+  g.updateHud();
+  g.announce(g.cfg.title + ' gestart. Breng Nico ' + g.cfg.need + ' keer naar de overkant.');
+  g.bellT = 0;
+  FrogAudio.init();
+  FrogAudio.play('start');
+  FrogAudio.startMusic(g, g.cfg.tempo);
+  g.kick();
+};
+FrogGame.prototype.move = function(dx, dy) {
+  var g = this;
+  if (g.state !== 'play') return;
+  if (g.hop) { g.queue = [dx, dy]; return; }
+  var nc = Math.max(0, Math.min(FCOLS - 1, g.col + dx)), nr = Math.max(0, Math.min(FROWS - 1, g.row + dy));
+  if (nc === g.col && nr === g.row) return;
+  if (g.row === FROWS - 1 && nr < FROWS - 1 && !g.attemptOpen) { g.attemptOpen = true; g.attempts++; }
+  g.hop = { fx: g.nx, fy: g.ny, t: 0 };
+  g.col = nc; g.row = nr;
+  FrogAudio.play('hop');
+};
+FrogGame.prototype.afterHop = function() {
+  var g = this;
+  if (g.row === 0) { g.crossed(); return; }
+  if (g.cfg.tunnel && g.row === FROWS - 1 && g.col === 0) { g.enterTunnel(); return; }
+  if (g.queue) { var q = g.queue; g.queue = null; g.move(q[0], q[1]); }
+};
+FrogGame.prototype.crossed = function() {
+  var g = this;
+  g.attemptOpen = false;
+  g.crossings++;
+  for (var i = 0; i < 14; i++) g.fx.push({ x: g.nx + 16, y: g.ny + 12, vx: (Math.random() - 0.5) * 160, vy: -40 - Math.random() * 120, life: 0.8, col: frogPick(Math.random, ['#ffd60a', '#7ee0b5', '#ffffff', '#AE9A64']) });
+  g.toast('VEILIG OVER!', g.crossings + ' VAN ' + g.cfg.need, 'good');
+  FrogAudio.play('cross');
+  g.announce('Veilig over. ' + g.crossings + ' van ' + g.cfg.need + '.');
+  g.state = 'cross'; g.stateT = 0.85;
+  g.updateHud();
+};
+FrogGame.prototype.enterTunnel = function() {
+  var g = this;
+  if (g.attemptOpen) { g.attemptOpen = false; g.attempts--; }
+  g.inTunnel = true; g.state = 'tunnel'; g.stateT = 2.6;
+  g.toast('FIETSTUNNEL', 'OMWEG...', '');
+  FrogAudio.play('tunnel');
+  g.announce('Nico neemt de fietstunnel. Dat is een omweg.');
+};
+FrogGame.prototype.hit = function() {
+  var g = this, c = g.cfg;
+  g.hits++; g.attemptOpen = false;
+  var lost = Math.min(g.hearts, c.g);
+  g.hearts -= lost; g.damage += c.g;
+  g.crash = { x: g.nx, y: g.ny };
+  g.hop = null; g.queue = null;
+  g.toast(c.hit.title, '-' + c.g + (c.g === 1 ? ' HARTJE' : ' HARTJES'), 'bad');
+  FrogAudio.play('hit', c.g);
+  g.announce(c.hit.text + ' Nico verliest ' + c.g + (c.g === 1 ? ' hartje.' : ' hartjes.'));
+  g.state = 'hit'; g.stateT = 1.15;
+  g.updateHud(lost);
+};
+FrogGame.prototype.stateDone = function() {
+  var g = this;
+  if (g.state === 'hit') {
+    g.crash = null;
+    if (g.hearts <= 0) { g.finish(false); return; }
+    g.resetNico(); g.state = 'play';
+  } else if (g.state === 'cross') {
+    if (g.crossings >= g.cfg.need) { g.finish(true); return; }
+    g.resetNico(); g.state = 'play';
+  } else if (g.state === 'tunnel') {
+    g.inTunnel = false; g.tunnel++;
+    g.col = 0; g.row = 0; g.nx = 0; g.ny = 0;
+    g.crossed();
+  }
+};
+FrogGame.prototype.finish = function(win) {
+  var g = this;
+  g.state = win ? 'done' : 'over';
+  g.root.classList.remove('playing');
+  FrogAudio.stopMusic(g);
+  FrogAudio.play(win ? 'win' : 'over');
+  g.result = { win: win, attempts: g.attempts, hits: g.hits, damage: g.damage, time: g.elapsed, tunnel: g.tunnel, crossings: g.crossings };
+  g.showOverlay(win ? 'done' : 'over');
+  g.announce(win ? 'Level gehaald.' : 'Game over.');
+  if (g.opts.onEnd) g.opts.onEnd(g.result);
+};
+
+FrogGame.prototype.update = function(dt) {
+  var g = this;
+  g.time += dt;
+  if (!g.lanes) return;
+  var on = g.isActive();
+  g.lanes.forEach(function(L) {
+    var before = L.phase;
+    frogLaneUpdate(L, dt);
+    if (on && before === 'warn' && L.phase === 'run') FrogAudio.play('horn');
+  });
+  g.warning = g.lanes.some(function(L) { return L.warn; });
+  // de bel van de overweg rinkelt zolang de lichten knipperen
+  if (on && g.warning) { g.bellT -= dt; if (g.bellT <= 0) { FrogAudio.play('bell'); g.bellT = 0.42; } }
+  else g.bellT = 0;
+  for (var i = g.fx.length - 1; i >= 0; i--) {
+    var p = g.fx[i];
+    p.life -= dt; p.x += p.vx * dt; p.y += p.vy * dt; p.vy += 300 * dt;
+    if (p.life <= 0) g.fx.splice(i, 1);
+  }
+  var active = g.state === 'play' || g.state === 'hit' || g.state === 'cross' || g.state === 'tunnel';
+  if (active) g.elapsed += dt;
+  if (g.state === 'play') {
+    if (g.hop) {
+      g.hop.t = Math.min(1, g.hop.t + dt / 0.12);
+      var t = g.hop.t;
+      g.nx = g.hop.fx + (g.col * FT - g.hop.fx) * t;
+      g.ny = g.hop.fy + (g.row * FT - g.hop.fy) * t - Math.sin(t * Math.PI) * 4;
+      if (t >= 1) { g.hop = null; g.nx = g.col * FT; g.ny = g.row * FT; g.afterHop(); }
+    }
+    if (g.state === 'play') {
+      var L = g.lanes[g.row];
+      if (L && L.veh.length && frogLaneHit(L, g.nx + FROG_HIT_L, g.nx + FROG_HIT_R)) g.hit();
+    }
+  } else if (g.state === 'hit' || g.state === 'cross' || g.state === 'tunnel') {
+    g.stateT -= dt;
+    if (g.stateT <= 0) g.stateDone();
+  }
+  if (active) {
+    var sec = Math.floor(g.elapsed);
+    if (sec !== g.lastSec) { g.lastSec = sec; g.hud.time.textContent = frogClock(g.elapsed); }
+  }
+};
+
+FrogGame.prototype.render = function() {
+  var g = this, ctx = g.ctx;
+  if (!g.bg) return;
+  ctx.drawImage(g.bg, 0, 0);
+  var blink = Math.floor(g.time * 4) % 2 === 0;
+  if (g.cfg.barriers) g.cfg.barriers.forEach(function(b) {
+    var a = frogPainter(ctx, b.row * FT);
+    a.r(b.x0 - 3, b.y - 3, 3, 6, '#6c7075');
+    if (g.warning) { for (var x = b.x0; x < b.x1; x += 4) { a.r(x, b.y, 2, 2, '#e63946'); a.r(x + 2, b.y, 2, 2, '#f5f5f5'); } }
+    else { for (var y = b.y - 12; y < b.y; y += 4) { a.r(b.x0 - 2, y, 2, 2, '#e63946'); a.r(b.x0 - 2, y + 2, 2, 2, '#f5f5f5'); } }
+  });
+  if (g.cfg.signals) g.cfg.signals.forEach(function(s) {
+    var a = frogPainter(ctx, s.row * FT), x = s.col * 16;
+    a.r(x + 7, 5, 2, 11, '#e8e8e8');
+    a.line(x + 3, 0, x + 12, 5, '#f5f5f5'); a.line(x + 3, 5, x + 12, 0, '#f5f5f5');
+    a.line(x + 3, 1, x + 12, 6, '#e63946'); a.line(x + 3, 6, x + 12, 1, '#e63946');
+    a.r(x + 3, 8, 10, 4, '#1a1a1a');
+    a.r(x + 4, 9, 2, 2, g.warning && blink ? '#ff3b3b' : '#4a1515');
+    a.r(x + 10, 9, 2, 2, g.warning && !blink ? '#ff3b3b' : '#4a1515');
+  });
+  g.lanes.forEach(function(L) {
+    L.veh.forEach(function(v) {
+      var frames = L.dir > 0 ? v.spr.r : v.spr.l;
+      var img = frames.length > 1 ? frames[(Math.floor(g.time * 6) + v.seed) % frames.length] : frames[0];
+      ctx.drawImage(img, Math.round(v.x), L.row * FT);
+    });
+  });
+  if (!g.inTunnel && g.state !== 'idle') {
+    var spr = frogNico(), frame = g.hop ? spr[1] : spr[0];
+    if (g.crash) {
+      var cx = Math.round(g.crash.x) + 16, cy = Math.round(g.crash.y) + 16, a = frogPainter(ctx, 0), ux = cx / FP, uy = cy / FP;
+      var rays = [[0, -7], [5, -5], [7, 0], [5, 5], [0, 7], [-5, 5], [-7, 0], [-5, -5]];
+      rays.forEach(function(r, i) { a.r(Math.round(ux + r[0]) - 1, Math.round(uy + r[1]) - 1, 2, 2, i % 2 ? '#ffd60a' : '#ff6b35'); });
+      ctx.save(); ctx.translate(cx, cy); ctx.rotate(Math.PI / 2 * (blink ? 1 : 0.85)); ctx.drawImage(spr[0], -16, -16); ctx.restore();
+    } else {
+      ctx.drawImage(frame, Math.round(g.nx), Math.round(g.ny));
+    }
+  }
+  g.fx.forEach(function(p) { ctx.fillStyle = p.col; ctx.fillRect(Math.round(p.x), Math.round(p.y), 3, 3); });
+};
+
+FrogGame.prototype.kick = function() {
+  var g = this;
+  if (!g.visible || document.hidden) FrogAudio.stopMusic(g);
+  else if (g.cfg && g.isActive()) FrogAudio.startMusic(g, g.cfg.tempo);
+  if (g.raf || !g.visible || document.hidden || !g.cfg) return;
+  var last = performance.now();
+  function step(t) {
+    if (!g.visible || document.hidden) { g.raf = 0; FrogAudio.stopMusic(g); return; }
+    var dt = Math.min(0.05, Math.max(0, (t - last) / 1000));
+    last = t;
+    g.update(dt); g.render();
+    g.raf = requestAnimationFrame(step);
+  }
+  g.raf = requestAnimationFrame(step);
+};
+document.addEventListener('visibilitychange', function() { FROG_GAMES.forEach(function(g) { g.kick(); }); });
+
+FrogGame.prototype.updateHud = function(lost) {
+  var g = this, c = g.cfg, h = '';
+  g.hud.level.textContent = c.hudTitle;
+  for (var i = 0; i < c.hearts; i++) {
+    var cls = i < g.hearts ? '' : ' empty';
+    if (lost && i >= g.hearts && i < g.hearts + lost) cls += ' lost';
+    h += '<i class="frog-heart' + cls + '"></i>';
+  }
+  g.hud.hearts.innerHTML = h;
+  g.hud.hearts.setAttribute('aria-label', g.hearts + ' van ' + c.hearts + ' hartjes');
+  g.hud.cross.textContent = 'OVER ' + g.crossings + '/' + c.need;
+  g.hud.time.textContent = frogClock(g.elapsed || 0);
+};
+FrogGame.prototype.toast = function(title, sub, kind) {
+  var g = this;
+  g.toastEl.className = 'frog-toast show' + (kind ? ' ' + kind : '');
+  g.toastEl.innerHTML = '<b>' + title + '</b><span>' + sub + '</span>';
+  clearTimeout(g.toastTimer);
+  g.toastTimer = setTimeout(function() { g.toastEl.classList.remove('show'); }, 1100);
+};
+FrogGame.prototype.announce = function(msg) { if (this.opts.live) this.opts.live.textContent = msg; };
+FrogGame.prototype.showOverlay = function(kind) {
+  var g = this, c = g.cfg, h = '';
+  g.overlay.classList.toggle('compact', kind === 'ready' && !!g.opts.compact);
+  if (kind === 'ready' && g.opts.compact) {
+    h = '<div class="frog-ov-kicker">' + c.kicker + ': ' + c.title + '</div>' +
+      '<div class="frog-ov-btns"><button type="button" class="frog-btn" data-act="start">SPEEL DIT LEVEL</button></div>';
+  } else if (kind === 'ready') {
+    h = '<div class="frog-ov-kicker">' + c.kicker + '</div><div class="frog-ov-title">' + c.title + '</div>' +
+      '<p>' + c.intro + '</p><p>Breng Nico <strong>' + c.need + ' keer</strong> veilig naar de overkant.</p>' +
+      '<div class="frog-ov-btns"><button type="button" class="frog-btn" data-act="start">START</button></div>' +
+      '<div class="frog-ov-keys">Pijltjestoetsen of WASD. M zet de muziek aan of uit. Op een gsm of tablet: veeg of gebruik de knoppen.</div>';
+  } else {
+    var r = g.result, win = kind === 'done';
+    h = '<div class="frog-ov-kicker">' + c.kicker + '</div><div class="frog-ov-title ' + (win ? 'good' : 'bad') + '">' + (win ? 'GEHAALD!' : 'GAME OVER') + '</div>' +
+      '<p>' + (win ? (c.winText || 'Nico is ' + c.need + ' keer veilig aan de overkant geraakt.') : (c.overText || 'Nico heeft geen hartjes meer.')) + '</p>' +
+      '<div class="frog-ov-stats"><span><b>' + r.attempts + '</b>POGINGEN</span><span><b>' + r.hits + '</b>GERAAKT</span><span><b>' + r.damage + '</b>SCHADE</span>' +
+      (c.tunnel ? '<span><b>' + r.tunnel + '</b>TUNNEL</span>' : '') + '</div>' +
+      '<div class="frog-ov-btns">' + (g.opts.analysis ? '<button type="button" class="frog-btn" data-act="analysis">NAAR DE ANALYSE</button>' : '') +
+      '<button type="button" class="frog-btn' + (g.opts.analysis ? ' ghost' : '') + '" data-act="retry">OPNIEUW</button></div>';
+  }
+  g.overlay.innerHTML = h;
+  g.overlay.classList.remove('hidden');
+};
+function frogClock(s) {
+  s = Math.floor(s);
+  return (s < 600 ? '0' : '') + Math.floor(s / 60) + ':' + (s % 60 < 10 ? '0' : '') + (s % 60);
+}
+
+// ══ Deel 1: de vier levels ═══════════════════════════════════════════════════
+
+var FROG_LEVELS = [
+  {
+    id: 'park', tempo: 112, name: 'Het park', k: 1, g: 1, seed: 11,
+    intro: 'Nico fietst door het park naar de campus. Over de wandelpaden slentert af en toe iemand.',
+    hit: { title: 'OEPS, SORRY!', text: 'Botsing met een wandelaar. Een schrammetje.' },
+    rows: [
+      { s: 'goal' }, { s: 'grass' },
+      { s: 'path', dir: -1, speed: 0.9, kinds: ['wandelaar'], gap: [6, 11] },
+      { s: 'grass' },
+      { s: 'path', dir: 1, speed: 1.5, kinds: ['jogger', 'wandelaar'], gap: [7, 12] },
+      { s: 'grass' },
+      { s: 'path', dir: -1, speed: 1.0, kinds: ['wandelaar'], gap: [6, 11] },
+      { s: 'grass' }, { s: 'start' }
+    ],
+    hintK: 'Kijk nog eens naar de drukte: er wandelt maar af en toe iemand, en heel traag. Hoe vaak loopt een oversteek hier echt mis?',
+    hintG: 'Wat gebeurt er als het toch misgaat? Nico botst tegen een wandelaar en zegt sorry. Is dat ernstig?',
+    explain: 'Kleine kans, klein gevolg: een <strong>laag risico</strong>. Hier hoef je geen maatregelen te nemen. Je <strong>aanvaardt</strong> het risico gewoon, want elke maatregel zou meer kosten dan de schade die je ermee voorkomt.',
+    it: 'Een tikfout in een interne vergadernota. Het gebeurt zelden, en als het gebeurt, heeft niemand er last van.'
+  },
+  {
+    id: 'markt', tempo: 150, name: 'Marktdag', k: 5, g: 1, seed: 23,
+    intro: 'Het is marktdag. Nico moet dwars over het marktplein, tussen honderden mensen en winkelkarretjes door.',
+    hit: { title: 'BOTS!', text: 'Botsing met een voetganger. Een schrammetje.' },
+    rows: [
+      { s: 'goal' },
+      { s: 'cobble', dir: 1, speed: 2.2, kinds: ['wandelaar', 'kar'], gap: [0.9, 2.2] },
+      { s: 'cobble', dir: -1, speed: 2.8, kinds: ['wandelaar', 'jogger'], gap: [0.8, 2] },
+      { s: 'cobble', dir: 1, speed: 1.7, kinds: ['kar', 'wandelaar'], gap: [0.9, 2] },
+      { s: 'plein' },
+      { s: 'cobble', dir: -1, speed: 2.4, kinds: ['wandelaar', 'kar'], gap: [0.8, 2] },
+      { s: 'cobble', dir: 1, speed: 3.1, kinds: ['jogger', 'wandelaar'], gap: [1, 2.3] },
+      { s: 'cobble', dir: -1, speed: 1.9, kinds: ['kar', 'wandelaar'], gap: [0.9, 2] },
+      { s: 'start' }
+    ],
+    hintK: 'Ook als jij weinig geraakt werd: kijk naar de drukte. Bij een gewone oversteek botst Nico hier bijna altijd ergens tegen.',
+    hintG: 'Een botsing met een voetganger of een winkelkarretje is vervelend. Maar is het echt gevaarlijk?',
+    explain: 'Grote kans, klein gevolg. Elke botsing op zich is onschuldig, maar ze gebeuren zo vaak dat het toch optelt. Risico 5: een <strong>middel risico</strong>.',
+    it: 'Kleine bugs in de interface van een app, zoals een knop die net verkeerd staat. Ze duiken telkens weer op, maar elk afzonderlijk doen ze weinig kwaad.'
+  },
+  {
+    id: 'overweg', tempo: 124, name: 'De overweg', k: 1, g: 5, seed: 37,
+    intro: 'Nico moet over de spoorweg. Er komt niet vaak een trein, en de lichten en slagbomen waarschuwen je op tijd. Let goed op!',
+    hit: { title: 'DE TREIN!', text: 'Nico wordt gegrepen door de trein. Levensgevaarlijk.' },
+    overText: 'Eén keer niet opletten en het is voorbij. De kans was klein, maar het gevolg is enorm.',
+    rows: [
+      { s: 'goal' }, { s: 'grass' }, { s: 'grass' },
+      { s: 'rail', dir: 1, speed: 17, kinds: ['trein'], train: true, every: [7, 13], warn: 1.7, first: [3, 6] },
+      { s: 'ballast' },
+      { s: 'rail', dir: -1, speed: 17, kinds: ['trein'], train: true, every: [8, 14], warn: 1.7, first: [6, 10] },
+      { s: 'grass' }, { s: 'grass' }, { s: 'start' }
+    ],
+    crossRoad: { c0: 5, c1: 7 },
+    signals: [{ row: 2, col: 4 }, { row: 6, col: 8 }],
+    barriers: [{ row: 2, y: 13, x0: 80, x1: 128 }, { row: 6, y: 2, x0: 80, x1: 128 }],
+    hintK: 'Er kwam maar af en toe een trein, en de lichten waarschuwden je telkens op tijd. Hoe vaak loopt het dan mis?',
+    hintG: 'Wat gebeurt er als de trein Nico toch raakt? Kan het nog erger?',
+    explain: 'Kleine kans, maar een enorm gevolg. Ook risico 5, een <strong>middel risico</strong>, net als de markt. Toch voelt het helemaal anders: één fout en het is voorbij. Daarom kijk je bij een groot gevolg altijd naar beide factoren apart. De lichten en slagbomen zijn trouwens een maatregel: ze houden de kans klein.',
+    it: 'Een brand in het datacenter. Dat gebeurt zelden (al brandde in 2021 een datacenter van OVHcloud in Straatsburg volledig af), maar als het gebeurt, ligt alles plat.'
+  },
+  {
+    id: 'steenweg', tempo: 160, name: 'De steenweg', k: 5, g: 5, seed: 41, tunnel: true,
+    intro: 'Nico moet over een drukke steenweg met zes rijstroken. Auto\'s en vrachtwagens rijden er snel en kort op elkaar. Links ligt een fietstunnel, maar dat is een omweg.',
+    hit: { title: 'AANGEREDEN!', text: 'Nico wordt aangereden. Levensgevaarlijk.' },
+    overText: 'Grote kans en groot gevolg: dit loopt bijna altijd slecht af. Misschien is er een andere weg?',
+    rows: [
+      { s: 'goal' },
+      { s: 'road', dir: -1, speed: 5.5, kinds: ['auto', 'vrachtwagen'], gap: [1.6, 3.4] },
+      { s: 'road', dir: -1, speed: 7, kinds: ['auto'], gap: [2, 3.8] },
+      { s: 'road', dir: -1, speed: 4.5, kinds: ['vrachtwagen', 'auto'], gap: [1.5, 3] },
+      { s: 'berm' },
+      { s: 'road', dir: 1, speed: 6.5, kinds: ['auto'], gap: [1.6, 3.4] },
+      { s: 'road', dir: 1, speed: 5, kinds: ['auto', 'vrachtwagen'], gap: [1.5, 3] },
+      { s: 'road', dir: 1, speed: 7.5, kinds: ['auto'], gap: [2.2, 4] },
+      { s: 'start' }
+    ],
+    hintK: 'Zes rijstroken met snel en druk verkeer. Lukt een oversteek hier meestal, of loopt het meestal mis?',
+    hintG: 'Een auto of vrachtwagen aan hoge snelheid: hoe erg is dat gevolg?',
+    explain: 'Grote kans én groot gevolg: risico 25, een <strong>kritiek risico</strong>. Dit risico wil je niet nemen. De beste strategie is het risico <strong>vermijden</strong>: neem de fietstunnel, ook al kost die omweg tijd.',
+    it: 'Het wachtwoord 1234 op de productieserver. Hackers proberen zo\'n wachtwoord bijna zeker uit, en eens ze binnen zijn, liggen al je klantgegevens op straat.'
+  }
+];
+
+function frogLevelCfg(i) {
+  var L = FROG_LEVELS[i];
+  return {
+    rows: L.rows, seed: L.seed, need: 3, hearts: 5, g: L.g, tempo: L.tempo, hit: L.hit, tunnel: L.tunnel,
+    crossRoad: L.crossRoad, signals: L.signals, barriers: L.barriers,
+    kicker: 'LEVEL ' + (i + 1) + ' VAN 4', title: L.name.toUpperCase(), hudTitle: 'LEVEL ' + (i + 1),
+    intro: L.intro, overText: L.overText
+  };
+}
+
+var frogState = { level: 0, results: [null, null, null, null], est: FROG_LEVELS.map(function() { return { k: 0, g: 0, tries: 0, revealed: false, ok: false }; }) };
+
+var frogMain = new FrogGame(document.getElementById('frog-main'), {
+  live: document.getElementById('frog-live'),
+  analysis: true,
+  onEnd: function(res) {
+    frogState.results[frogState.level] = res;
+    frogRenderAnalysis();
+    frogRenderTabs();
+  },
+  onAction: function(act) {
+    if (act === 'analysis') document.getElementById('frog-analysis').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+});
+
+function frogSelectLevel(i) {
+  frogState.level = i;
+  frogMain.setLevel(frogLevelCfg(i));
+  frogRenderTabs();
+  frogRenderAnalysis();
+}
+function frogRenderTabs() {
+  document.getElementById('frog-tabs').innerHTML = FROG_LEVELS.map(function(L, i) {
+    var sel = i === frogState.level;
+    return '<button type="button" class="frog-tab" role="tab" aria-selected="' + sel + '" onclick="frogSelectLevel(' + i + ')">' +
+      '<span class="tab-nr">' + (i + 1) + '</span>' + L.name +
+      (frogState.est[i].revealed ? '<span class="tab-done" aria-label="afgerond">✓</span>' : '') + '</button>';
+  }).join('');
+}
+function frogPct(a, b) { return b ? Math.round(a / b * 100) + '%' : '-'; }
+
+function frogRenderAnalysis() {
+  var i = frogState.level, L = FROG_LEVELS[i], res = frogState.results[i], est = frogState.est[i];
+  var el = document.getElementById('frog-analysis');
+  var marks = frogMarks(i);
+  if (!res) {
+    el.innerHTML = '<div class="frog-an-empty"><span class="frog-an-icon" aria-hidden="true">?</span><p>Speel eerst <strong>level ' + (i + 1) + ': ' + L.name + '</strong>. Haal je het of is het game over? In beide gevallen schat je daarna het risico in.</p></div>';
+    frogRenderProgress();
+    return;
+  }
+  var h = '<div class="frog-an-grid"><div>';
+  h += '<h4>Wat gebeurde er bij ' + L.name.toLowerCase() + '?</h4><div class="frog-stats">' +
+    frogStat(res.attempts, 'pogingen om over te steken') +
+    frogStat(res.hits, res.hits === 1 ? 'keer geraakt' : 'keer geraakt') +
+    frogStat(frogPct(res.hits, res.attempts), 'van de pogingen liep mis', 'kans') +
+    frogStat(L.g + ' ♥', 'verlies je per botsing', 'gevolg') +
+    frogStat(frogClock(res.time), 'speeltijd') +
+    (L.tunnel ? frogStat(res.tunnel, 'keer de tunnel genomen') : '') +
+    '</div>';
+  h += '<h4>Schat het risico in</h4>';
+  h += frogScale('kans', 'Kans', 'Hoe vaak loopt een oversteek hier mis?', RISK_K, est.k, est.revealed ? L.k : 0, est.revealed);
+  h += frogScale('gevolg', 'Gevolg', 'Hoe erg is het als het misloopt?', RISK_G, est.g, est.revealed ? L.g : 0, est.revealed);
+  if (!est.revealed) {
+    h += '<div class="frog-an-actions"><button type="button" class="btn-nav" onclick="frogCheck()"' + (est.k && est.g ? '' : ' disabled') + '>Bereken het risico</button></div>';
+    if (est.tries && est.hint) h += '<div class="feedback hint">' + est.hint + '</div>';
+  } else {
+    var score = L.k * L.g;
+    h += '<div class="frog-reveal">';
+    h += '<div class="feedback ' + (est.ok ? 'success' : 'hint') + '"><p>' + (est.ok ? '<strong>Goed ingeschat!</strong> ' : '<strong>Vergelijk met onze inschatting.</strong> ') +
+      'Wij schatten de kans op <strong>' + L.k + '</strong> (' + RISK_K[L.k - 1].label.toLowerCase() + ') en het gevolg op <strong>' + L.g + '</strong> (' + RISK_G[L.g - 1].sub + ').</p></div>';
+    h += '<div class="frog-formula" style="margin-top:.9rem">Risico = <span class="fk">' + L.k + '</span> <span class="op">×</span> <span class="fg">' + L.g + '</span> = ' + score + ' ' + zoneChip(score) + '</div>';
+    h += '<p>' + L.explain + (L.tunnel && res.tunnel ? ' Jij nam de tunnel al. Slim!' : '') + '</p>';
+    h += '<div class="frog-it"><div class="frog-it-label">En in een IT-project?</div>' + L.it + '</div>';
+    h += '<div class="frog-an-actions" style="margin-top:1rem">' + (i < FROG_LEVELS.length - 1 ? '<button type="button" class="btn-nav" onclick="frogNext()">Naar level ' + (i + 2) + ': ' + FROG_LEVELS[i + 1].name + ' →</button>' : '') +
+      '<button type="button" class="btn-nav outline" onclick="frogReplay()">Speel opnieuw</button></div>';
+    h += '</div>';
+  }
+  h += '</div><div class="frog-matrix-wrap">' + riskMatrixHtml('Risicomatrix', marks, est.revealed ? { k: L.k, g: L.g } : null) + '</div></div>';
+  el.innerHTML = h;
+  frogRenderProgress();
+}
+function frogStat(val, lbl, cls) {
+  return '<div class="frog-stat' + (cls ? ' ' + cls : '') + '"><div class="frog-stat-val">' + val + '</div><div class="frog-stat-lbl">' + lbl + '</div></div>';
+}
+function frogScale(cls, name, q, scale, chosen, expert, locked) {
+  var h = '<div class="frog-scale-block"><div class="frog-scale-label ' + cls + '" id="frog-lbl-' + cls + '">' + name + ' <span>' + q + '</span></div>';
+  h += '<div class="frog-scale ' + cls + '" role="radiogroup" aria-labelledby="frog-lbl-' + cls + '">';
+  scale.forEach(function(s, i) {
+    var v = i + 1;
+    h += '<button type="button" role="radio" aria-checked="' + (chosen === v) + '"' + (locked ? ' disabled' : '') +
+      (expert === v ? ' class="expert"' : '') + ' onclick="frogEstimate(\'' + cls + '\',' + v + ')"><b>' + v + '</b><small>' + s.label + '<br>' + s.sub + '</small></button>';
+  });
+  return h + '</div></div>';
+}
+function frogEstimate(which, v) {
+  var est = frogState.est[frogState.level];
+  if (est.revealed) return;
+  if (which === 'kans') est.k = v; else est.g = v;
+  frogRenderAnalysis();
+  var btn = document.querySelector('.frog-scale.' + which + ' [aria-checked="true"]');
+  if (btn) btn.focus();
+}
+function frogCheck() {
+  var i = frogState.level, L = FROG_LEVELS[i], est = frogState.est[i];
+  var okK = Math.abs(est.k - L.k) <= 1, okG = Math.abs(est.g - L.g) <= 1;
+  est.tries++;
+  if (okK && okG) { est.ok = true; est.revealed = true; }
+  else if (est.tries >= 2) { est.ok = false; est.revealed = true; }
+  else {
+    var parts = [];
+    if (!okK) parts.push('<strong>Kans:</strong> ' + L.hintK);
+    if (!okG) parts.push('<strong>Gevolg:</strong> ' + L.hintG);
+    est.hint = parts.join('<br>') + '<br><em>Pas je inschatting aan en probeer opnieuw.</em>';
+  }
+  frogRenderAnalysis();
+  frogRenderTabs();
+}
+function frogNext() {
+  frogSelectLevel(frogState.level + 1);
+  document.getElementById('frog-levels').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+function frogReplay() {
+  frogMain.setLevel(frogMain.cfg);
+  document.getElementById('frog-main').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+function frogMarks(cur) {
+  var marks = [];
+  FROG_LEVELS.forEach(function(L, i) {
+    if (frogState.est[i].revealed) marks.push({ k: L.k, g: L.g, text: String(i + 1), dim: cur != null && i !== cur, aria: 'level ' + (i + 1) + ' ' + L.name + ': kans ' + L.k + ', gevolg ' + L.g });
+  });
+  return marks;
+}
+function frogRenderProgress() {
+  var done = frogState.est.filter(function(e) { return e.revealed; }).length;
+  document.getElementById('frog-fill').style.width = (done / FROG_LEVELS.length * 100) + '%';
+  document.getElementById('frog-progress-label').textContent = done + ' / ' + FROG_LEVELS.length + ' oversteken geanalyseerd';
+  var sum = document.getElementById('frog-summary');
+  var all = done === FROG_LEVELS.length;
+  if (all) document.getElementById('frog-summary-matrix').innerHTML = riskMatrixHtml('De vier oversteken', frogMarks(null), null);
+  sum.classList.toggle('visible', all);
+}
+
+frogSelectLevel(0);
+
+// ══ Deel 2: wat als? ═════════════════════════════════════════════════════════
+
+var SB_KINDS = [
+  { s: 'path', kinds: ['wandelaar', 'jogger'], speed: 1.4, name: 'wandelaars', one: 'een wandelaar', hit: 'OEPS, SORRY!' },
+  { s: 'bike', kinds: ['fietser'], speed: 3.2, name: 'fietsers', one: 'een fietser', hit: 'BOTS!' },
+  { s: 'road', kinds: ['brommer'], speed: 4.2, name: 'brommers', one: 'een brommer', hit: 'AU!' },
+  { s: 'road', kinds: ['auto'], speed: 6, name: 'auto\'s', one: 'een auto', hit: 'AANGEREDEN!' },
+  { s: 'rail', kinds: ['trein'], speed: 14, name: 'treinen', one: 'de trein', hit: 'DE TREIN!' }
+];
+// De kans bepaalt hoe druk het is: het aantal rijstroken (SB_LAYOUT, L = rijstrook, . = veilige strook),
+// de snelheid (SB_SPEED, per rijstrook nog gevarieerd met SB_VARY) en de bezetting per rijstrook (SB_OCC).
+// De tussenafstand hangt af van de lengte en snelheid van het voertuig. Trage weggebruikers (wandelaars) kan
+// je makkelijker ontwijken, daarom krijgen ze bij een hoge kans een drukkere stroom (SB_GF, gewicht SB_GW),
+// zodat het gevolg de kans zo weinig mogelijk verandert.
+var SB_LAYOUT = ['..L.L..', '.L.L.L.', '.LL.LL.', 'LL.LLL.', 'LLLLLLL'];
+var SB_SPEED = [0.8, 0.95, 1.1, 1.3, 1.5];
+var SB_VARY = [1, 1.35, 0.8, 1.2, 0.9, 1.45, 0.85];
+var SB_OCC = [0.05, 0.18, 0.3, 0.5, 0.7];
+var SB_GF = [1.9, 1.5, 1.25, 1.1, 0.85];
+var SB_GW = [0, 0.2, 0.4, 0.7, 1];
+var SB_DWELL = 0.4;
+
+function frogSandboxCfg(k, gv) {
+  var kind = SB_KINDS[gv - 1];
+  var avgW = kind.kinds.reduce(function(s, n) { return s + FROG_KINDS[n].w * FP; }, 0) / kind.kinds.length;
+  var occ = 1 - Math.pow(1 - SB_OCC[k - 1], 1 + (SB_GF[gv - 1] - 1) * SB_GW[k - 1]);
+  var rows = [{ s: 'goal' }], dir = 1, li = 0;
+  SB_LAYOUT[k - 1].split('').forEach(function(c) {
+    if (c !== 'L') { rows.push({ s: 'grass' }); return; }
+    var speed = kind.speed * SB_SPEED[k - 1] * SB_VARY[li++ % SB_VARY.length];
+    var base = ((avgW + 20) / (speed * FT) + SB_DWELL) / occ;
+    rows.push({ s: kind.s, dir: dir, speed: speed, kinds: kind.kinds, period: [base * 0.6, base * 1.25] });
+    dir = -dir;
+  });
+  rows.push({ s: 'start' });
+  return {
+    rows: rows, lanes: li, tempo: 116 + k * 8,
+    seed: 100 + k * 10 + gv, need: 3, hearts: 5, g: gv,
+    hit: { title: kind.hit, text: 'Botsing met ' + kind.one + '.' },
+    kicker: 'VRIJ SPEL', title: 'KANS ' + k + ' × GEVOLG ' + gv, hudTitle: 'K' + k + ' × G' + gv,
+    intro: li + ' rijstroken met ' + kind.name + '. Kans ' + k + ' (' + RISK_K[k - 1].label.toLowerCase() + '), gevolg ' + gv + ' (' + RISK_G[gv - 1].sub + ').'
+  };
+}
+
+// Nico steekt onvoorzichtig over: een snelle blik (0,1 s vooruit) op de volgende rijstrook en gaan.
+// Na 1 s wachten verliest Nico het geduld en gaat toch. Geen zijstapjes, geen terugkeren.
+var SIM_LOOK = 0.1, SIM_PATIENCE = 1.0;
+function frogSimulate(cfg, n, seed) {
+  var rng = frogRng(seed), lanes = cfg.rows.map(function(spec, i) { return frogLaneInit(spec, i, rng); });
+  var dt = 1 / 60, out = [], row = FROWS - 1, cool = rng(), waited = 0, x = (2 + Math.floor(rng() * 9)) * FT;
+  function free(L) {
+    if (!L.spec.kinds) return true;
+    for (var i = 0; i < L.veh.length; i++) {
+      var v = L.veh[i];
+      for (var t = 0; t <= SIM_LOOK; t += 0.02) {
+        var vx = v.x + L.v * L.dir * t;
+        if (x + FROG_HIT_R > vx + 3 && x + FROG_HIT_L < vx + v.w - 3) return false;
+      }
+    }
+    return true;
+  }
+  for (var w = 0; w < 30; w += dt) lanes.forEach(function(L) { frogLaneUpdate(L, dt); });
+  for (var guard = 0; out.length < n && guard < 600000; guard++) {
+    lanes.forEach(function(L) { frogLaneUpdate(L, dt); });
+    var done = -1;
+    if (row === 0) done = 0;
+    else if (lanes[row].veh.length && frogLaneHit(lanes[row], x + FROG_HIT_L, x + FROG_HIT_R)) done = 1;
+    if (done >= 0) { out.push(done); row = FROWS - 1; cool = rng() * 1.5; waited = 0; x = (2 + Math.floor(rng() * 9)) * FT; continue; }
+    cool -= dt;
+    if (cool > 0) continue;
+    if (free(lanes[row - 1]) || waited > SIM_PATIENCE) { row--; cool = 0.3; waited = 0; }
+    else waited += dt;
+  }
+  return out;
+}
+
+var sbGame = new FrogGame(document.getElementById('frog-sb'), { live: document.getElementById('frog-live'), compact: true });
+var sbK = 2, sbG = 4, sbRuns = 0, sbHistory = [];
+
+function sbUpdate(rebuild) {
+  document.getElementById('sb-k-out').textContent = sbK + ' · ' + RISK_K[sbK - 1].label + ' (' + RISK_K[sbK - 1].sub + ')';
+  document.getElementById('sb-g-out').textContent = sbG + ' · ' + SB_KINDS[sbG - 1].name + ' (' + RISK_G[sbG - 1].sub + ')';
+  var s = sbK * sbG;
+  document.getElementById('sb-result').innerHTML = '<div class="frog-formula">Risico = <span class="fk">' + sbK + '</span> <span class="op">×</span> <span class="fg">' + sbG + '</span> = ' + s + ' ' + zoneChip(s) + '</div>';
+  document.getElementById('sb-matrix').innerHTML = riskMatrixHtml('Jouw keuze in de matrix', [], { k: sbK, g: sbG });
+  if (rebuild) sbGame.setLevel(frogSandboxCfg(sbK, sbG));
+}
+['k', 'g'].forEach(function(id) {
+  var input = document.getElementById('sb-' + id);
+  input.addEventListener('input', function() {
+    var v = parseInt(input.value, 10);
+    if (id === 'k') sbK = v; else sbG = v;
+    sbUpdate(true);
+  });
+});
+
+document.getElementById('sim-run').addEventListener('click', function() {
+  var cfg = frogSandboxCfg(sbK, sbG), res = frogSimulate(cfg, 100, 5000 + (sbRuns++) * 7919 + sbK * 31 + sbG);
+  var hits = res.reduce(function(s, v) { return s + v; }, 0), p = hits / 100, avg = p * sbG;
+  document.getElementById('sim-out').hidden = false;
+  document.getElementById('sim-dots').innerHTML = res.map(function(v, i) {
+    return '<span class="sim-dot ' + (v ? 'hit' : 'ok') + '" style="animation-delay:' + (i * 12) + 'ms"></span>';
+  }).join('');
+  var nf = function(x) { return x.toLocaleString('nl-BE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); };
+  document.getElementById('sim-text').innerHTML =
+    '<div class="sim-calc"><span class="fk">' + nf(p) + '</span> <span class="op">×</span> <span class="fg">' + sbG + ' ♥</span> = ' + nf(avg) + ' hartjes per oversteek</div>' +
+    '<p>Nico werd <strong>' + hits + ' van de 100 keer</strong> geraakt. Elke botsing met ' + SB_KINDS[sbG - 1].one + ' kost <strong>' + sbG + (sbG === 1 ? ' hartje' : ' hartjes') + '</strong>. ' +
+    'Gemiddeld verliest Nico dus <strong>' + nf(avg) + ' hartjes per oversteek</strong>.</p>' +
+    '<p style="margin:0">Dat bedoelt de formule: <strong>risico is de schade die je gemiddeld mag verwachten</strong>. Een hoge kans met een klein gevolg kan even zwaar wegen als een kleine kans met een groot gevolg. Probeer maar eens kans 5 × gevolg 1 en daarna kans 1 × gevolg 5.</p>';
+  sbHistory.unshift({ k: sbK, g: sbG, hits: hits, avg: avg });
+  sbHistory = sbHistory.slice(0, 6);
+  document.getElementById('sim-history-wrap').innerHTML = sbHistory.length < 2 ? '' :
+    '<table class="sim-history"><caption>Jouw simulaties</caption><thead><tr><th>Kans</th><th>Gevolg</th><th>Risico</th><th>Geraakt</th><th>Hartjes per oversteek</th></tr></thead><tbody>' +
+    sbHistory.map(function(r) {
+      return '<tr><td class="num">' + r.k + '</td><td class="num">' + r.g + '</td><td>' + (r.k * r.g) + ' ' + zoneChip(r.k * r.g) + '</td><td class="num">' + r.hits + ' / 100</td><td class="num">' + nf(r.avg) + '</td></tr>';
+    }).join('') + '</tbody></table>';
+});
+
+sbUpdate(true);
+
+// ══ Nico-portret in de intro ═════════════════════════════════════════════════
+
+(function() {
+  var c = document.getElementById('nico-portrait'), x = c.getContext('2d');
+  x.imageSmoothingEnabled = false;
+  x.drawImage(frogNico()[0], 0, 0);
+})();
+
+// ── Navigatie ───────────────────────────────────────────────────────────────
+
+function navToggle() {
+  var btn = document.getElementById('nav-hamburger');
+  var dd = document.getElementById('nav-dropdown');
+  var open = dd.classList.toggle('open');
+  btn.setAttribute('aria-expanded', open);
+}
+function navClose() {
+  document.getElementById('nav-dropdown').classList.remove('open');
+  document.getElementById('nav-hamburger').setAttribute('aria-expanded', 'false');
+}
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.nav-hamburger') && !e.target.closest('.nav-dropdown')) navClose();
+});
+document.addEventListener('keydown', function(e) { if (e.key === 'Escape') navClose(); });
+
+/* SCROLL SPY */
+(function() {
+  var NAV_HEIGHT = 54;
+  var spyLinks = Array.from(document.querySelectorAll('.nav-dropdown a[href^="#"]'));
+  var spySections = spyLinks.map(function(a) {
+    return document.querySelector(a.getAttribute('href'));
+  }).filter(Boolean);
+  var clickedId = null;
+  var clickTimer = null;
+
+  function setActive(id) {
+    spyLinks.forEach(function(a) {
+      a.classList.toggle('spy-active', a.getAttribute('href') === '#' + id);
+    });
+  }
+
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        if (clickedId && clickedId !== entry.target.id) return;
+        setActive(entry.target.id);
+      }
+    });
+  }, {
+    rootMargin: '-' + NAV_HEIGHT + 'px 0px -30% 0px',
+    threshold: 0.1
+  });
+
+  spySections.forEach(function(s) { observer.observe(s); });
+
+  spyLinks.forEach(function(a) {
+    a.addEventListener('click', function() {
+      var id = a.getAttribute('href').slice(1);
+      setActive(id);
+      clickedId = id;
+      clearTimeout(clickTimer);
+      clickTimer = setTimeout(function() { clickedId = null; }, 1000);
+    });
+  });
+})();
+</script>
+</body>
+</html>
