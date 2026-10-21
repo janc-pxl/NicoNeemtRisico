@@ -1958,22 +1958,121 @@ var FrogAudio = {
       A.noise({ d: 0.12, f: 900, f2: 120, v: 0.3 * k });
     }
   },
-  startMusic: function(owner, tempo) {
+  // songId: een nummer uit FROG_SONGS (de vier levels); zonder songId speelt het chiptune-deuntje
+  startMusic: function(owner, tempo, songId) {
     var A = this;
     if (!A.music || !A.ready()) return;
     if (A.timer && A.owner === owner) return;
     A.stopMusic();
     A.owner = owner; A.tempo = tempo || 130;
+    A.song = songId && FROG_SONGS[songId] ? frogPrepareSong(FROG_SONGS[songId]) : null;
+    if (A.song) { A.tempo = A.song.bpm; A.buildSongChain(A.song); }
     A.step = 0; A.nextT = A.ctx.currentTime + 0.08;
     A.timer = setInterval(function() { A.schedule(); }, 25);
   },
   stopMusic: function(owner) {
     var A = this;
     if (owner && A.owner !== owner) return;
-    clearInterval(A.timer); A.timer = 0; A.owner = null;
+    clearInterval(A.timer); A.timer = 0; A.owner = null; A.song = null;
+    // de keten van het nummer zacht laten uitsterven (de echo mag even nagalmen)
+    if (A.songOut) {
+      var out = A.songOut, t = A.ctx.currentTime;
+      out.gain.setValueAtTime(out.gain.value, t); out.gain.linearRampToValueAtTime(0, t + 0.4);
+      setTimeout(function() { try { out.disconnect(); } catch (e) {} }, 600);
+      A.songOut = A.songIn = null;
+    }
+  },
+  // Per nummer: ingang -> (echo) -> uitgang -> muziekbus
+  buildSongChain: function(song) {
+    var A = this, c = A.ctx;
+    A.songIn = c.createGain(); A.songOut = c.createGain();
+    A.songIn.connect(A.songOut); A.songOut.connect(A.musicBus);
+    if (song.echo) {
+      var d = c.createDelay(2), fb = c.createGain(), wet = c.createGain();
+      d.delayTime.value = song.echo.beats * 60 / song.bpm; fb.gain.value = song.echo.fb; wet.gain.value = song.echo.mix;
+      A.songIn.connect(d); d.connect(fb); fb.connect(d); d.connect(wet); wet.connect(A.songOut);
+    }
+  },
+  distCurve: function() {
+    if (this._curve) return this._curve;
+    // oneven aantal punten: stilte (0) valt exact op het middelste punt, zonder gelijkspanning
+    var n = 2049, k = 60, cv = new Float32Array(n);
+    for (var i = 0; i < n; i++) { var x = i * 2 / (n - 1) - 1; cv[i] = (1 + k) * x / (1 + k * Math.abs(x)); }
+    return (this._curve = cv);
+  },
+  // Instrumenten. t = starttijd, f = frequentie, d = duur in seconden, vo = de stem uit het nummer
+  inst: function(vo, t, f, d, open) {
+    var A = this, c = A.ctx, out = A.songIn, v = vo.v;
+    function env(g, a, peak, end) { g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(peak, t + a); g.gain.exponentialRampToValueAtTime(0.0001, end); }
+    function osc(type, freq, det, dest, start, stop) { var o = c.createOscillator(); o.type = type; o.frequency.setValueAtTime(freq, start); if (det) o.detune.value = det; o.connect(dest); o.start(start); o.stop(stop); return o; }
+    function lp(freq) { var fl = c.createBiquadFilter(); fl.type = 'lowpass'; fl.frequency.value = freq; return fl; }
+    var g = c.createGain(), end;
+    g.gain.value = 0.0001; // stil tot de noot begint (noten worden een fractie op voorhand ingepland)
+    if (vo.inst === 'pluck') {
+      // gitaar met een "chorus": twee licht ontstemde oscillatoren, snel uitstervend
+      end = t + Math.min(d * 1.6, 0.7);
+      var f1 = lp(2400); f1.connect(g); env(g, 0.004, v, end);
+      osc('triangle', f, -7, f1, t, end); var sq = c.createGain(); sq.gain.value = 0.35; sq.connect(f1); osc('square', f, 7, sq, t, end);
+    } else if (vo.inst === 'lead') {
+      end = t + d + 0.08;
+      var f2 = lp(vo.cut || 3000); f2.connect(g);
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(v, t + 0.012);
+      g.gain.setValueAtTime(v, t + d * 0.92); g.gain.exponentialRampToValueAtTime(0.0001, end);
+      var o1 = osc(vo.wave || 'square', f, vo.fat ? -9 : 0, f2, t, end);
+      if (vo.fat) osc(vo.wave, f, 9, f2, t, end);
+      if (vo.vib) {
+        // zwevende vibrato die pas na een fractie inzet
+        var lfo = c.createOscillator(), lg = c.createGain(); lfo.frequency.value = 5.2;
+        lg.gain.setValueAtTime(0, t); lg.gain.linearRampToValueAtTime(f * 0.018, t + Math.min(0.35, d));
+        lfo.connect(lg); lg.connect(o1.frequency); lfo.start(t); lfo.stop(end);
+      }
+    } else if (vo.inst === 'stab') {
+      end = t + 0.12; env(g, 0.004, v, end); osc('square', f, 0, g, t, end); osc('square', f * 1.5, 0, g, t, end);
+    } else if (vo.inst === 'pad') {
+      end = t + d + 0.5;
+      var f3 = lp(1200); f3.connect(g);
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(v, t + 0.35);
+      g.gain.setValueAtTime(v, t + d); g.gain.exponentialRampToValueAtTime(0.0001, end);
+      osc('sawtooth', f, -10, f3, t, end); osc('sawtooth', f, 10, f3, t, end);
+    } else if (vo.inst === 'bass') {
+      end = t + d * 0.95 + 0.04;
+      var f4 = lp(vo.cut || 700); f4.connect(g);
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(v, t + 0.006);
+      g.gain.setValueAtTime(v, t + d * 0.9); g.gain.exponentialRampToValueAtTime(0.0001, end);
+      osc(vo.wave || 'triangle', f, 0, f4, t, end);
+    } else if (vo.inst === 'dist') {
+      // vervormde gitaar: powerchord (grondtoon, kwint, octaaf) door een waveshaper
+      end = open ? t + d + 0.1 : t + 0.12;
+      var sh = c.createWaveShaper(), pre = c.createGain(), f5 = lp(open ? 3000 : 750);
+      sh.curve = A.distCurve(); pre.gain.value = 0.35; pre.connect(sh); sh.connect(f5); f5.connect(g);
+      g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(v, t + 0.004);
+      if (open) g.gain.setValueAtTime(v, t + d); g.gain.exponentialRampToValueAtTime(0.0001, end);
+      [1, 1.5, 2].forEach(function(m) { osc('sawtooth', f * m, -7, pre, t, end); osc('sawtooth', f * m, 7, pre, t, end); });
+    }
+    g.connect(out);
+  },
+  drum: function(kind, t) {
+    var A = this, b = A.songIn;
+    if (kind === 'kick') A.tone({ f: 140, f2: 42, d: 0.14, at: t, type: 'sine', v: 0.55, bus: b });
+    else if (kind === 'snare') { A.noise({ d: 0.15, f: 1900, filter: 'bandpass', v: 0.4, at: t, bus: b }); A.tone({ f: 190, d: 0.07, at: t, type: 'triangle', v: 0.22, bus: b }); }
+    else if (kind === 'rim') { A.noise({ d: 0.03, f: 3200, filter: 'highpass', v: 0.12, at: t, bus: b }); A.tone({ f: 880, d: 0.025, at: t, type: 'square', v: 0.04, bus: b }); }
+    else if (kind === 'hat') A.noise({ d: 0.035, f: 7500, filter: 'highpass', v: 0.09, at: t, bus: b });
+    else if (kind === 'open') A.noise({ d: 0.18, f: 7000, filter: 'highpass', v: 0.08, at: t, bus: b });
+    else if (kind === 'crash') A.noise({ d: 1.3, f: 4500, filter: 'highpass', v: 0.2, at: t, bus: b });
+  },
+  scheduleSong: function() {
+    var A = this, c = A.ctx, song = A.song, six = 60 / song.bpm / 4, total = song.bars * 16;
+    if (A.nextT < c.currentTime - 0.05) A.nextT = c.currentTime + 0.02;
+    while (A.nextT < c.currentTime + 0.12) {
+      var st = A.step % total, bar = Math.floor(st / 16), i = st % 16, t = A.nextT;
+      song.events[st].forEach(function(e) { A.inst(e.voice, t, e.f, e.dur * six, e.open); });
+      Object.keys(song.drums).forEach(function(k) { var pat = song.drums[k][bar % song.drums[k].length]; if (pat.charAt(i) === 'x') A.drum(k, t); });
+      A.step++; A.nextT += six;
+    }
   },
   // Plant de noten een fractie op voorhand in, zodat de maat strak blijft
   schedule: function() {
+    if (this.song) { this.scheduleSong(); return; }
     var A = this, c = A.ctx, eighth = 60 / A.tempo / 2, T = FROG_TUNE;
     if (A.nextT < c.currentTime - 0.05) A.nextT = c.currentTime + 0.02;
     while (A.nextT < c.currentTime + 0.12) {
@@ -1992,13 +2091,117 @@ var FrogAudio = {
     A.save();
     if (kind === 'music') {
       if (!A.music) A.stopMusic();
-      else FROG_GAMES.forEach(function(g) { if (g.isActive() && g.visible) A.startMusic(g, g.cfg.tempo); });
+      else FROG_GAMES.forEach(function(g) { if (g.isActive() && g.visible) A.startMusic(g, g.cfg.tempo, g.cfg.song); });
     }
     FROG_GAMES.forEach(function(g) { g.syncSound(); });
     document.querySelectorAll('[data-snd]').forEach(function(btn) { btn.setAttribute('aria-pressed', String(!!A[btn.getAttribute('data-snd')])); });
   }
 };
 FrogAudio.load();
+
+// ══ Muziekstijl per level ════════════════════════════════════════════════════
+// Vier eigen nummers "in de stijl van" (sfeer, tempo, klank en opbouw). Bewust GEEN melodieën,
+// riffs of akkoordenreeksen van bestaande nummers: de site is publiek.
+// Patronen in zestienden: een noot ("D4", "F#4", "A#1"), "." = vorige noot aanhouden, "-" = rust.
+// Een "!" achter een noot = open (luid) akkoord voor de vervormde gitaar, anders palm mute.
+function fsE8(s) { return s.split(' ').map(function(t) { return t === '-' ? '- -' : t + ' .'; }).join(' '); }
+function fsQ4(s) { return s.split(' ').map(function(t) { return t === '-' ? '- - - -' : t + ' . . .'; }).join(' '); }
+function fsW1(t) { return t + ' . . . . . . . . . . . . . . .'; }
+function fsRest() { return '- - - - - - - - - - - - - - - -'; }
+
+var FS_PARK_ARP = {
+  D: 'D4 F#4 A4 D5 A4 F#4 D5 A4', Bm: 'B3 D4 F#4 B4 F#4 D4 B4 F#4', G: 'G3 B3 D4 G4 D4 B3 G4 D4',
+  A: 'A3 C#4 E4 A4 E4 C#4 A4 E4', Em: 'E4 G4 B4 E5 B4 G4 E5 B4'
+};
+var FS_PARK_BASS = { D: 'D2 D2 D2 A2', Bm: 'B1 B1 B1 F#2', G: 'G1 G1 G1 D2', A: 'A1 A1 A1 E2', Em: 'E2 E2 E2 B1' };
+var FS_PARK_CH = ['D', 'Bm', 'G', 'A', 'D', 'Bm', 'Em', 'A'];
+
+var FS_MARKT_LEAD = [
+  'E5 . . B4 E5 . G#5 . B5 . . . G#5 . E5 .', 'C#5 . . G#4 C#5 . E5 . G#5 . . . E5 . C#5 .',
+  'A4 . . E5 A5 . G#5 . F#5 . E5 . C#5 . E5 .', 'B4 . . D#5 F#5 . B5 . A5 . F#5 . D#5 . B4 .'
+];
+var FS_MARKT_CH = { E: ['E2', 'G#4'], Cm: ['C#2', 'E4'], A: ['A1', 'C#5'], B: ['B1', 'D#4'] };
+var FS_MARKT_ORDER = ['E', 'Cm', 'A', 'B', 'E', 'Cm', 'A', 'B'];
+function fsOct(n) { var m = /^([A-G]#?)(\d)$/.exec(n); return m[1] + (+m[2] + 1); }
+
+var FS_OVER_PAD = [['D4', 'F4', 'A4'], ['D4', 'F4', 'A#4'], ['C4', 'F4', 'A4'], ['C4', 'E4', 'G4']];
+var FS_OVER_LEAD = [
+  'A4 . . . . . . . F4 . . . G4 . . .', 'D5 . . . . . C5 . A#4 . . . . . . .',
+  'A4 . . . C5 . . . F5 . . . . . . .', 'E5 . . . . . D5 . C5 . . . G4 . . .'
+];
+var FS_OVER_BASS = ['D2', 'A#1', 'F2', 'C2'];
+
+var FS_STEEN = [
+  'D2 D2 - D2 D2 - F2! . . D2 D2 - G2! . . -',
+  'D2 D2 - D2 D2 - F2! . . D2 D2 - A#1! . . .',
+  'D2 D2 - D2 D2 - F2! . . D2 D2 - G2! . . -',
+  'D2 D2 D2 D2 F2! . G2! . G#2! . . . A2! . . .',
+  'D2! . . . . . . . A#1! . . . . . . .',
+  'F2! . . . . . . . C3! . . . . . . .',
+  'D2! . . . . . . . A#1! . . . . . . .',
+  'D2 D2 D2 D2 D2 D2 D2 D2 D2 D2 D2 D2 F2! . G#2! .'
+];
+
+var FROG_SONGS = {
+  // Het park: rustige new wave. Doorlopend gitaararpeggio met echo, bas in kwartnoten, rimshot.
+  park: { bpm: 116, bars: 8, echo: { beats: 0.75, fb: 0.38, mix: 0.32 },
+    voices: [
+      { inst: 'pluck', v: 0.14, pat: FS_PARK_CH.map(function(c) { return fsE8(FS_PARK_ARP[c]); }) },
+      { inst: 'bass', v: 0.3, pat: FS_PARK_CH.map(function(c) { return fsQ4(FS_PARK_BASS[c]); }) },
+      { inst: 'lead', wave: 'triangle', v: 0.1, cut: 2600, pat: [fsRest(), fsRest(), fsRest(), fsRest(),
+        'F#5 . . . . . E5 . D5 . . . . . . .', 'D5 . . . B4 . . . F#4 . . . . . . .',
+        'G4 . . . B4 . . . E5 . . . D5 . . .', 'C#5 . . . . . . . A4 . . . . . . .'] }
+    ],
+    drums: { kick: ['x.......x.......'], rim: ['....x.......x...'], hat: ['x.x.x.x.x.x.x.x.'] } },
+  // Marktdag: vrolijke synthpop. Heldere zaagtandlead, octaafbas, akkoordstoten, four-on-the-floor.
+  markt: { bpm: 150, bars: 8,
+    voices: [
+      { inst: 'lead', wave: 'sawtooth', fat: true, v: 0.1, cut: 3800, pat: FS_MARKT_LEAD.concat(FS_MARKT_LEAD.slice(0, 3), ['B4 . D#5 . F#5 . A5 . G#5 . F#5 . E5 . . .']) },
+      { inst: 'bass', wave: 'sawtooth', v: 0.22, cut: 900, pat: FS_MARKT_ORDER.map(function(c) { var r = FS_MARKT_CH[c][0]; return fsE8([r, fsOct(r), r, fsOct(r), r, fsOct(r), r, fsOct(r)].join(' ')); }) },
+      { inst: 'stab', v: 0.065, pat: FS_MARKT_ORDER.map(function(c) { var n = FS_MARKT_CH[c][1]; return fsE8(['-', n, '-', n, '-', n, '-', n].join(' ')); }) }
+    ],
+    drums: { kick: ['x...x...x...x...'], snare: ['....x.......x...'], hat: ['..x...x...x...x.'], open: ['...............x'] } },
+  // De overweg: psychedelische synthpop. Brede pads, zwevende lead met vibrato, veel echo, half-time.
+  overweg: { bpm: 104, bars: 8, echo: { beats: 0.75, fb: 0.48, mix: 0.38 },
+    voices: [0, 1, 2].map(function(k) {
+      return { inst: 'pad', v: 0.045, pat: [0, 1, 2, 3, 0, 1, 2, 3].map(function(b) { return fsW1(FS_OVER_PAD[b][k]); }) };
+    }).concat([
+      { inst: 'lead', wave: 'square', vib: true, v: 0.06, cut: 2200, pat: FS_OVER_LEAD.concat(FS_OVER_LEAD.slice(0, 3), ['E5 . . . F5 . . . G5 . . . . . . .']) },
+      { inst: 'bass', v: 0.3, pat: [0, 1, 2, 3, 0, 1, 2, 3].map(function(b) { var r = FS_OVER_BASS[b]; return r + ' . . . . . - - - - ' + r + ' . . . - -'; }) }
+    ]),
+    drums: { kick: ['x.........x.....'], snare: ['........x.......'], hat: ['x.x.x.x.x.x.x.x.'] } },
+  // De steenweg: nu-metal in drop D. Palm-mute-chugs, open powerchords, dubbele kick, crash.
+  steenweg: { bpm: 132, bars: 8,
+    voices: [
+      { inst: 'dist', v: 0.12, pat: FS_STEEN },
+      { inst: 'bass', wave: 'sawtooth', v: 0.16, cut: 500, pat: FS_STEEN }
+    ],
+    drums: {
+      kick: ['xx.xx....xx.....', 'xx.xx....xx.....', 'xx.xx....xx.....', 'xxxx............', 'x.x.x.x.x.x.x.x.', 'x.x.x.x.x.x.x.x.', 'x.x.x.x.x.x.x.x.', 'xxxxxxxxxxxxx.x.'],
+      snare: ['....x.......x...', '....x.......x...', '....x.......x...', '....x...x.x.x.x.', '....x.......x...', '....x.......x...', '....x.......x...', '............x.x.'],
+      hat: ['x.x.x.x.x.x.x.x.', 'x.x.x.x.x.x.x.x.', 'x.x.x.x.x.x.x.x.', 'x.x.x.x.........', '................', '................', '................', 'x.x.x.x.x.x.....'],
+      crash: ['................', '................', '................', '................', 'x...............', '................', 'x...............', '................']
+    } }
+};
+
+// Maakt van de patronen een lijst gebeurtenissen per zestiende (één keer per nummer)
+function frogPrepareSong(song) {
+  if (song.events) return song;
+  var total = song.bars * 16, ev = [];
+  for (var i = 0; i < total; i++) ev.push([]);
+  song.voices.forEach(function(voice) {
+    var tok = voice.pat.join(' ').trim().split(/\s+/);
+    if (tok.length !== total) throw new Error('Patroon heeft ' + tok.length + ' stappen in plaats van ' + total);
+    tok.forEach(function(t, i) {
+      if (t === '.' || t === '-') return;
+      var dur = 1; while (i + dur < total && tok[i + dur] === '.') dur++;
+      var open = t.charAt(t.length - 1) === '!';
+      ev[i].push({ voice: voice, f: frogHz(open ? t.slice(0, -1) : t), dur: dur, open: open });
+    });
+  });
+  song.events = ev;
+  return song;
+}
 
 // ══ Jan en Lowie: de docenten dansen bij "GEHAALD!" en vallen achterover bij "GAME OVER" ══
 // Sprites van 24 × 32 eenheden (1 eenheid = 1 pixel op een kleine canvas, in het spel 2 px groot).
@@ -2308,7 +2511,7 @@ FrogGame.prototype.start = function() {
   g.bellT = 0;
   FrogAudio.init();
   FrogAudio.play('start');
-  FrogAudio.startMusic(g, g.cfg.tempo);
+  FrogAudio.startMusic(g, g.cfg.tempo, g.cfg.song);
   g.kick();
 };
 FrogGame.prototype.move = function(dx, dy) {
@@ -2481,7 +2684,7 @@ FrogGame.prototype.render = function() {
 FrogGame.prototype.kick = function() {
   var g = this;
   if (!g.visible || document.hidden) FrogAudio.stopMusic(g);
-  else if (g.cfg && g.isActive()) FrogAudio.startMusic(g, g.cfg.tempo);
+  else if (g.cfg && g.isActive()) FrogAudio.startMusic(g, g.cfg.tempo, g.cfg.song);
   if (g.raf || !g.visible || document.hidden || !g.cfg) return;
   var last = performance.now();
   function step(t) {
@@ -2640,7 +2843,7 @@ var FROG_LEVELS = [
 function frogLevelCfg(i) {
   var L = FROG_LEVELS[i];
   return {
-    rows: L.rows, seed: L.seed, need: 3, hearts: 5, g: L.g, tempo: L.tempo, hit: L.hit, tunnel: L.tunnel,
+    rows: L.rows, seed: L.seed, need: 3, hearts: 5, g: L.g, tempo: L.tempo, song: L.id, hit: L.hit, tunnel: L.tunnel,
     crossRoad: L.crossRoad, signals: L.signals, barriers: L.barriers,
     kicker: 'LEVEL ' + (i + 1) + ' VAN 4', title: L.name.toUpperCase(), hudTitle: 'LEVEL ' + (i + 1),
     intro: L.intro, overText: L.overText
