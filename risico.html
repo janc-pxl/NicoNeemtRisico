@@ -1973,7 +1973,7 @@ var FrogAudio = {
   stopMusic: function(owner) {
     var A = this;
     if (owner && A.owner !== owner) return;
-    clearInterval(A.timer); A.timer = 0; A.owner = null; A.song = null;
+    clearInterval(A.timer); A.timer = 0; A.owner = null; A.song = null; A.tension = false;
     // de keten van het nummer zacht laten uitsterven (de echo mag even nagalmen)
     if (A.songOut) {
       var out = A.songOut, t = A.ctx.currentTime;
@@ -2035,6 +2035,7 @@ var FrogAudio = {
       g.gain.setValueAtTime(v, t + d); g.gain.exponentialRampToValueAtTime(0.0001, end);
       osc('sawtooth', f, -10, f3, t, end); osc('sawtooth', f, 10, f3, t, end);
     } else if (vo.inst === 'bass') {
+      d = d * (vo.stacc || 1);
       end = t + d * 0.95 + 0.04;
       var f4 = lp(vo.cut || 700); f4.connect(g);
       g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(v, t + 0.006);
@@ -2065,8 +2066,10 @@ var FrogAudio = {
     if (A.nextT < c.currentTime - 0.05) A.nextT = c.currentTime + 0.02;
     while (A.nextT < c.currentTime + 0.12) {
       var st = A.step % total, bar = Math.floor(st / 16), i = st % 16, t = A.nextT;
-      song.events[st].forEach(function(e) { A.inst(e.voice, t, e.f, e.dur * six, e.open); });
-      Object.keys(song.drums).forEach(function(k) { var pat = song.drums[k][bar % song.drums[k].length]; if (pat.charAt(i) === 'x') A.drum(k, t); });
+      song.events[st].forEach(function(e) { if (!e.voice.tension || A.tension) A.inst(e.voice, t, e.f, e.dur * six, e.open); });
+      [song.drums, A.tension ? song.tensionDrums : null].forEach(function(set) {
+        if (set) Object.keys(set).forEach(function(k) { var pat = set[k][bar % set[k].length]; if (pat.charAt(i) === 'x') A.drum(k, t); });
+      });
       A.step++; A.nextT += six;
     }
   },
@@ -2124,12 +2127,13 @@ var FS_MARKT_CH = { E: ['E2', 'G#4'], Cm: ['C#2', 'E4'], A: ['A1', 'C#5'], B: ['
 var FS_MARKT_ORDER = ['E', 'Cm', 'A', 'B', 'E', 'Cm', 'A', 'B'];
 function fsOct(n) { var m = /^([A-G]#?)(\d)$/.exec(n); return m[1] + (+m[2] + 1); }
 
-var FS_OVER_PAD = [['D4', 'F4', 'A4'], ['D4', 'F4', 'A#4'], ['C4', 'F4', 'A4'], ['C4', 'E4', 'G4']];
-var FS_OVER_LEAD = [
-  'A4 . . . . . . . F4 . . . G4 . . .', 'D5 . . . . . C5 . A#4 . . . . . . .',
-  'A4 . . . C5 . . . F5 . . . . . . .', 'E5 . . . . . D5 . C5 . . . G4 . . .'
-];
-var FS_OVER_BASS = ['D2', 'A#1', 'F2', 'C2'];
+// De overweg: spionagethriller. Een staccato ostinato dat chromatisch rond de grondtoon cirkelt
+// (bewust andere noten dan de bekende vamp uit het Bond-thema), een donkere drone, een sober twangmotief.
+var FS_OVER_CH = ['Dm', 'Dm', 'Dm', 'Dm', 'Bb', 'Bb', 'A', 'A'];
+var FS_OVER_OST = { Dm: 'D2 D2 D#2 D2 C#2 D2 D2 A1', Bb: 'A#1 A#1 B1 A#1 A1 A#1 A#1 F1', A: 'A1 A1 A#1 A1 G#1 A1 C#2 E2' };
+var FS_OVER_DRONE = { Dm: ['D3', 'A3'], Bb: ['A#2', 'F3'], A: ['A2', 'E3'] };
+var FS_OVER_TREM = { Dm: 'D5 C#5', Bb: 'D5 C#5', A: 'E5 D#5' };
+function fsTrem(pair) { var r = []; for (var i = 0; i < 8; i++) r.push(pair); return r.join(' '); }
 
 var FS_STEEN = [
   'D2 D2 - D2 D2 - F2! . . D2 D2 - G2! . . -',
@@ -2161,15 +2165,23 @@ var FROG_SONGS = {
       { inst: 'stab', v: 0.065, pat: FS_MARKT_ORDER.map(function(c) { var n = FS_MARKT_CH[c][1]; return fsE8(['-', n, '-', n, '-', n, '-', n].join(' ')); }) }
     ],
     drums: { kick: ['x...x...x...x...'], snare: ['....x.......x...'], hat: ['..x...x...x...x.'], open: ['...............x'] } },
-  // De overweg: psychedelische synthpop. Brede pads, zwevende lead met vibrato, veel echo, half-time.
-  overweg: { bpm: 104, bars: 8, echo: { beats: 0.75, fb: 0.48, mix: 0.38 },
-    voices: [0, 1, 2].map(function(k) {
-      return { inst: 'pad', v: 0.045, pat: [0, 1, 2, 3, 0, 1, 2, 3].map(function(b) { return fsW1(FS_OVER_PAD[b][k]); }) };
-    }).concat([
-      { inst: 'lead', wave: 'square', vib: true, v: 0.06, cut: 2200, pat: FS_OVER_LEAD.concat(FS_OVER_LEAD.slice(0, 3), ['E5 . . . F5 . . . G5 . . . . . . .']) },
-      { inst: 'bass', v: 0.3, pat: [0, 1, 2, 3, 0, 1, 2, 3].map(function(b) { var r = FS_OVER_BASS[b]; return r + ' . . . . . - - - - ' + r + ' . . . - -'; }) }
-    ]),
-    drums: { kick: ['x.........x.....'], snare: ['........x.......'], hat: ['x.x.x.x.x.x.x.x.'] } },
+  // De overweg: spionagethriller in D klein. Staccato ostinato, donkere drone, twanggitaar met echo,
+  // koperstoten, hartslag-kick en een tikkende klok. Het einde blijft hangen op A (onopgelost).
+  // Zodra de lichten knipperen (FrogAudio.tension) komen er een tremolo en extra slagen bij.
+  overweg: { bpm: 120, bars: 8, echo: { beats: 0.75, fb: 0.4, mix: 0.3 },
+    voices: [
+      { inst: 'bass', wave: 'sawtooth', v: 0.3, cut: 650, stacc: 0.45, pat: FS_OVER_CH.map(function(c) { return fsE8(FS_OVER_OST[c]); }) },
+      { inst: 'pad', v: 0.06, pat: FS_OVER_CH.map(function(c) { return fsW1(FS_OVER_DRONE[c][0]); }) },
+      { inst: 'pad', v: 0.04, pat: FS_OVER_CH.map(function(c) { return fsW1(FS_OVER_DRONE[c][1]); }) },
+      { inst: 'pluck', v: 0.17, pat: [fsRest(), 'F4 . E4 . D4 . . . A3 . . . - - - -', fsRest(), '- - - - - - - - F4 . G4 . G#4 . A4 .',
+        fsRest(), 'D5 . . . C5 . A#4 . A4 . . . F4 . . .', fsRest(), 'E5 . . . C#5 . . . A4 . . . G#4 . . .'] },
+      { inst: 'stab', v: 0.06, pat: [fsRest(), fsRest(), fsRest(), '- - - - - - - - - - - - - - D4 .',
+        fsRest(), fsRest(), fsRest(), '- - - - - - - - - - - - A3 . A3 .'] },
+      { inst: 'lead', wave: 'square', v: 0.03, cut: 1800, tension: true, pat: FS_OVER_CH.map(function(c) { return fsTrem(FS_OVER_TREM[c]); }) }
+    ],
+    drums: { kick: ['x..x............'], hat: ['x...x...x...x...'],
+      snare: ['................', '................', '................', '................', '................', '................', '................', '........x.x.xxxx'] },
+    tensionDrums: { kick: ['x..x....x..x....'], hat: ['..x...x...x...x.'] } },
   // De steenweg: nu-metal in drop D. Palm-mute-chugs, open powerchords, dubbele kick, crash.
   steenweg: { bpm: 132, bars: 8,
     voices: [
@@ -2601,6 +2613,7 @@ FrogGame.prototype.update = function(dt) {
     if (on && before === 'warn' && L.phase === 'run') FrogAudio.play('horn');
   });
   g.warning = g.lanes.some(function(L) { return L.warn; });
+  if (FrogAudio.owner === g) FrogAudio.tension = !!(on && g.warning);
   // de bel van de overweg rinkelt zolang de lichten knipperen
   if (on && g.warning) { g.bellT -= dt; if (g.bellT <= 0) { FrogAudio.play('bell'); g.bellT = 0.42; } }
   else g.bellT = 0;
