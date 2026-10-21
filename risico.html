@@ -38,6 +38,10 @@
   /* Positieve risico's (kansen) en negatieve risico's (bedreigingen) */
   --c-pos: #d9a520; --c-pos-bg: #fbf1d6; --c-pos-ink: #6b4f00;
   --c-neg: #e63946; --c-neg-bg: #fbdcdf; --c-neg-ink: #9b1c26;
+
+  /* Productrisico (het product, de gebruiker) en projectrisico (tijd, budget, scope) */
+  --c-product: #7c3aed; --c-product-bg: #efe7fd; --c-product-ink: #4c1d95;
+  --c-project: #0e7490; --c-project-bg: #dcf1f6; --c-project-ink: #155e75;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
@@ -622,6 +626,198 @@ footer .f-inner a:hover { color: var(--gold); }
   #rad-app .panel-grid { grid-template-columns: 1fr; }
 }
 
+/* ── PRODUCT- EN PROJECTRISICO'S (alles onder #product-project) ────────────── */
+/* ── Begrippen ─────────────────────────────────────────────────────────────── */
+#product-project .pp-concepts { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1.5rem 0 .5rem; }
+#product-project .pp-concept { background: var(--card); border: 1.5px solid var(--border); border-top: 5px solid var(--cc); border-radius: 10px; padding: 1.1rem 1.2rem; }
+#product-project .pp-concept[data-c="product"] { --cc: var(--c-product); }
+#product-project .pp-concept[data-c="project"] { --cc: var(--c-project); }
+#product-project .pp-concept .q { font-family: 'Raleway', sans-serif; font-weight: 800; color: var(--cc); font-size: .92rem; }
+#product-project .pp-concept .n { font-family: 'Raleway', sans-serif; font-weight: 900; font-size: 1.45rem; color: var(--primary); margin-bottom: .35rem; }
+#product-project .pp-concept p { font-size: .88rem; color: var(--muted); margin: 0; }
+
+/* ── De gsm met de Vonk-app (productkant) ───────────────────────────────────── */
+#product-project .pp-phone-wrap { display: flex; flex-direction: column; align-items: center; gap: .55rem; }
+#product-project .pp-side-label { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; }
+#product-project .pp-side-label.product { color: var(--c-product); }
+#product-project .pp-side-label.project { color: var(--c-project); }
+#product-project .pp-phone {
+  width: 210px; border-radius: 30px; background: #111; padding: 10px; position: relative;
+  box-shadow: 0 12px 30px rgba(0,0,0,.18), inset 0 0 0 2px #333;
+}
+#product-project .pp-phone::before { content: ''; position: absolute; top: 14px; left: 50%; width: 54px; height: 6px; margin-left: -27px; background: #222; border-radius: 3px; z-index: 3; }
+#product-project .pp-screen { position: relative; border-radius: 22px; overflow: hidden; background: #1b1430; min-height: 330px; }
+#product-project .pp-app-head { background: linear-gradient(135deg, #ff7a18, #c2185b 70%); color: white; padding: 26px 14px 12px; }
+#product-project .pp-app-name { font-family: 'Raleway', sans-serif; font-weight: 900; font-size: 1.35rem; letter-spacing: .08em; line-height: 1; }
+#product-project .pp-app-sub { font-size: .66rem; opacity: .85; letter-spacing: .06em; }
+#product-project .pp-tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 12px; }
+#product-project .pp-tile {
+  background: rgba(255,255,255,.08); border-radius: 11px; padding: 10px 8px; color: #f3e9ff; font-size: .68rem; font-weight: 700;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 6px; transition: opacity .4s, transform .4s;
+}
+#product-project .pp-tile svg { width: 20px; height: 20px; stroke: #ffb27a; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+#product-project .pp-tile.gone { opacity: 0; transform: scale(.6); }
+#product-project .pp-tile.new { animation: ppTileIn .5s cubic-bezier(.3,1.6,.5,1); }
+@keyframes ppTileIn { from { transform: scale(.3); opacity: 0; } }
+#product-project .pp-bugs { position: absolute; inset: 0; pointer-events: none; z-index: 2; }
+#product-project .pp-bug { position: absolute; width: 16px; height: 16px; left: 0; top: 0; transition: opacity .3s; }
+#product-project .pp-screen.glitch { animation: ppGlitch .6s steps(2) 1; }
+@keyframes ppGlitch {
+  0% { transform: translate(0); filter: none; }
+  20% { transform: translate(-4px, 2px); filter: hue-rotate(90deg) saturate(2); }
+  40% { transform: translate(3px, -2px); filter: invert(.15); }
+  60% { transform: translate(-2px, 0); filter: hue-rotate(-60deg); }
+  100% { transform: translate(0); filter: none; }
+}
+#product-project .pp-stars { display: flex; align-items: center; gap: .4rem; font-size: .82rem; color: var(--muted); }
+#product-project .pp-star-row { position: relative; font-size: 1.15rem; letter-spacing: 2px; color: #ddd; line-height: 1; }
+#product-project .pp-star-row .fill { position: absolute; left: 0; top: 0; overflow: hidden; color: #f5b301; white-space: nowrap; transition: width .6s; }
+#product-project .pp-qbar { width: 210px; }
+#product-project .pp-meter-lbl { display: flex; justify-content: space-between; font-size: .74rem; font-weight: 700; color: var(--muted); margin-bottom: 3px; }
+#product-project .pp-track { position: relative; height: 10px; background: #ece9e3; border-radius: 6px; overflow: visible; }
+#product-project .pp-fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 6px; transition: width .6s, background .6s; }
+#product-project .pp-mark { position: absolute; top: -4px; bottom: -4px; width: 2px; background: var(--primary); }
+#product-project .pp-mark span { position: absolute; top: -16px; left: 50%; transform: translateX(-50%); font-size: .62rem; font-weight: 700; white-space: nowrap; color: var(--primary); }
+
+/* ── Het projectbord (projectkant) ──────────────────────────────────────────── */
+#product-project .pp-board { background: #fff; border: 2px solid var(--c-project); border-radius: 14px; padding: 1rem 1.1rem; width: 100%; max-width: 300px; box-shadow: 0 8px 22px rgba(14,116,144,.12); }
+#product-project .pp-board h4 { font-family: 'Raleway', sans-serif; font-weight: 900; font-size: 1rem; color: var(--c-project-ink); margin-bottom: .7rem; }
+#product-project .pp-bmeter { margin-bottom: .85rem; }
+#product-project .pp-bmeter:last-child { margin-bottom: 0; }
+#product-project .pp-bmeter.bump .pp-track { animation: ppBump .5s ease; }
+@keyframes ppBump { 30% { transform: scaleY(1.9); } }
+
+/* ── Deel 1: Waar landt het gevolg? ─────────────────────────────────────────── */
+#product-project .ww-stage { display: grid; grid-template-columns: 240px minmax(0, 1fr) 300px; gap: 1.25rem; align-items: center; margin-top: 1.25rem; background: var(--card); border: 1.5px solid var(--border); border-radius: 14px; padding: 1.4rem; position: relative; overflow: hidden; }
+#product-project .ww-center { display: flex; flex-direction: column; align-items: center; gap: .9rem; min-height: 360px; justify-content: center; position: relative; }
+#product-project .ww-belt { position: relative; width: 100%; max-width: 340px; height: 210px; }
+#product-project .ww-belt::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 14px; border-radius: 7px;
+  background: repeating-linear-gradient(90deg, #cfcac0 0 14px, #bdb7ac 14px 28px); animation: ppBelt 1s linear infinite;
+}
+#product-project .ww-belt.paused::after { animation-play-state: paused; }
+@keyframes ppBelt { to { background-position: 28px 0; } }
+#product-project .ww-card {
+  position: absolute; left: 50%; bottom: 22px; width: 300px; margin-left: -150px; background: #fff; border-radius: 12px;
+  border: 2px solid var(--primary); padding: 1rem 1.1rem; box-shadow: 0 10px 22px rgba(0,0,0,.12);
+  transition: transform .55s cubic-bezier(.5,0,.6,1), opacity .55s; font-family: 'Raleway', sans-serif; font-weight: 800; font-size: 1rem; line-height: 1.35;
+}
+#product-project .ww-card .k { display: block; font-size: .65rem; letter-spacing: .1em; text-transform: uppercase; color: var(--gold-dark); margin-bottom: .35rem; }
+#product-project .ww-card.enter { transform: translateX(260px); opacity: 0; }
+#product-project .ww-card.to-product { transform: translate(-330px, -40px) scale(.4) rotate(-12deg); opacity: 0; }
+#product-project .ww-card.to-project { transform: translate(330px, -40px) scale(.4) rotate(12deg); opacity: 0; }
+#product-project .ww-card.shake { animation: ppShake .45s ease; }
+@keyframes ppShake { 20% { transform: translateX(-10px); } 40% { transform: translateX(9px); } 60% { transform: translateX(-6px); } 80% { transform: translateX(4px); } }
+#product-project .ww-btns { display: flex; gap: .6rem; flex-wrap: wrap; justify-content: center; }
+#product-project .ww-btn { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .92rem; padding: .6rem 1.1rem; min-height: 46px; border-radius: 8px; cursor: pointer; border: 2px solid; background: white; }
+#product-project .ww-btn.product { color: var(--c-product-ink); border-color: var(--c-product); }
+#product-project .ww-btn.product:hover:not(:disabled) { background: var(--c-product-bg); }
+#product-project .ww-btn.project { color: var(--c-project-ink); border-color: var(--c-project); }
+#product-project .ww-btn.project:hover:not(:disabled) { background: var(--c-project-bg); }
+#product-project .ww-btn:disabled { opacity: .35; cursor: default; }
+#product-project .ww-fb { width: 100%; max-width: 420px; font-size: .9rem; line-height: 1.5; padding: .75rem 1rem; border-radius: 8px; animation: fadeIn .25s ease; }
+#product-project .ww-fb.ok { background: rgba(42,157,143,.09); border-left: 3px solid var(--green); }
+#product-project .ww-fb.no { background: rgba(174,154,100,.12); border-left: 3px solid var(--gold); }
+#product-project .ww-fb .row { display: flex; justify-content: flex-end; margin-top: .55rem; }
+#product-project .ww-count { font-size: .8rem; color: var(--muted); font-weight: 700; }
+#product-project .ww-spark { position: absolute; width: 14px; height: 14px; border-radius: 50%; background: #ffb27a; box-shadow: 0 0 12px 4px rgba(255,140,60,.7); z-index: 5; pointer-events: none; transition: transform .8s cubic-bezier(.4,0,.2,1), opacity .3s; }
+
+/* ── Deel 2: Lanceerdag ─────────────────────────────────────────────────────── */
+#product-project .ld-weeks { display: flex; gap: .35rem; justify-content: center; flex-wrap: wrap; margin: 1.25rem 0 0; }
+#product-project .ld-wk { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .78rem; padding: .35rem .7rem; border-radius: 999px; border: 2px solid var(--border); background: white; color: var(--muted); }
+#product-project .ld-wk.done { border-color: var(--green); color: #1b655c; }
+#product-project .ld-wk.cur { border-color: var(--primary); background: var(--primary); color: white; }
+#product-project .ld-wk.launch.cur { background: linear-gradient(135deg, #ff7a18, #c2185b); border-color: #c2185b; }
+#product-project .ld-stage { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 1.4rem; align-items: start; margin-top: 1rem; background: var(--card); border: 1.5px solid var(--border); border-radius: 14px; padding: 1.4rem; }
+#product-project .ld-right { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+#product-project .ld-event { border: 2px solid var(--primary); border-radius: 12px; padding: 1rem 1.15rem; background: #fff; animation: fadeIn .35s ease; }
+#product-project .ld-event .chip { display: inline-block; font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .68rem; letter-spacing: .08em; text-transform: uppercase; padding: .2rem .55rem; border-radius: 4px; margin-bottom: .45rem; }
+#product-project .chip.project { background: var(--c-project-bg); color: var(--c-project-ink); }
+#product-project .chip.product { background: var(--c-product-bg); color: var(--c-product-ink); }
+#product-project .ld-event h4 { font-family: 'Raleway', sans-serif; font-weight: 900; font-size: 1.08rem; line-height: 1.35; margin-bottom: .75rem; }
+#product-project .ld-opts { display: grid; gap: .5rem; }
+#product-project .ld-opt { text-align: left; font: inherit; border: 2px solid var(--border); background: white; border-radius: 9px; padding: .65rem .85rem; cursor: pointer; display: flex; justify-content: space-between; gap: .75rem; align-items: center; transition: border-color .12s, background .12s; }
+#product-project .ld-opt:hover:not(:disabled) { border-color: var(--primary); background: #fafaf7; }
+#product-project .ld-opt:disabled { cursor: default; opacity: .45; }
+#product-project .ld-opt.picked { opacity: 1; border-color: var(--primary); background: #fafaf7; box-shadow: inset 0 0 0 1px var(--primary); }
+#product-project .ld-opt .lbl { font-weight: 700; font-size: .9rem; }
+#product-project .ld-costs { display: flex; gap: .3rem; flex-wrap: wrap; justify-content: flex-end; flex-shrink: 0; }
+#product-project .ld-cost { font-size: .7rem; font-weight: 800; padding: .15rem .45rem; border-radius: 4px; white-space: nowrap; }
+#product-project .ld-cost.tijd, #product-project .ld-cost.budget, #product-project .ld-cost.scope { background: var(--c-project-bg); color: var(--c-project-ink); }
+#product-project .ld-cost.kwaliteit, #product-project .ld-cost.feature { background: var(--c-product-bg); color: var(--c-product-ink); }
+#product-project .ld-cost.none { background: #eee; color: #555; }
+#product-project .ld-result { margin-top: .75rem; font-size: .9rem; padding: .6rem .8rem; border-radius: 7px; background: var(--bg); animation: fadeIn .3s ease; }
+#product-project .ld-result .row { display: flex; justify-content: flex-end; margin-top: .5rem; }
+
+#product-project .ld-board { display: grid; grid-template-columns: minmax(0, 1fr) 190px; gap: 1rem; align-items: start; border: 2px solid var(--c-project); border-radius: 12px; padding: .9rem 1rem; }
+#product-project .ld-board h4 { font-family: 'Raleway', sans-serif; font-weight: 900; font-size: .95rem; color: var(--c-project-ink); margin-bottom: .5rem; }
+#product-project .gantt { position: relative; padding-top: 18px; }
+#product-project .gantt-row { display: grid; grid-template-columns: 74px minmax(0, 1fr); align-items: center; gap: .4rem; height: 26px; }
+#product-project .gantt-row .nm { font-size: .74rem; font-weight: 700; color: var(--muted); text-align: right; }
+#product-project .gantt-lane { position: relative; height: 16px; }
+#product-project .gantt-bar { position: absolute; top: 0; height: 16px; border-radius: 4px; background: var(--c-project); transition: left .8s cubic-bezier(.3,.8,.3,1), width .8s cubic-bezier(.3,.8,.3,1), background .4s; }
+#product-project .gantt-bar.late { background: var(--accent); }
+#product-project .gantt-ms { position: absolute; top: -1px; width: 16px; height: 16px; margin-left: -8px; transform: rotate(45deg); background: #c2185b; border-radius: 2px; transition: left .8s cubic-bezier(.3,.8,.3,1); }
+#product-project .gantt-axis { position: absolute; left: 78px; right: 0; top: 0; bottom: 0; pointer-events: none; }
+#product-project .gantt-wk { position: absolute; top: 0; font-size: .6rem; color: #999; transform: translateX(-50%); }
+#product-project .gantt-line { position: absolute; top: 14px; bottom: 0; width: 0; border-left: 1px dashed #ddd; }
+#product-project .gantt-deadline { position: absolute; top: 12px; bottom: -4px; width: 3px; margin-left: -1px; background: #c2185b; }
+#product-project .gantt-deadline span { position: absolute; bottom: -18px; left: 50%; transform: translateX(-50%); font-size: .62rem; font-weight: 800; color: #c2185b; white-space: nowrap; }
+#product-project .gantt-today { position: absolute; top: 12px; bottom: -4px; width: 2px; background: var(--primary); transition: left .8s; }
+#product-project .gantt-today span { position: absolute; bottom: -18px; left: 50%; transform: translateX(-50%); font-size: .62rem; font-weight: 800; white-space: nowrap; }
+#product-project .gantt-buffer { position: absolute; top: 14px; bottom: 0; background: repeating-linear-gradient(45deg, rgba(42,157,143,.10) 0 6px, rgba(42,157,143,.04) 6px 12px); }
+#product-project .gauge { display: block; width: 100%; height: auto; }
+#product-project .gauge .needle { transition: transform 1s cubic-bezier(.3,1.4,.5,1); transform-origin: 100px 100px; }
+#product-project .gauge-lbl { text-align: center; font-size: .8rem; font-weight: 700; margin-top: -4px; }
+#product-project .ld-scope { font-size: .76rem; color: var(--muted); margin-top: .55rem; }
+
+#product-project .ld-launch { margin-top: 1.25rem; background: var(--card); border: 1.5px solid var(--border); border-radius: 14px; padding: 1.4rem; display: none; }
+#product-project .ld-launch.visible { display: block; animation: fadeIn .4s ease; }
+#product-project .ld-stamp { display: inline-block; font-family: 'Raleway', sans-serif; font-weight: 900; font-size: 1.1rem; letter-spacing: .08em; padding: .35rem .9rem; border: 3px solid; border-radius: 6px; transform: rotate(-4deg); animation: ppStamp .45s cubic-bezier(.3,1.8,.5,1); margin: 0 .5rem .5rem 0; }
+#product-project .ld-stamp.good { color: #1b655c; border-color: #1b655c; }
+#product-project .ld-stamp.bad { color: #b4232f; border-color: #b4232f; }
+@keyframes ppStamp { from { transform: scale(2.2) rotate(-4deg); opacity: 0; } }
+#product-project .ld-reviews { display: grid; gap: .5rem; margin: 1rem 0; }
+#product-project .ld-review { background: var(--bg); border-radius: 9px; padding: .6rem .85rem; font-size: .88rem; display: flex; gap: .75rem; align-items: baseline; opacity: 0; transform: translateX(30px); transition: opacity .4s, transform .4s; }
+#product-project .ld-review.in { opacity: 1; transform: none; }
+#product-project .ld-review .st { color: #f5b301; letter-spacing: 1px; white-space: nowrap; font-size: .95rem; }
+#product-project .ld-matrix { display: grid; grid-template-columns: 110px 1fr 1fr; gap: 4px; max-width: 560px; margin: 1rem 0; font-size: .84rem; }
+#product-project .ld-matrix > div { padding: .55rem .65rem; border-radius: 6px; background: #f1efea; }
+#product-project .ld-matrix .hd { background: none; font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .74rem; color: var(--muted); display: flex; align-items: flex-end; }
+#product-project .ld-matrix .cell { font-weight: 700; opacity: .45; transition: opacity .3s, transform .3s; }
+#product-project .ld-matrix .cell.me { opacity: 1; outline: 3px solid var(--primary); transform: scale(1.04); }
+#product-project .ld-matrix .cell.ok { background: rgba(42,157,143,.15); }
+#product-project .ld-matrix .cell.half { background: rgba(174,154,100,.2); }
+#product-project .ld-matrix .cell.bad { background: rgba(230,57,70,.14); }
+#product-project .ld-trail { display: grid; gap: .4rem; margin-top: .5rem; }
+#product-project .ld-step { display: grid; grid-template-columns: 70px minmax(0, 1fr) auto; gap: .6rem; align-items: center; font-size: .85rem; padding: .45rem .6rem; border-radius: 7px; background: var(--bg); }
+#product-project .ld-step .wk { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .75rem; color: var(--muted); }
+#product-project .ld-tag { font-size: .7rem; font-weight: 800; padding: .2rem .5rem; border-radius: 4px; white-space: nowrap; }
+#product-project .ld-tag.shift { background: var(--c-product-bg); color: var(--c-product-ink); }
+#product-project .ld-tag.absorb { background: var(--c-project-bg); color: var(--c-project-ink); }
+#product-project .ld-tag.guard { background: rgba(42,157,143,.14); color: #1b655c; }
+@media (prefers-reduced-motion: reduce) {
+  #product-project .ww-belt::after { animation: none; }
+  #product-project .pp-screen.glitch { animation: none; }
+
+}
+@media (max-width: 900px) {
+  #product-project .ww-stage, #product-project .ld-stage { grid-template-columns: 1fr; }
+  #product-project .ww-stage .pp-phone-wrap, #product-project .ld-stage .pp-phone-wrap { order: 0; }
+  #product-project .ww-center { min-height: 300px; }
+  #product-project .ld-board { grid-template-columns: 1fr; }
+  #product-project .pp-concepts { grid-template-columns: 1fr; }
+  #product-project .ww-card { width: 270px; margin-left: -135px; }
+
+}
+@media (max-width: 620px) {
+  #product-project .ld-opt { flex-direction: column; align-items: flex-start; }
+  #product-project .ld-costs { justify-content: flex-start; }
+  #product-project .ld-matrix { grid-template-columns: 80px 1fr 1fr; font-size: .76rem; }
+
+}
+
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .sim-dot.ok, .sim-dot.hit, .frog-heart.lost { animation: none; }
@@ -670,6 +866,7 @@ footer .f-inner a:hover { color: var(--gold); }
   <div class="nav-dropdown" id="nav-dropdown">
     <a href="#kans-gevolg" onclick="navClose()">Risico = Kans × Gevolg</a>
     <a href="#positief-negatief" onclick="navClose()">Positieve &amp; negatieve risico's</a>
+    <a href="#product-project" onclick="navClose()">Product- &amp; projectrisico's</a>
   </div>
 </nav>
 
@@ -899,6 +1096,74 @@ footer .f-inner a:hover { color: var(--gold); }
 
   <div class="panel" id="rad-log-panel" hidden><h3>Je project, week per week</h3><div class="log" id="rad-log"></div></div>
   <div class="panel result" id="rad-result" hidden></div>
+  </div>
+</section>
+
+<section id="product-project">
+  <div class="badge">Soorten risico's</div>
+  <h2>Product- en projectrisico's</h2>
+  <p class="lead">Risico's kan je ook indelen volgens <strong>waar ze toeslaan</strong>. Loopt er iets mis met het eindproduct, of met het project dat het product maakt? Het onderscheid is belangrijk, want je pakt ze anders aan.</p>
+  <div class="pp-concepts">
+    <div class="pp-concept" data-c="product">
+      <div class="q">"Werkt het product zoals de gebruiker verwacht?"</div>
+      <div class="n">Productrisico</div>
+      <p>Gaat over de kwaliteit en uitvoering van het eindproduct. Het gevolg landt bij de <strong>gebruiker</strong>: bugs, onveiligheid, slechte recensies, reputatieschade, soms juridische gevolgen. Je verkleint het vooral met testen en kwaliteitscontrole.</p>
+    </div>
+    <div class="pp-concept" data-c="project">
+      <div class="q">"Halen we de oplevering?"</div>
+      <div class="n">Projectrisico</div>
+      <p>Gaat over de planning en uitvoering van het project. Het gevolg landt bij <strong>tijd, budget of scope</strong>: vertraging, kostenoverschrijding, minder functies. Je beheerst het met planning, buffers, mensen en communicatie.</p>
+    </div>
+  </div>
+  <div class="callout"><p>Vuistregel: kijk waar het gevolg landt. Bij de gebruiker? Dan is het een productrisico. In de planning, het budget of de scope? Dan is het een projectrisico.</p></div>
+
+  <!-- Deel 1 -->
+  <h3 class="sub-title" id="pp-waar"><span class="sub-step">Deel 1</span>Waar landt het gevolg?</h3>
+  <p>Je werkt mee aan de app van festival <strong>Vonk</strong>. Eén voor één schuiven er risico's binnen. Stuur elk risico naar de plek waar het gevolg landt: naar de <strong>app</strong> (productrisico) of naar het <strong>projectbord</strong> (projectrisico). Kijk wat er gebeurt.</p>
+  <div class="ww-stage">
+    <div class="pp-phone-wrap" id="ww-phone"></div>
+    <div class="ww-center">
+      <div class="ww-count" id="ww-count"></div>
+      <div class="ww-belt" id="ww-belt"></div>
+      <div class="ww-btns">
+        <button type="button" class="ww-btn product" id="ww-to-product">← Productrisico</button>
+        <button type="button" class="ww-btn project" id="ww-to-project">Projectrisico →</button>
+      </div>
+      <div id="ww-fb" aria-live="polite"></div>
+    </div>
+    <div class="pp-phone-wrap"><span class="pp-side-label project">Projectbord</span><div class="pp-board" id="ww-board"></div></div>
+  </div>
+  <div class="progress"><div class="progress-track"><div class="progress-fill" id="ww-fill"></div></div><span class="progress-label" id="ww-label"></span></div>
+  <div class="summary" id="ww-summary">
+    <h4>Twee soorten risico's, één vraag: waar landt het gevolg?</h4>
+    <p>Productrisico's raken de gebruiker: een app die crasht, dubbel afrekent of gegevens lekt. Projectrisico's raken de oplevering: mensen die uitvallen, wensen die veranderen, kosten die stijgen.</p>
+    <p>De laatste kaart toonde het verband: een projectkeuze (minder testen om tijd te winnen) schuift het risico door naar het product. Dat ervaar je zelf in Lanceerdag.</p>
+  </div>
+
+  <!-- Deel 2 -->
+  <h3 class="sub-title" id="pp-lancering"><span class="sub-step">Deel 2</span>Lanceerdag</h3>
+  <p>Over zes weken openen de poorten van Vonk, en dan moet de app werken. Onderweg lopen er zes dingen mis. Jij beslist hoe je ze oplost. Je hebt drie dingen om mee te "betalen": <strong>tijd</strong> (2 weken buffer), <strong>geld</strong> (een reserve van 50.000 euro) en, als je niet oplet, de <strong>kwaliteit</strong> van de app. Op lanceerdag zie je wat je keuzes opleverden.</p>
+  <div id="ld-app">
+    <div class="ld-weeks" id="ld-weeks"></div>
+    <div class="ld-stage">
+      <div class="pp-phone-wrap" id="ld-phone"></div>
+      <div class="ld-right">
+        <div id="ld-event" aria-live="polite"></div>
+        <div class="ld-board">
+          <div>
+            <h4>Planning</h4>
+            <div class="gantt" id="ld-gantt"></div>
+          </div>
+          <div>
+            <h4>Reservebudget</h4>
+            <svg class="gauge" id="ld-gauge" viewBox="0 0 200 118" aria-hidden="true"></svg>
+            <div class="gauge-lbl" id="ld-gauge-lbl"></div>
+            <div class="ld-scope" id="ld-scope"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="ld-launch" id="ld-launch" aria-live="polite"></div>
   </div>
 </section>
 
@@ -3048,6 +3313,403 @@ drawWheel(0);
 window.Rad = { loadScenario: loadScenario, clickMeasure: clickMeasure, answerStrat: answerStrat, answerCe: answerCe, cancelQuiz: cancelQuiz, toggleMeasure: toggleMeasure, spin: spin, state: st,
   // testhulp: een lopende draai meteen laten eindigen
   skipSpin: function() { if (spinAnim) { st.rot = spinAnim.to; spinDone(); } }, scenarios: SCENARIOS, evEnd: evEnd, bestPlan: bestPlan };
+})();
+
+// ══ Product- en projectrisico's: Waar landt het gevolg? en Lanceerdag ════════════
+(function() {
+// ══ Gedeelde onderdelen: de gsm met de Vonk-app ═══════════════════════════════
+var PP_ICONS = {
+  lineup: '<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>',
+  timetable: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/>',
+  kaart: '<path d="M12 21s-7-6.5-7-12a7 7 0 0 1 14 0c0 5.5-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/>',
+  cashless: '<rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/>',
+  push: '<path d="M6 16v-5a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 20a2 2 0 0 0 4 0"/>',
+  chat: '<path d="M4 5h16v10H9l-5 4z"/>'
+};
+var PP_FEATURES = [
+  { id: 'lineup', name: 'Line-up' }, { id: 'timetable', name: 'Timetable' }, { id: 'kaart', name: 'Kaart' },
+  { id: 'cashless', name: 'Cashless' }, { id: 'push', name: 'Meldingen' }, { id: 'chat', name: 'Chat' }
+];
+var PP_BUG_SVG = '<svg viewBox="0 0 16 16" aria-hidden="true"><g stroke="#2b0f0f" stroke-width="1.2" stroke-linecap="round"><path d="M3 5l2 1.5M13 5l-2 1.5M2.5 9h3M13.5 9h-3M3 13l2-1.5M13 13l-2-1.5M6 3l1 1.5M10 3l-1 1.5"/></g><ellipse cx="8" cy="9" rx="3.3" ry="4.2" fill="#e63946"/><circle cx="8" cy="4.6" r="1.8" fill="#2b0f0f"/><path d="M8 5v8" stroke="#2b0f0f" stroke-width=".8"/></svg>';
+
+// Maakt een gsm met de app. features: lijst van id's die zichtbaar zijn.
+function PPPhone(el, features) {
+  var p = this;
+  p.el = el; p.bugs = []; p.quality = 100;
+  el.innerHTML = '<span class="pp-side-label product">De Vonk-app</span>' +
+    '<div class="pp-phone"><div class="pp-screen"><div class="pp-app-head"><div class="pp-app-name">VONK</div><div class="pp-app-sub">FESTIVAL · 2026</div></div>' +
+    '<div class="pp-tiles">' + PP_FEATURES.map(function(f) {
+      return '<div class="pp-tile' + (features.indexOf(f.id) < 0 ? ' gone' : '') + '" data-f="' + f.id + '"' + (features.indexOf(f.id) < 0 ? ' hidden' : '') + '><svg viewBox="0 0 24 24" aria-hidden="true">' + PP_ICONS[f.id] + '</svg>' + f.name + '</div>';
+    }).join('') + '</div><div class="pp-bugs"></div></div></div>' +
+    '<div class="pp-stars"><span class="pp-star-row" aria-hidden="true">★★★★★<span class="fill">★★★★★</span></span><span class="pp-rating"></span></div>' +
+    '<div class="pp-qbar"><div class="pp-meter-lbl"><span>Kwaliteit</span><span class="pp-qval"></span></div><div class="pp-track"><div class="pp-fill"></div><div class="pp-mark" hidden><span></span></div></div></div>';
+  p.screen = el.querySelector('.pp-screen'); p.bugLayer = el.querySelector('.pp-bugs');
+  p.raf = 0; p.last = 0;
+}
+PPPhone.prototype.setQuality = function(q, threshold) {
+  var p = this;
+  p.quality = Math.max(0, Math.min(100, q));
+  var rating = Math.max(1, Math.min(5, 1 + (p.quality - 30) / 17.5));
+  p.el.querySelector('.fill').style.width = (rating / 5 * 100) + '%';
+  p.el.querySelector('.pp-rating').textContent = rating.toLocaleString('nl-BE', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + ' / 5';
+  var fill = p.el.querySelector('.pp-fill');
+  fill.style.width = p.quality + '%';
+  fill.style.background = threshold != null ? (p.quality >= threshold ? 'var(--green)' : 'var(--accent)') : (p.quality >= 70 ? 'var(--green)' : p.quality >= 45 ? 'var(--gold)' : 'var(--accent)');
+  p.el.querySelector('.pp-qval').textContent = Math.round(p.quality) + '%';
+  if (threshold != null) { var mk = p.el.querySelector('.pp-mark'); mk.hidden = false; mk.style.left = threshold + '%'; mk.querySelector('span').textContent = 'minimum'; }
+  p.setBugs(Math.max(0, Math.round((92 - p.quality) / 7)));
+};
+PPPhone.prototype.setBugs = function(n) {
+  var p = this, W = p.screen.clientWidth || 190, H = p.screen.clientHeight || 330;
+  while (p.bugs.length < n) {
+    var b = document.createElement('div');
+    b.className = 'pp-bug'; b.innerHTML = PP_BUG_SVG;
+    var bug = { el: b, x: Math.random() * (W - 16), y: 60 + Math.random() * (H - 80), a: Math.random() * Math.PI * 2, v: 18 + Math.random() * 22 };
+    p.bugLayer.appendChild(b); p.bugs.push(bug);
+  }
+  while (p.bugs.length > n) { var gone = p.bugs.pop(); gone.el.style.opacity = 0; setTimeout(function(e) { return function() { e.remove(); }; }(gone.el), 300); }
+  if (p.bugs.length && !p.raf) { p.last = performance.now(); p.raf = requestAnimationFrame(function step(t) { p.crawl(t); p.raf = p.bugs.length ? requestAnimationFrame(step) : 0; }); }
+};
+// kevertjes wandelen willekeurig over het scherm
+PPPhone.prototype.crawl = function(t) {
+  var p = this, dt = Math.min(0.05, (t - p.last) / 1000); p.last = t;
+  var W = p.screen.clientWidth, H = p.screen.clientHeight;
+  p.bugs.forEach(function(b) {
+    b.a += (Math.random() - 0.5) * 3 * dt;
+    b.x += Math.cos(b.a) * b.v * dt; b.y += Math.sin(b.a) * b.v * dt;
+    if (b.x < 0 || b.x > W - 16) { b.a = Math.PI - b.a; b.x = Math.max(0, Math.min(W - 16, b.x)); }
+    if (b.y < 20 || b.y > H - 16) { b.a = -b.a; b.y = Math.max(20, Math.min(H - 16, b.y)); }
+    b.el.style.transform = 'translate(' + b.x.toFixed(1) + 'px,' + b.y.toFixed(1) + 'px) rotate(' + (b.a * 180 / Math.PI + 90).toFixed(0) + 'deg)';
+  });
+};
+PPPhone.prototype.glitch = function() {
+  var s = this.screen;
+  s.classList.remove('glitch'); void s.offsetWidth; s.classList.add('glitch');
+};
+PPPhone.prototype.setFeature = function(id, on) {
+  var t = this.el.querySelector('[data-f="' + id + '"]');
+  if (on) { t.hidden = false; t.classList.remove('gone'); t.classList.add('new'); }
+  else { t.classList.add('gone'); setTimeout(function() { t.hidden = true; }, 400); }
+};
+
+// Een meter op het projectbord
+function ppMeter(id, label) {
+  return '<div class="pp-bmeter" id="' + id + '"><div class="pp-meter-lbl"><span>' + label + '</span><span class="v"></span></div><div class="pp-track"><div class="pp-fill"></div></div></div>';
+}
+function ppSetMeter(id, frac, text, bump) {
+  var m = document.getElementById(id), f = m.querySelector('.pp-fill');
+  f.style.width = Math.min(100, frac * 100) + '%';
+  f.style.background = frac < 0.34 ? 'var(--c-project)' : frac < 0.67 ? 'var(--gold)' : 'var(--accent)';
+  m.querySelector('.v').textContent = text;
+  if (bump) { m.classList.remove('bump'); void m.offsetWidth; m.classList.add('bump'); }
+}
+
+// ══ Deel 1: Waar landt het gevolg? ════════════════════════════════════════════
+var WW_CARDS = [
+  { t: 'De app crasht als 40.000 bezoekers tegelijk de timetable openen.', side: 'product', why: 'Het product werkt niet onder de verwachte drukte. Het gevolg landt bij de bezoeker: geen timetable op het moment dat die nodig is.' },
+  { t: 'De enige iOS-developer valt drie weken uit.', side: 'project', meter: 'tijd', why: 'Een tekort aan mensen. Het gevolg landt in de planning: het werk loopt vertraging op.' },
+  { t: 'Cashless betalen rekent soms twee keer af.', side: 'product', why: 'Een technisch defect in het product. De bezoeker betaalt te veel, en dat kost vertrouwen en reputatie.' },
+  { t: 'De organisatie wil er last minute een chatfunctie bij.', side: 'project', meter: 'scope', why: 'Een wijziging in de wensen van de klant. Het gevolg landt bij de scope, en meestal ook bij tijd en budget.' },
+  { t: 'De app deelt per ongeluk de locatie van bezoekers.', side: 'product', why: 'Het product voldoet niet aan de privacyregels. Een productrisico met mogelijke juridische gevolgen.' },
+  { t: 'De licentie van de kaartsoftware wordt twee keer zo duur.', side: 'project', meter: 'budget', why: 'Stijgende kosten. Het gevolg landt bij het budget van het project.' },
+  { t: 'De festivalkaart is onleesbaar in fel zonlicht.', side: 'product', why: 'Een probleem met de bruikbaarheid: het product doet niet wat de gebruiker verwacht, net op het moment dat het moet.' },
+  { t: 'De testomgeving is pas een week voor de lancering klaar.', side: 'project', meter: 'tijd', why: 'Een vertraging in de testopbouw. Het gevolg landt in de planning: er blijft weinig tijd over om te testen.' },
+  { t: 'De app werkt niet op oudere Android-toestellen.', side: 'product', why: 'Een deel van de gebruikers kan het product niet gebruiken. Het gevolg landt bij de klant.' },
+  { t: 'De App Store-keuring duurt tien dagen in plaats van twee.', side: 'project', meter: 'tijd', why: 'Een externe factor die de oplevering vertraagt. Het gevolg landt in de planning.' },
+  { t: 'Meldingen over een verplaatst optreden komen pas uren later aan.', side: 'product', why: 'Een functie die niet doet wat ze belooft. Bezoekers staan aan het verkeerde podium: het gevolg landt bij de gebruiker.' },
+  { t: 'Om de deadline te halen, test het team een week minder.', side: 'both', meter: 'tijd', why: '<strong>Allebei!</strong> Het begint als een projectkeuze: je wint tijd. Maar het gevolg schuift door naar het product: minder testen betekent meer bugs bij de bezoeker. Dit verband ga je in Lanceerdag zelf ervaren.' }
+];
+var ww = { i: 0, answered: false, score: 0, quality: 100, meters: { tijd: 0, budget: 0, scope: 0 } };
+var wwPhone = new PPPhone(document.getElementById('ww-phone'), ['lineup', 'timetable', 'kaart', 'cashless', 'push']);
+document.getElementById('ww-board').innerHTML = '<h4>Project Vonk-app</h4>' + ppMeter('ww-m-tijd', 'Tijd (vertraging)') + ppMeter('ww-m-budget', 'Budget (overschrijding)') + ppMeter('ww-m-scope', 'Scope (wijzigingen)');
+
+function wwMeterText(k) { var n = ww.meters[k]; return n === 0 ? 'in orde' : n + (n === 1 ? ' probleem' : ' problemen'); }
+function wwRenderMeters(bumpKey) { ['tijd', 'budget', 'scope'].forEach(function(k) { ppSetMeter('ww-m-' + k, ww.meters[k] / 4, wwMeterText(k), k === bumpKey); }); }
+function wwShowCard() {
+  var belt = document.getElementById('ww-belt'), done = ww.i >= WW_CARDS.length;
+  document.getElementById('ww-count').textContent = done ? '' : 'Risico ' + (ww.i + 1) + ' van ' + WW_CARDS.length;
+  belt.classList.toggle('paused', done);
+  ['ww-to-product', 'ww-to-project'].forEach(function(id) { document.getElementById(id).disabled = done; });
+  if (done) { belt.innerHTML = ''; return; }
+  var c = WW_CARDS[ww.i];
+  belt.innerHTML = '<div class="ww-card enter" id="ww-card"><span class="k">Risico</span>' + c.t + '</div>';
+  var card = document.getElementById('ww-card');
+  belt.classList.remove('paused');
+  requestAnimationFrame(function() { requestAnimationFrame(function() { card.classList.remove('enter'); }); });
+  setTimeout(function() { belt.classList.add('paused'); }, 600);
+  ww.answered = false;
+}
+function wwAnswer(side) {
+  if (ww.answered || ww.i >= WW_CARDS.length) return;
+  var c = WW_CARDS[ww.i], ok = c.side === side || c.side === 'both', card = document.getElementById('ww-card');
+  ww.answered = true;
+  if (ok) ww.score++;
+  ['ww-to-product', 'ww-to-project'].forEach(function(id) { document.getElementById(id).disabled = true; });
+  var target = c.side === 'both' ? 'project' : c.side;
+  var fb = document.getElementById('ww-fb');
+  var go = function() {
+    card.classList.remove('shake');
+    card.classList.add(target === 'product' ? 'to-product' : 'to-project');
+    setTimeout(function() { wwLand(c); }, 500);
+  };
+  if (ok) { go(); }
+  else { card.classList.add('shake'); setTimeout(go, 500); }
+  fb.innerHTML = '<div class="ww-fb ' + (ok ? 'ok' : 'no') + '"><strong>' + (c.side === 'both' ? '' : ok ? 'Juist: ' : 'Niet helemaal, dit is een ' + (c.side === 'product' ? 'productrisico' : 'projectrisico') + '. ') + '</strong>' + c.why +
+    '<div class="row"><button type="button" class="btn-nav" id="ww-next">' + (ww.i < WW_CARDS.length - 1 ? 'Volgend risico →' : 'Afronden') + '</button></div></div>';
+  document.getElementById('ww-next').addEventListener('click', wwNext);
+  document.getElementById('ww-next').focus({ preventScroll: true });
+  wwProgress(ww.i + 1);
+}
+function wwLand(c) {
+  if (c.side === 'product') {
+    ww.quality -= 8; wwPhone.setQuality(ww.quality); wwPhone.glitch();
+  } else {
+    ww.meters[c.meter]++; wwRenderMeters(c.meter);
+    if (c.side === 'both') wwSpark();
+  }
+}
+// een vonk vliegt van het projectbord naar de app: het risico schuift door naar het product
+function wwSpark() {
+  var stage = document.querySelector('.ww-stage'), sr = stage.getBoundingClientRect();
+  var a = document.getElementById('ww-m-tijd').getBoundingClientRect(), b = wwPhone.screen.getBoundingClientRect();
+  var s = document.createElement('div'); s.className = 'ww-spark';
+  s.style.left = (a.left - sr.left + a.width / 2) + 'px'; s.style.top = (a.top - sr.top) + 'px';
+  stage.style.position = 'relative'; stage.appendChild(s);
+  requestAnimationFrame(function() { requestAnimationFrame(function() {
+    s.style.transform = 'translate(' + (b.left + b.width / 2 - a.left - a.width / 2) + 'px,' + (b.top + b.height / 2 - a.top) + 'px)';
+  }); });
+  setTimeout(function() { s.style.opacity = 0; ww.quality -= 16; wwPhone.setQuality(ww.quality); wwPhone.glitch(); setTimeout(function() { s.remove(); }, 300); }, 820);
+}
+function wwNext() {
+  ww.i++;
+  document.getElementById('ww-fb').innerHTML = '';
+  wwShowCard();
+  if (ww.i >= WW_CARDS.length) document.getElementById('ww-summary').classList.add('visible');
+}
+function wwProgress(n) {
+  document.getElementById('ww-fill').style.width = (n / WW_CARDS.length * 100) + '%';
+  document.getElementById('ww-label').textContent = n + ' / ' + WW_CARDS.length + ' risico\'s, ' + ww.score + ' juist';
+}
+document.getElementById('ww-to-product').addEventListener('click', function() { wwAnswer('product'); });
+document.getElementById('ww-to-project').addEventListener('click', function() { wwAnswer('project'); });
+wwPhone.setQuality(100); wwRenderMeters(); wwProgress(0); wwShowCard();
+
+// ══ Deel 2: Lanceerdag ═══════════════════════════════════════════════════════
+// Geplande lancering na 4 weken, het festival opent na 6 weken: 2 weken buffer.
+// De zes problemen zijn gelijk verspreid over de geplande looptijd (ldT).
+var LD_BUFFER = 2, LD_RESERVE = 50, LD_Q0 = 80, LD_QMIN = 60, LD_SPAN = 8, LD_PLAN = 4, LD_FEST = 6;
+function ldT(i) { return (i + 0.5) * LD_PLAN / 6; }
+var LD_EVENTS = [
+  { type: 'project', title: 'Het designbureau levert de huisstijl een week te laat.', options: [
+    { label: 'Wachten tot het design er is', fx: { delay: 1 }, tag: 'tijd', result: 'Je wacht. Alle volgende taken schuiven een week op.' },
+    { label: 'Zelf een tijdelijk design maken en later vervangen', fx: { budget: 5, quality: -10 }, tag: 'kwaliteit', result: 'De planning blijft, maar de app oogt rommelig, en het vervangen zorgt later voor extra fouten.' },
+    { label: 'Een tweede designer inhuren', fx: { budget: 15 }, tag: 'budget', result: 'Opgelost met geld: de planning en de kwaliteit blijven gespaard.' }
+  ] },
+  { type: 'project', title: 'De enige iOS-developer valt drie weken uit.', options: [
+    { label: 'Een freelancer inhuren', fx: { budget: 20, quality: -5 }, tag: 'budget', result: 'Duur, en de freelancer moet zich nog inwerken in de code: een klein beetje kwaliteitsverlies.' },
+    { label: 'De kaart schrappen, zodat de Android-developer het iOS-werk kan overnemen', fx: { remove: 'kaart', quality: -5 }, tag: 'scope', result: 'Minder scope. De planning en het budget blijven, maar bezoekers missen een functie die ze verwachten: de app is minder waard.' },
+    { label: 'Wachten tot de developer terug is', fx: { delay: 2 }, tag: 'tijd', result: 'Twee weken vertraging, terwijl je maar één week buffer hebt.' }
+  ] },
+  { type: 'project', title: 'De organisatie wil er last minute een chatfunctie bij.', options: [
+    { label: 'Ja, met een week extra en extra budget', fx: { delay: 1, budget: 10, add: 'chat' }, tag: 'tijd', result: 'De chat komt er, maar dat kost tijd en geld.' },
+    { label: 'Nee, misschien volgend jaar', fx: {}, tag: 'nee', result: 'Je bewaakt de scope. Geen extra risico voor dit project.' },
+    { label: 'Ja, maar zonder extra tijd', fx: { add: 'chat', quality: -15 }, tag: 'kwaliteit', result: 'Het team propt de chat er snel tussen. De planning houdt, de kwaliteit niet.' }
+  ] },
+  { type: 'project', title: 'De testomgeving is pas een week later klaar.', options: [
+    { label: 'Wachten en dan grondig testen', fx: { delay: 1 }, tag: 'tijd', result: 'Je verliest een week, maar er wordt grondig getest.' },
+    { label: 'Meteen testen op de echte productieomgeving', fx: { quality: -15 }, tag: 'kwaliteit', result: 'Snel, maar riskant: minder grondige tests, en fouten raken echte gebruikers.' },
+    { label: 'Een testomgeving in de cloud huren', fx: { budget: 10 }, tag: 'budget', result: 'Opgelost met geld: je kan meteen testen.' }
+  ] },
+  { type: 'product', title: 'Loadtest: de app crasht bij 20.000 gelijktijdige gebruikers. Vonk verwacht er 40.000.', options: [
+    { label: 'Extra servers huren en de code laten optimaliseren', fx: { budget: 15 }, tag: 'budget', result: 'Het productrisico is opgelost, met geld.' },
+    { label: 'Negeren, het zal wel meevallen', fx: { quality: -25 }, tag: 'accept', result: 'Je accepteert een groot productrisico. Als de poorten opengaan, gaat de app plat.' },
+    { label: 'Een week extra optimaliseren', fx: { delay: 1 }, tag: 'tijd', result: 'Het productrisico is opgelost, met tijd.' }
+  ] },
+  { type: 'project', title: 'De App Store-keuring duurt langer dan verwacht.', options: [
+    { label: 'Wachten op de keuring', fx: { delay: 1 }, tag: 'tijd', result: 'De app verschijnt een week later in de winkel.' },
+    { label: 'Eerst een web-app lanceren, de echte app volgt later', fx: { quality: -10 }, tag: 'kwaliteit', result: 'De planning blijft, maar bezoekers krijgen een tragere web-app.' },
+    { label: 'Een snellere keuring aanvragen: een dag werk aan uitleg en een demovideo', fx: { budget: 3, gamble: { p: 0.5, ok: 0, fail: 1.5 } }, tag: 'tijd',
+      result: 'Gelukt! De uitleg overtuigt en Apple keurt de app versneld goed: geen vertraging, enkel de dag werk.',
+      resultFail: 'Geweigerd. De dag werk was voor niets, en de app belandt opnieuw achteraan in de rij: anderhalve week vertraging.' }
+  ] }
+];
+var LD_TASKS0 = [
+  { name: 'Design', s: 0, e: 1 }, { name: 'Bouwen', s: 0.6, e: 2.9 }, { name: 'Testen', s: 2.6, e: 3.6 }, { name: 'App Store', s: 3.6, e: 4 }
+];
+var ld;
+var ldPhone = new PPPhone(document.getElementById('ld-phone'), ['lineup', 'timetable', 'kaart', 'cashless', 'push']);
+
+function ldReset() {
+  ld = { w: 0, picked: null, delay: 0, budget: 0, quality: LD_Q0, features: ['lineup', 'timetable', 'kaart', 'cashless', 'push'], trail: [],
+    tasks: LD_TASKS0.map(function(t) { return Object.assign({}, t); }), launch: LD_PLAN };
+  PP_FEATURES.forEach(function(f) { var t = ldPhone.el.querySelector('[data-f="' + f.id + '"]'); var on = ld.features.indexOf(f.id) >= 0; t.hidden = !on; t.classList.toggle('gone', !on); t.classList.remove('new'); });
+  ldPhone.setQuality(ld.quality, LD_QMIN);
+  ldBuildGantt(); ldBuildGauge(); ldRenderBoard();
+  document.getElementById('ld-launch').classList.remove('visible');
+  document.getElementById('ld-launch').innerHTML = '';
+  ldRenderWeeks(); ldRenderEvent();
+}
+function ldX(w) { return (w / LD_SPAN * 100) + '%'; }
+function ldBuildGantt() {
+  var g = document.getElementById('ld-gantt'), h = '<div class="gantt-axis">';
+  for (var w = 0; w <= LD_SPAN; w++) h += '<div class="gantt-line" style="left:' + ldX(w) + '"></div>' + (w < LD_SPAN ? '<div class="gantt-wk" style="left:' + ldX(w + 0.5) + '">W' + (w + 1) + '</div>' : '');
+  h += '<div class="gantt-buffer" style="left:' + ldX(LD_PLAN) + ';width:' + (LD_BUFFER / LD_SPAN * 100) + '%" title="buffer"></div>';
+  h += '<div class="gantt-deadline" style="left:' + ldX(LD_FEST) + '"><span>Poorten open</span></div>';
+  h += '<div class="gantt-today" id="ld-today" style="left:' + ldX(0) + '"><span>vandaag</span></div></div>';
+  ld.tasks.forEach(function(t, i) { h += '<div class="gantt-row"><span class="nm">' + t.name + '</span><div class="gantt-lane"><div class="gantt-bar" id="ld-bar-' + i + '"></div></div></div>'; });
+  h += '<div class="gantt-row"><span class="nm">Lancering</span><div class="gantt-lane"><div class="gantt-ms" id="ld-ms"></div></div></div>';
+  g.innerHTML = h;
+}
+function ldBuildGauge() {
+  // halve cirkel van 0 tot 70 (k euro); 50 = reserve
+  function pt(v, r) { var a = Math.PI * (1 - v / 70); return [100 + Math.cos(a) * r, 100 - Math.sin(a) * r]; }
+  function arc(v0, v1, col) { var a = pt(v0, 80), b = pt(v1, 80); return '<path d="M' + a[0].toFixed(1) + ' ' + a[1].toFixed(1) + ' A80 80 0 0 1 ' + b[0].toFixed(1) + ' ' + b[1].toFixed(1) + '" stroke="' + col + '" stroke-width="16" fill="none"/>'; }
+  var r = pt(LD_RESERVE, 98), r2 = pt(LD_RESERVE, 62);
+  document.getElementById('ld-gauge').innerHTML = arc(0, 35, '#2a9d8f') + arc(35, LD_RESERVE, '#AE9A64') + arc(LD_RESERVE, 70, '#e63946') +
+    '<line x1="' + r2[0].toFixed(1) + '" y1="' + r2[1].toFixed(1) + '" x2="' + r[0].toFixed(1) + '" y2="' + r[1].toFixed(1) + '" stroke="#030203" stroke-width="2"/>' +
+    '<g class="needle" id="ld-needle"><line x1="100" y1="100" x2="30" y2="100" stroke="#030203" stroke-width="4" stroke-linecap="round"/></g><circle cx="100" cy="100" r="7" fill="#030203"/>' +
+    '<text x="12" y="116" font-size="10" fill="#666">0</text><text x="176" y="116" font-size="10" fill="#666">70k</text>';
+}
+function ldRenderBoard() {
+  ld.tasks.forEach(function(t, i) {
+    var b = document.getElementById('ld-bar-' + i);
+    b.style.left = ldX(t.s); b.style.width = ((t.e - t.s) / LD_SPAN * 100) + '%';
+    b.classList.toggle('late', t.e > LD_FEST);
+  });
+  document.getElementById('ld-ms').style.left = ldX(ld.launch);
+  document.getElementById('ld-today').style.left = ldX(ld.w < 6 ? ldT(ld.w) : LD_PLAN);
+  var deg = Math.min(70, ld.budget) / 70 * 180;
+  document.getElementById('ld-needle').style.transform = 'rotate(' + deg + 'deg)';
+  var lbl = document.getElementById('ld-gauge-lbl');
+  lbl.textContent = ld.budget + 'k van ' + LD_RESERVE + 'k gebruikt';
+  lbl.style.color = ld.budget > LD_RESERVE ? 'var(--accent)' : 'var(--text)';
+  var missing = ['kaart'].filter(function(f) { return ld.features.indexOf(f) < 0; }), extra = ld.features.indexOf('chat') >= 0;
+  document.getElementById('ld-scope').innerHTML = '<strong>Scope:</strong> ' + ld.features.length + ' functies' + (missing.length ? ', kaart geschrapt' : '') + (extra ? ', chat toegevoegd' : '') +
+    '<br><strong>Vertraging:</strong> ' + fmtW(ld.delay) + (ld.delay > LD_BUFFER ? ' <span style="color:var(--accent);font-weight:700">(meer dan je buffer)</span>' : ' (buffer: 2 weken)');
+}
+function fmtW(w) { return w === 0 ? 'geen' : w.toLocaleString('nl-BE') + (w === 1 ? ' week' : ' weken'); }
+function ldRenderWeeks() {
+  var h = '';
+  for (var i = 0; i < LD_EVENTS.length; i++) h += '<span class="ld-wk' + (i < ld.w ? ' done' : i === ld.w ? ' cur' : '') + '">Probleem ' + (i + 1) + '</span>';
+  h += '<span class="ld-wk launch' + (ld.w >= LD_EVENTS.length ? ' cur' : '') + '">Lanceerdag</span>';
+  document.getElementById('ld-weeks').innerHTML = h;
+}
+function ldCosts(fx) {
+  var c = [];
+  if (fx.delay) c.push('<span class="ld-cost tijd">+' + fmtW(fx.delay) + '</span>');
+  if (fx.gamble) c.push('<span class="ld-cost tijd">' + Math.round(fx.gamble.p * 100) + '% kans: +' + fmtW(fx.gamble.ok).replace('geen', '0 weken') + '</span><span class="ld-cost tijd">' + Math.round((1 - fx.gamble.p) * 100) + '% kans: +' + fmtW(fx.gamble.fail) + '</span>');
+  if (fx.budget) c.push('<span class="ld-cost budget">' + fx.budget + 'k euro</span>');
+  if (fx.remove) c.push('<span class="ld-cost scope">− kaart</span>');
+  if (fx.add) c.push('<span class="ld-cost feature">+ chat</span>');
+  if (fx.quality) c.push('<span class="ld-cost kwaliteit">kwaliteit ' + fx.quality + '</span>');
+  if (!c.length) c.push('<span class="ld-cost none">geen kost</span>');
+  return c.join('');
+}
+function ldRenderEvent() {
+  var el = document.getElementById('ld-event');
+  if (ld.w >= LD_EVENTS.length) {
+    el.innerHTML = '<div class="ld-event"><span class="chip product" style="background:linear-gradient(135deg,#ff7a18,#c2185b);color:#fff">Lanceerdag</span><h4>Zes weken zijn voorbij. De poorten van Vonk gaan open.</h4><button type="button" class="btn-nav" id="ld-go">Lanceer de app</button></div>';
+    document.getElementById('ld-go').addEventListener('click', ldLaunch);
+    return;
+  }
+  var ev = LD_EVENTS[ld.w], picked = ld.picked;
+  var h = '<div class="ld-event"><span class="chip ' + ev.type + '">Probleem ' + (ld.w + 1) + ' · ' + (ev.type === 'product' ? 'Productrisico' : 'Projectrisico') + '</span><h4>' + ev.title + '</h4><div class="ld-opts" role="group" aria-label="Kies je aanpak">';
+  ev.options.forEach(function(o, i) {
+    h += '<button type="button" class="ld-opt' + (picked === i ? ' picked' : '') + '"' + (picked != null ? ' disabled' : '') + ' data-i="' + i + '"><span class="lbl">' + o.label + '</span><span class="ld-costs">' + ldCosts(o.fx) + '</span></button>';
+  });
+  h += '</div>';
+  if (picked != null) h += '<div class="ld-result">' + ld.result + '<div class="row"><button type="button" class="btn-nav" id="ld-next">' + (ld.w < LD_EVENTS.length - 1 ? 'Volgend probleem →' : 'Naar lanceerdag →') + '</button></div></div>';
+  el.innerHTML = h + '</div>';
+  el.querySelectorAll('.ld-opt').forEach(function(b) { b.addEventListener('click', function() { ldPick(+b.getAttribute('data-i')); }); });
+  var nx = document.getElementById('ld-next');
+  if (nx) { nx.addEventListener('click', ldNext); nx.focus({ preventScroll: true }); }
+}
+function ldPick(i) {
+  if (ld.picked != null) return;
+  var ev = LD_EVENTS[ld.w], o = ev.options[i], fx = o.fx, t = ldT(ld.w);
+  ld.picked = i;
+  var delay = fx.delay || 0, label = o.label;
+  ld.result = o.result;
+  if (fx.gamble) {
+    // een echt risico: de kans beslist
+    var lucky = Math.random() < fx.gamble.p;
+    delay = lucky ? fx.gamble.ok : fx.gamble.fail;
+    ld.result = lucky ? o.result : o.resultFail;
+    label += lucky ? ' (gelukt)' : ' (geweigerd)';
+  }
+  if (delay) {
+    ld.delay += delay;
+    ld.tasks.forEach(function(task) { if (task.e > t) { if (task.s >= t) task.s += delay; task.e += delay; } });
+    ld.launch += delay;
+  }
+  if (fx.budget) ld.budget += fx.budget;
+  if (fx.quality) { ld.quality += fx.quality; ldPhone.setQuality(ld.quality, LD_QMIN); if (fx.quality < 0) ldPhone.glitch(); }
+  if (fx.remove) { ld.features = ld.features.filter(function(f) { return f !== fx.remove; }); ldPhone.setFeature(fx.remove, false); }
+  if (fx.add) { ld.features.push(fx.add); ldPhone.setFeature(fx.add, true); }
+  ld.trail.push({ w: ld.w, type: ev.type, title: ev.title, label: label, tag: o.tag });
+  ldRenderBoard(); ldRenderEvent();
+}
+function ldNext() { ld.w++; ld.picked = null; ldRenderWeeks(); ldRenderBoard(); ldRenderEvent(); }
+
+function ldReviews(onTime, inBudget, q) {
+  var r = [];
+  if (q >= 78) r.push([5, 'Supervlotte app, de timetable altijd bij de hand!'], [5, 'Cashless betalen werkte zonder één hapering.']);
+  else if (q >= LD_QMIN) r.push([4, 'Werkt goed, soms wat traag bij de grote podia.'], [4, 'Handig, al moest ik af en toe opnieuw inloggen.']);
+  else if (q >= 50) r.push([2, 'Crashte twee keer tijdens de headliner.'], [2, 'Mijn betaling werd dubbel afgerekend. Niet oké.']);
+  else r.push([1, 'De app ging plat zodra de poorten opengingen.'], [1, 'Onbruikbaar. Uiteindelijk een papieren plannetje gezocht.']);
+  if (ld.features.indexOf('kaart') < 0) r.push([3, 'Waar is de kaart? Ik vond het tweede podium niet.']);
+  if (ld.features.indexOf('chat') >= 0) r.push(q >= LD_QMIN ? [5, 'De chat om je vrienden terug te vinden is goud waard!'] : [2, 'De chat stuurt mijn berichten drie keer door.']);
+  if (!onTime) r.push([2, 'De app was er pas na de eerste festivaldag. Te laat!']);
+  if (q >= LD_QMIN && onTime) r.push([5, 'Meldingen kwamen meteen binnen toen het optreden verplaatst werd.']);
+  return r.slice(0, 5);
+}
+function ldLaunch() {
+  var onTime = ld.delay <= LD_BUFFER, inBudget = ld.budget <= LD_RESERVE, projOk = onTime && inBudget, prodOk = ld.quality >= LD_QMIN;
+  ld.w = LD_EVENTS.length + 1; ldRenderWeeks();
+  document.getElementById('ld-today').style.left = ldX(Math.min(ld.launch, LD_SPAN));
+  document.getElementById('ld-event').innerHTML = '<div class="ld-event"><span class="chip product" style="background:linear-gradient(135deg,#ff7a18,#c2185b);color:#fff">Lanceerdag</span><h4>' + (onTime ? 'De app staat klaar als de poorten opengaan.' : 'De poorten gaan open, maar de app is er nog niet.') + '</h4><button type="button" class="btn-nav outline" id="ld-again">Opnieuw spelen</button></div>';
+  document.getElementById('ld-again').addEventListener('click', function() { ldReset(); document.getElementById('pp-lancering').scrollIntoView({ behavior: 'smooth' }); });
+  var cell = projOk && prodOk ? 'ok' : projOk ? 'sonos' : prodOk ? 'late' : 'both';
+  var verdict = {
+    ok: ['Geslaagde lancering', 'Je ving de projectrisico\'s op met tijd, geld of scope, zonder ze door te schuiven naar het product. Zowel het project als het product zijn geslaagd.'],
+    sonos: ['De Sonos-val', 'Je haalde de deadline en het budget, maar door kwaliteit in te leveren. Zo ging het ook bij Sonos in 2024: de vernieuwde app kwam er op tijd, maar zat vol bugs en kostte het bedrijf veel reputatie.'],
+    late: ['Goed product, mislukt project', 'De app werkt prima, maar het project haalde zijn doel niet: ' + (!onTime ? 'de app was er niet op tijd' : '') + (!onTime && !inBudget ? ' en ' : '') + (!inBudget ? 'je ging over het budget' : '') + '. Voor een festival is te laat even erg als slecht.'],
+    both: ['Allebei mis', 'Het project haalde zijn doel niet, en het product werkt niet zoals de bezoekers verwachten.']
+  }[cell];
+  var rev = ldReviews(onTime, inBudget, ld.quality);
+  var tagInfo = {
+    tijd: ['absorb', 'Opgevangen met tijd'], budget: ['absorb', 'Opgevangen met budget'], scope: ['absorb', 'Opgevangen met scope'],
+    nee: ['guard', 'Scope bewaakt'], kwaliteit: ['shift', 'Doorgeschoven naar het product'], accept: ['shift', 'Productrisico geaccepteerd']
+  };
+  var shifted = ld.trail.filter(function(s) { return s.tag === 'kwaliteit' || s.tag === 'accept'; }).length;
+  var h = '<h3 style="font-family:Raleway,sans-serif;font-weight:900;font-size:1.25rem;margin-bottom:.6rem">' + verdict[0] + '</h3>' +
+    '<span class="ld-stamp ' + (onTime ? 'good' : 'bad') + '">' + (onTime ? 'OP TIJD' : 'TE LAAT') + '</span>' +
+    '<span class="ld-stamp ' + (inBudget ? 'good' : 'bad') + '" style="animation-delay:.25s">' + (inBudget ? 'BINNEN BUDGET' : 'OVER BUDGET') + '</span>' +
+    '<span class="ld-stamp ' + (prodOk ? 'good' : 'bad') + '" style="animation-delay:.5s">' + (prodOk ? 'APP WERKT' : 'APP VOL BUGS') + '</span>' +
+    '<p style="margin-top:.6rem">' + verdict[1] + '</p>' +
+    '<h4 style="font-family:Raleway,sans-serif;font-weight:800;margin-top:1rem">Wat de bezoekers zeggen</h4><div class="ld-reviews">' +
+    rev.map(function(r) { return '<div class="ld-review"><span class="st">' + '★★★★★'.slice(0, r[0]) + '<span style="color:#ddd">' + '★★★★★'.slice(r[0]) + '</span></span><span>' + r[1] + '</span></div>'; }).join('') + '</div>' +
+    '<h4 style="font-family:Raleway,sans-serif;font-weight:800">Waar kom je uit?</h4>' +
+    '<div class="ld-matrix"><div class="hd"></div><div class="hd">App werkt</div><div class="hd">App vol bugs</div>' +
+    '<div class="hd">Project geslaagd</div><div class="cell ok' + (cell === 'ok' ? ' me' : '') + '">Geslaagde lancering</div><div class="cell bad' + (cell === 'sonos' ? ' me' : '') + '">De Sonos-val</div>' +
+    '<div class="hd">Te laat of over budget</div><div class="cell half' + (cell === 'late' ? ' me' : '') + '">Goed product, mislukt project</div><div class="cell bad' + (cell === 'both' ? ' me' : '') + '">Allebei mis</div></div>' +
+    '<h4 style="font-family:Raleway,sans-serif;font-weight:800;margin-top:1rem">Jouw keuzes, probleem per probleem</h4>' +
+    '<p style="font-size:.9rem">' + (shifted ? 'Je schoof <strong>' + shifted + ' keer</strong> een risico door naar het product. Een projectprobleem oplossen met kwaliteit lijkt gratis, maar de bezoeker betaalt de rekening.' : 'Je schoof geen enkel risico door naar het product. Je betaalde met tijd, geld of scope.') + '</p>' +
+    '<div class="ld-trail">' + ld.trail.map(function(s) {
+      var ti = tagInfo[s.tag];
+      return '<div class="ld-step"><span class="wk">Probleem ' + (s.w + 1) + '<br><span class="chip ' + s.type + '" style="font-size:.6rem;padding:.05rem .35rem">' + (s.type === 'product' ? 'Product' : 'Project') + '</span></span><span>' + s.label + '</span><span class="ld-tag ' + ti[0] + '">' + ti[1] + '</span></div>';
+    }).join('') + '</div>' +
+    '<div class="callout"><p>Projectrisico\'s kan je opvangen met tijd, geld of scope. Wie ze "oplost" door minder te testen of minder zorg te besteden, verplaatst ze naar het product. Daarom bekijk je product- en projectrisico\'s altijd samen.</p></div>';
+  var box = document.getElementById('ld-launch');
+  box.innerHTML = h; box.classList.add('visible');
+  if (!prodOk) { ldPhone.glitch(); setTimeout(function() { ldPhone.glitch(); }, 700); }
+  box.querySelectorAll('.ld-review').forEach(function(r, i) { setTimeout(function() { r.classList.add('in'); }, 400 + i * 350); });
+  setTimeout(function() { box.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 200);
+}
+ldReset();
+
+// om te testen
+window.PP = { wwAnswer: wwAnswer, wwNext: wwNext, ww: function() { return ww; }, ldPick: ldPick, ldNext: ldNext, ldLaunch: ldLaunch, ldReset: ldReset, ld: function() { return ld; }, events: LD_EVENTS };
 })();
 
 // ══ Nico-portret in de intro ═════════════════════════════════════════════════
