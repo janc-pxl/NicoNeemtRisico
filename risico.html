@@ -34,6 +34,10 @@
   --z-kritiek: #e63946; --z-kritiek-bg: #f8d3d6; --z-kritiek-ink: #9b1c26;
 
   --arcade: 'Press Start 2P', ui-monospace, monospace;
+
+  /* Positieve risico's (kansen) en negatieve risico's (bedreigingen) */
+  --c-pos: #d9a520; --c-pos-bg: #fbf1d6; --c-pos-ink: #6b4f00;
+  --c-neg: #e63946; --c-neg-bg: #fbdcdf; --c-neg-ink: #9b1c26;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
@@ -431,6 +435,193 @@ footer .f-inner a:hover { color: var(--gold); }
 .sim-history th { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .78rem; color: var(--muted); }
 .sim-history td.num { font-variant-numeric: tabular-nums; }
 
+
+/* ── TWEE KANTEN VAN DEZELFDE MUNT ──────────────────────────────────────────── */
+
+.coin-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: .9rem; margin-top: 1.25rem; }
+.coin-card { perspective: 1100px; }
+.coin-inner { display: grid; transition: transform .6s cubic-bezier(.3,.7,.3,1); transform-style: preserve-3d; height: 100%; }
+.coin-card.flipped .coin-inner { transform: rotateY(180deg); }
+.coin-face {
+  grid-area: 1 / 1; backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  background: var(--card); border: 1.5px solid var(--border); border-radius: 12px; padding: 1rem 1.05rem;
+  display: flex; flex-direction: column; gap: .6rem;
+}
+.coin-back { transform: rotateY(180deg); }
+.coin-top { display: flex; align-items: center; gap: .6rem; }
+.coin-icon {
+  width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0; border: 3px solid #0b0b0f;
+  background: linear-gradient(90deg, var(--c-neg) 50%, var(--c-pos) 50%);
+  box-shadow: inset 0 0 0 3px rgba(255,255,255,.35);
+}
+.coin-kicker { font-family: var(--arcade); font-size: .55rem; color: var(--gold-dark); }
+.coin-event { font-family: 'Raleway', sans-serif; font-weight: 900; font-size: 1.08rem; line-height: 1.3; color: var(--primary); }
+.coin-event.small { font-size: .9rem; }
+.coin-q { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .85rem; color: var(--c-pos-ink); margin-top: auto; }
+.coin-opts { display: flex; flex-direction: column; gap: .4rem; }
+.coin-opt {
+  text-align: left; font: inherit; font-size: .88rem; padding: .6rem .75rem; min-height: 44px; cursor: pointer;
+  border: 2px solid var(--border); border-radius: 7px; background: white; color: var(--text); transition: border-color .12s, background .12s;
+}
+.coin-opt:hover:not(:disabled) { border-color: var(--c-pos); background: var(--c-pos-bg); }
+.coin-verdict { font-family: var(--arcade); font-size: .65rem; outline: none; }
+.coin-verdict.ok { color: #1b655c; }
+.coin-verdict.no { color: var(--c-neg-ink); }
+.coin-side { font-size: .85rem; line-height: 1.45; padding: .55rem .7rem; border-radius: 7px; }
+.coin-side.pos { background: var(--c-pos-bg); }
+.coin-side.neg { background: var(--c-neg-bg); }
+.coin-tag { display: block; font-family: var(--arcade); font-size: .5rem; margin-bottom: .3rem; }
+.coin-side.pos .coin-tag { color: var(--c-pos-ink); }
+.coin-side.neg .coin-tag { color: var(--c-neg-ink); }
+@media (prefers-reduced-motion: reduce) { .coin-inner { transition: none; } }
+
+/* ── RAD VAN RISICO (alles onder #rad-app) ─────────────────────────────────── */
+
+@keyframes radPop { 0% { transform: scale(.6); opacity: 0; } 70% { transform: scale(1.08); } 100% { transform: scale(1); opacity: 1; } }
+#rad-app h3 { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: 1.05rem; color: var(--primary); margin-bottom: .6rem; }
+/* scenario-tabs */
+#rad-app .sc-tabs { display: flex; gap: .5rem; flex-wrap: wrap; justify-content: center; margin: 1.5rem 0 0; }
+#rad-app .sc-tab { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .88rem; padding: .5rem 1rem; min-height: 44px; border-radius: 5px; cursor: pointer; border: 2px solid var(--border); background: white; display: inline-flex; gap: .5rem; align-items: center; }
+#rad-app .sc-tab[aria-selected="true"] { background: var(--primary); color: white; border-color: var(--primary); }
+#rad-app .sc-tab .nr { font-family: var(--arcade); font-size: .55rem; width: 22px; height: 22px; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; background: var(--gold-bg); color: var(--gold-dark); }
+#rad-app .sc-tab[aria-selected="true"] .nr { background: var(--gold); color: var(--primary); }
+#rad-app .sc-tab .done { color: var(--green); font-weight: 900; }
+
+/* de arcadekast */
+#rad-app .rad-frame { background: #0b0b0f; border: 3px solid var(--gold); border-radius: 14px; padding: 12px 14px 16px; margin-top: 1.25rem; box-shadow: 0 10px 30px rgba(0,0,0,.18); }
+#rad-app .rad-hud { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: .5rem 1rem; font-family: var(--arcade); font-size: .6rem; color: #eee; padding: 2px 4px 10px; }
+#rad-app .rad-hud .t { color: var(--gold); }
+#rad-app .rad-hud b { font-weight: 400; color: #fff; }
+#rad-app .rad-hud .coin { color: #ffd60a; }
+#rad-app .rad-stage { display: grid; grid-template-columns: 170px minmax(0, 1fr) 170px; align-items: end; gap: .5rem; }
+#rad-app .host { position: relative; display: flex; flex-direction: column; align-items: center; padding-bottom: 6px; }
+#rad-app .host canvas { width: 154px; height: 126px; image-rendering: pixelated; display: block; }
+#rad-app .host-name { font-family: var(--arcade); font-size: .6rem; color: var(--gold); margin-top: 4px; }
+#rad-app .bubble {
+  position: relative; font-family: var(--arcade); font-size: .55rem; line-height: 1.7; color: var(--primary);
+  background: #fff; border-radius: 6px; padding: .55rem .6rem; margin-bottom: 10px; min-height: 2.8rem; width: 100%;
+  text-align: center; opacity: 0; transform: translateY(6px); transition: opacity .15s, transform .15s;
+}
+#rad-app .bubble.show { opacity: 1; transform: none; }
+#rad-app .bubble::after { content: ''; position: absolute; bottom: -8px; left: 50%; margin-left: -8px; border: 8px solid transparent; border-top-color: #fff; border-bottom: 0; }
+#rad-app .wheel-wrap { position: relative; max-width: 520px; width: 100%; margin: 0 auto; }
+#rad-app .wheel-wrap canvas { width: 100%; height: auto; display: block; }
+#rad-app .rad-meter { display: flex; flex-wrap: wrap; justify-content: center; gap: .5rem 2rem; font-family: var(--arcade); font-size: .55rem; color: #bbb; margin-top: 12px; text-align: center; line-height: 1.9; }
+#rad-app .rad-meter b { display: block; font-weight: 400; font-size: 1rem; color: #fff; }
+#rad-app .rad-meter b.up { color: #7ee0b5; }
+#rad-app .rad-meter b.down { color: #ff5c69; }
+#rad-app .rad-controls { display: flex; justify-content: center; gap: .75rem; margin-top: 14px; flex-wrap: wrap; }
+#rad-app .arc-btn {
+  font-family: var(--arcade); font-size: .8rem; padding: .95rem 1.6rem; min-height: 48px; cursor: pointer;
+  background: var(--gold); color: var(--primary); border: none; border-radius: 4px; box-shadow: 0 4px 0 var(--gold-dark);
+}
+#rad-app .arc-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--gold-dark); }
+#rad-app .arc-btn:disabled { opacity: .4; cursor: not-allowed; transform: none; }
+#rad-app .arc-btn.ghost { background: transparent; color: #ddd; box-shadow: inset 0 0 0 2px #555; }
+#rad-app .snd { width: 30px; height: 26px; background: #1b1b22; border: 2px solid #3a3a44; border-radius: 4px; color: var(--gold); cursor: pointer; font-family: var(--arcade); font-size: .55rem; }
+#rad-app .snd[aria-pressed="false"] { color: #666; text-decoration: line-through; }
+
+/* panelen onder de kast */
+#rad-app .panel { background: var(--card); border: 1.5px solid var(--border); border-radius: 12px; padding: 1.3rem 1.4rem; margin-top: 1.25rem; }
+#rad-app .panel-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr); gap: 1.75rem; align-items: start; }
+#rad-app .legend { width: 100%; border-collapse: collapse; font-size: .85rem; }
+#rad-app .legend th { text-align: left; font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .75rem; color: var(--muted); padding: .3rem .4rem; border-bottom: 1.5px solid var(--border); }
+#rad-app .legend td { padding: .38rem .4rem; border-bottom: 1px solid var(--border); vertical-align: middle; }
+#rad-app .legend td.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+#rad-app .legend .sw { display: inline-block; width: 11px; height: 11px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+#rad-app .legend .changed { font-weight: 800; }
+#rad-app .legend .tag { font-size: .7rem; font-weight: 700; color: var(--muted); display: block; }
+#rad-app .legend tr.gone td { color: #aaa; text-decoration: line-through; }
+#rad-app .legend tfoot td { font-weight: 800; border-bottom: none; padding-top: .6rem; }
+
+#rad-app .measures { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: .6rem; }
+#rad-app .measure {
+  text-align: left; cursor: pointer; border: 2px solid var(--border); background: white; border-radius: 9px;
+  padding: .7rem .8rem .65rem; display: flex; flex-direction: column; gap: .3rem; min-height: 112px; font: inherit; color: inherit;
+  transition: border-color .12s, background .12s, transform .12s;
+}
+#rad-app .measure:hover:not(:disabled) { border-color: #aaa; }
+#rad-app .measure[aria-pressed="true"] { border-color: var(--primary); background: #fafaf7; box-shadow: inset 0 0 0 1px var(--primary); }
+#rad-app .measure:disabled { cursor: not-allowed; opacity: .55; }
+#rad-app .measure.locked:disabled { opacity: 1; cursor: default; }
+#rad-app .m-title { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .9rem; line-height: 1.3; }
+#rad-app .m-target { font-size: .72rem; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; color: var(--muted); }
+#rad-app .m-target i { width: 9px; height: 9px; border-radius: 2px; display: inline-block; }
+#rad-app .m-cost { font-family: var(--arcade); font-size: .55rem; color: var(--gold-dark); margin-top: auto; }
+#rad-app .m-strat { font-family: var(--arcade); font-size: .5rem; letter-spacing: .03em; padding: .35rem .45rem; border-radius: 3px; align-self: flex-start; animation: radPop .35s ease; }
+#rad-app .m-strat.neg { background: var(--c-neg-bg); color: var(--c-neg-ink); }
+#rad-app .m-strat.pos { background: var(--c-pos-bg); color: var(--c-pos-ink); }
+#rad-app .m-strat.none { background: #eee; color: #555; }
+
+#rad-app .hint { font-size: .85rem; color: var(--muted); margin: .2rem 0 .8rem; }
+
+#rad-app .log { display: flex; flex-wrap: wrap; gap: .5rem; }
+#rad-app .log-item { font-size: .82rem; border-radius: 6px; padding: .35rem .6rem; background: var(--bg); animation: radPop .3s ease; }
+#rad-app .log-item b { font-family: var(--arcade); font-size: .55rem; margin-right: .35rem; }
+#rad-app .log-item.pos { background: var(--c-pos-bg); }
+#rad-app .log-item.neg { background: var(--c-neg-bg); }
+
+#rad-app .result h3 { font-size: 1.15rem; }
+#rad-app .res-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: .6rem; margin: .8rem 0 1rem; }
+#rad-app .res-stat { background: var(--bg); border-radius: 8px; padding: .6rem .8rem; }
+#rad-app .res-stat .v { font-family: 'Raleway', sans-serif; font-weight: 900; font-size: 1.35rem; }
+#rad-app .res-stat .l { font-size: .76rem; color: var(--muted); line-height: 1.3; }
+#rad-app .res-table { width: 100%; border-collapse: collapse; font-size: .85rem; margin-top: .4rem; }
+#rad-app .res-table th, #rad-app .res-table td { text-align: left; padding: .35rem .45rem; border-bottom: 1px solid var(--border); }
+#rad-app .res-table th { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .75rem; color: var(--muted); }
+#rad-app .res-table td.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+#rad-app .good { color: #1b655c; font-weight: 700; }
+#rad-app .bad { color: #9b1c26; font-weight: 700; }
+
+
+/* spiekbriefje: de strategieën spiegelen elkaar */
+#rad-app .mirror { width: 100%; border-collapse: separate; border-spacing: 0 4px; font-size: .78rem; margin: .2rem 0 .7rem; }
+#rad-app .mirror th { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .72rem; text-align: left; padding: 0 .5rem .1rem; }
+#rad-app .mirror th.neg { color: var(--c-neg-ink); }
+#rad-app .mirror th.pos { color: var(--c-pos-ink); }
+#rad-app .mirror td { padding: .35rem .5rem; line-height: 1.35; vertical-align: top; }
+#rad-app .mirror td:first-child { background: var(--c-neg-bg); border-radius: 5px; }
+#rad-app .mirror td:last-child { background: var(--c-pos-bg); border-radius: 5px; }
+#rad-app .mirror td b { display: inline-block; margin-right: .25rem; }
+#rad-app .mirror td.mid { text-align: center; color: var(--gold-dark); font-weight: 900; width: 1.5rem; padding: .35rem 0; vertical-align: middle; }
+
+/* maatregelkaart met vraag */
+#rad-app .measure { cursor: default; padding: 0; }
+#rad-app .measure.on { border-color: var(--primary); background: #fafaf7; box-shadow: inset 0 0 0 1px var(--primary); }
+#rad-app .measure.asking { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(174,154,100,.25); }
+#rad-app .measure.off { opacity: .55; }
+#rad-app .m-main {
+  all: unset; box-sizing: border-box; display: flex; flex-direction: column; gap: .3rem; width: 100%;
+  padding: .7rem .8rem .5rem; cursor: pointer; border-radius: 9px;
+}
+#rad-app .m-main:focus-visible { outline: 3px solid var(--gold); outline-offset: -3px; }
+#rad-app .m-main[disabled] { cursor: not-allowed; }
+#rad-app .measure.locked .m-main { cursor: default; }
+#rad-app .m-body { padding: 0 .8rem .7rem; display: flex; flex-direction: column; gap: .35rem; }
+#rad-app .m-q { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .8rem; color: var(--primary); }
+#rad-app .m-opts { display: flex; flex-wrap: wrap; gap: .3rem; }
+#rad-app .m-opt {
+  font-family: var(--arcade); font-size: .5rem; padding: .55rem .5rem; min-height: 32px; cursor: pointer;
+  border: 2px solid var(--border); border-radius: 4px; background: white; color: var(--primary);
+}
+#rad-app .m-opt.neg:hover { border-color: var(--c-neg); background: var(--c-neg-bg); }
+#rad-app .m-opt.pos:hover { border-color: var(--c-pos); background: var(--c-pos-bg); }
+#rad-app .m-opt.ce:hover { border-color: var(--primary); }
+#rad-app .m-opt.wrong { opacity: .4; text-decoration: line-through; }
+#rad-app .m-fb { font-size: .78rem; line-height: 1.4; padding: .4rem .55rem; border-radius: 5px; background: rgba(174,154,100,.14); border-left: 3px solid var(--gold); }
+#rad-app .m-fb.ok { background: rgba(42,157,143,.1); border-left-color: var(--green); }
+#rad-app .m-cancel { all: unset; font-size: .72rem; color: var(--muted); text-decoration: underline; cursor: pointer; align-self: flex-start; }
+#rad-app .m-note { font-size: .74rem; color: var(--muted); }
+#rad-app .m-note.ok { color: #1b655c; font-weight: 700; }
+#rad-app .m-why { font-size: .78rem; }
+
+@media (max-width: 860px) {
+  #rad-app .rad-stage { grid-template-columns: 1fr 1fr; }
+  #rad-app .wheel-wrap { grid-column: 1 / -1; grid-row: 1; }
+  #rad-app .host canvas { width: 110px; height: 90px; }
+  #rad-app .panel-grid { grid-template-columns: 1fr; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .sim-dot.ok, .sim-dot.hit, .frog-heart.lost { animation: none; }
@@ -478,6 +669,7 @@ footer .f-inner a:hover { color: var(--gold); }
   </button>
   <div class="nav-dropdown" id="nav-dropdown">
     <a href="#kans-gevolg" onclick="navClose()">Risico = Kans × Gevolg</a>
+    <a href="#positief-negatief" onclick="navClose()">Positieve &amp; negatieve risico's</a>
   </div>
 </nav>
 
@@ -629,6 +821,84 @@ footer .f-inner a:hover { color: var(--gold); }
       <div class="sim-text" id="sim-text" aria-live="polite"></div>
     </div>
     <div id="sim-history-wrap"></div>
+  </div>
+</section>
+
+<section id="positief-negatief">
+  <div class="badge">Risicostrategieën</div>
+  <h2>Positieve en negatieve risico's</h2>
+  <p class="lead">Een risico is niet altijd slecht nieuws. Elke gebeurtenis die een gewenst of ongewenst effect heeft op je project, is een risico. <strong>Negatieve risico's</strong> noemen we <strong>bedreigingen</strong>: die probeer je te vermijden, te verkleinen of te beheersen. <strong>Positieve risico's</strong> zijn <strong>kansen</strong>: die wil je niet vermijden, maar omarmen of versterken.</p>
+
+  <!-- Deel 1: warming-up -->
+  <h3 class="sub-title" id="pn-munt"><span class="sub-step">Deel 1</span>Twee kanten van dezelfde munt</h3>
+  <p>Is een gebeurtenis een kans of een bedreiging? Dat hangt ervan af <strong>voor wie</strong>. Lees elke gebeurtenis en kies voor wie ze een kans is. De kaart draait om en toont beide kanten.</p>
+  <div class="coin-grid" id="coin-grid"></div>
+  <div class="progress">
+    <div class="progress-track"><div class="progress-fill" id="coin-fill"></div></div>
+    <span class="progress-label" id="coin-progress-label"></span>
+  </div>
+  <div class="summary" id="coin-summary">
+    <h4>Kans of bedreiging? Dat hangt af van wiens doelen je bekijkt.</h4>
+    <p>Dezelfde gebeurtenis kan voor de ene partij een kans zijn en voor de andere een bedreiging. Daarom begint een risicoanalyse altijd bij <strong>jouw doelstelling</strong>: helpt de gebeurtenis je doel, dan is het een kans. Brengt ze je doel in gevaar, dan is het een bedreiging.</p>
+    <p>Voor bedreigingen en kansen bestaan aparte strategieën, en ze spiegelen elkaar. Die oefen je hieronder op het Rad van Risico.</p>
+  </div>
+
+  <!-- Deel 2: het Rad van Risico -->
+  <h3 class="sub-title" id="pn-rad"><span class="sub-step">Deel 2</span>Het Rad van Risico</h3>
+  <p>Elk vak op het rad is een risico. Hoe <strong>groter het vak</strong>, hoe groter de <strong>kans</strong>. Het getal in het vak is het <strong>gevolg</strong>: rode vakken kosten munten (bedreigingen), gouden vakken leveren munten op (kansen). Kies je maatregelen, benoem bij elke maatregel de strategie, kijk hoe het rad verandert, en draai 5 keer. Jan en Lowie presenteren.</p>
+
+  <div id="rad-app">
+  <div class="sc-tabs" id="rad-sc-tabs" role="tablist" aria-label="Scenario's"></div>
+
+  <div class="rad-frame">
+    <div class="rad-hud">
+      <span class="t" id="rad-hud-title">BLACK FRIDAY</span>
+      <span>BUDGET <b class="coin" id="rad-hud-budget">70</b></span>
+      <span>DRAAI <b id="rad-hud-spin">0/5</b></span>
+      <span class="frog-snd-wrap">
+        <button type="button" class="frog-snd" data-snd="music" aria-pressed="true" aria-label="Muziek" title="Muziek"><svg viewBox="0 0 8 8" aria-hidden="true" shape-rendering="crispEdges"><path fill="currentColor" d="M3 0h5v1H3zM3 1h1v5H3zM7 1h1v4H7zM1 5h3v3H1zM5 4h3v3H5z"/></svg></button>
+        <button type="button" class="frog-snd" data-snd="sfx" aria-pressed="true" aria-label="Geluidseffecten" title="Geluidseffecten"><svg viewBox="0 0 8 8" aria-hidden="true" shape-rendering="crispEdges"><path fill="currentColor" d="M0 3h2v2H0zM2 2h1v4H2zM3 1h1v6H3zM4 0h1v8H4zM6 2h1v1H6zM6 5h1v1H6zM7 3h1v2H7z"/></svg></button>
+      </span>
+    </div>
+    <div class="rad-stage">
+      <div class="host"><div class="bubble" id="rad-bub-jan" aria-live="polite"></div><canvas id="rad-host-jan" width="44" height="36" aria-hidden="true"></canvas><div class="host-name">JAN</div></div>
+      <div class="wheel-wrap"><canvas id="rad-wheel" width="560" height="560" role="img" aria-label="Rad van Risico"></canvas></div>
+      <div class="host"><div class="bubble" id="rad-bub-lowie" aria-live="polite"></div><canvas id="rad-host-lowie" width="44" height="36" aria-hidden="true"></canvas><div class="host-name">LOWIE</div></div>
+    </div>
+    <div class="rad-meter">
+      <span>VERWACHTE WINST PER DRAAI<b id="rad-ev">0</b></span>
+      <span>ZONDER MAATREGELEN<b id="rad-ev0">0</b></span>
+      <span>VERWACHT EINDBUDGET<b id="rad-ev-end">0</b></span>
+    </div>
+    <div class="rad-controls">
+      <button type="button" class="arc-btn" id="rad-spin">DRAAI!</button>
+      <button type="button" class="arc-btn ghost" id="rad-reset">OPNIEUW</button>
+    </div>
+  </div>
+
+  <div class="panel panel-grid">
+    <div>
+      <h3>Wat staat er op het rad?</h3>
+      <table class="legend" id="rad-legend"></table>
+    </div>
+    <div>
+      <h3>Kies je maatregelen</h3>
+      <table class="mirror" aria-label="Strategieën per type risico">
+        <thead><tr><th class="neg">Bedreiging (rood vak)</th><th aria-hidden="true"></th><th class="pos">Kans (goud vak)</th></tr></thead>
+        <tbody>
+          <tr><td><b>Vermijden</b> vak verdwijnt</td><td class="mid" aria-hidden="true">↔</td><td><b>Exploiteren</b> zelf investeren: vak (bijna) zeker</td></tr>
+          <tr><td><b>Verminderen</b> vak kleiner (oorzaak) of minder schade (effect)</td><td class="mid" aria-hidden="true">↔</td><td><b>Verbeteren</b> vak groter (oorzaak) of meer winst (effect)</td></tr>
+          <tr><td><b>Verzekeren</b> premie per draai, verzekeraar betaalt<br><b>Overdragen</b> een ander neemt het risico over</td><td class="mid" aria-hidden="true">↔</td><td><b>Delen</b> samen investeren, samen de winst</td></tr>
+          <tr><td><b>Accepteren</b> niets doen</td><td class="mid" aria-hidden="true">↔</td><td><b>Accepteren</b> niets doen</td></tr>
+        </tbody>
+      </table>
+      <p class="hint" id="rad-m-hint">Klik op een maatregel en benoem eerst de strategie. Pas als je juist antwoordt, wordt de maatregel actief en verandert het rad. Nog eens klikken op de kop = ongedaan maken. Zodra je draait, liggen je keuzes vast.</p>
+      <div class="measures" id="rad-measures"></div>
+    </div>
+  </div>
+
+  <div class="panel" id="rad-log-panel" hidden><h3>Je project, week per week</h3><div class="log" id="rad-log"></div></div>
+  <div class="panel result" id="rad-result" hidden></div>
   </div>
 </section>
 
@@ -1189,6 +1459,12 @@ var FrogAudio = {
       });
     }
     else if (name === 'tunnel') A.noise({ d: 1.6, f: 180, f2: 2000, filter: 'bandpass', v: 0.5 });
+    else if (name === 'tick') A.tone({ f: 1800, d: 0.025, type: 'square', v: 0.05 });
+    else if (name === 'pick') { A.tone({ f: 660, d: 0.06, type: 'pulse', v: 0.1 }); A.tone({ f: 990, d: 0.08, at: t + 0.05, type: 'pulse', v: 0.1 }); }
+    else if (name === 'meh') { A.tone({ f: 330, d: 0.12, type: 'triangle', v: 0.15 }); A.tone({ f: 330, d: 0.12, at: t + 0.15, type: 'triangle', v: 0.15 }); }
+    else if (name === 'coin') A.notes(['B5', 'E6', 'G6'], 0.07, 'pulse', 0.13);
+    else if (name === 'shield') { A.tone({ f: 1400, d: 0.35, type: 'triangle', v: 0.18 }); A.tone({ f: 2100, d: 0.25, at: t + 0.04, type: 'sine', v: 0.08 }); }
+    else if (name === 'ouch') { A.tone({ f: 420, f2: 70, d: 0.45, type: 'square', v: 0.13 }); A.tone({ f: 120, f2: 40, d: 0.4, at: t + 0.05, type: 'triangle', v: 0.35 }); }
     else if (name === 'thud') {
       var k = arg || 1;
       A.tone({ f: 130, f2: 38, d: 0.28, type: 'triangle', v: 0.5 * k });
@@ -1232,6 +1508,7 @@ var FrogAudio = {
       else FROG_GAMES.forEach(function(g) { if (g.isActive() && g.visible) A.startMusic(g, g.cfg.tempo); });
     }
     FROG_GAMES.forEach(function(g) { g.syncSound(); });
+    document.querySelectorAll('[data-snd]').forEach(function(btn) { btn.setAttribute('aria-pressed', String(!!A[btn.getAttribute('data-snd')])); });
   }
 };
 FrogAudio.load();
@@ -2136,6 +2413,642 @@ document.getElementById('sim-run').addEventListener('click', function() {
 });
 
 sbUpdate(true);
+
+
+// ══ Deel 1 (positieve en negatieve risico's): twee kanten van dezelfde munt ═══
+// Dezelfde gebeurtenis is voor de ene partij een kans en voor de andere een bedreiging.
+var COIN_CARDS = [
+  { event: 'Een lockdown tijdens een pandemie',
+    pos: { who: 'Een videobelplatform zoals Zoom', why: 'ziet het aantal gebruikers op een paar weken exploderen.' },
+    neg: { who: 'Het café om de hoek', why: 'moet weken dicht en verliest al zijn inkomsten.' } },
+  { event: 'Een stortbui op Tomorrowland',
+    pos: { who: 'De verkoper van regenponcho\'s', why: 'verkoopt in een paar uur zijn hele voorraad.' },
+    neg: { who: 'De organisator', why: 'krijgt een modderpoel, minder publiek aan de bars en extra schoonmaakkosten.' } },
+  { event: 'Een nieuwe AI-tool die zelf code schrijft',
+    pos: { who: 'Een IT-team met een grote backlog', why: 'kan sneller opleveren en extra functies toevoegen.' },
+    neg: { who: 'Een webbouwer die enkel eenvoudige sites maakt', why: 'ziet klanten hun website voortaan zelf in elkaar zetten.' } },
+  { event: 'Een strengere privacywet',
+    pos: { who: 'Een consultant in privacy en security', why: 'krijgt meer aanvragen dan er uren in een week zitten.' },
+    neg: { who: 'Een webshop die veel klantgegevens bewaart', why: 'moet extra beveiliging en procedures betalen.' } },
+  { event: 'Een hittegolf van twee weken',
+    pos: { who: 'Een ijsjesverkoper aan zee', why: 'draait recordomzet.' },
+    neg: { who: 'Een bouwbedrijf', why: 'moet de werken op de warmste uren stilleggen en loopt vertraging op.' } },
+  { event: 'De licentieprijs van je 3D-software verdubbelt plots',
+    pos: { who: 'Een concurrerend softwarebedrijf', why: 'ziet ontevreden klanten overstappen.' },
+    neg: { who: 'Jouw project dat op die software draait', why: 'gaat over budget, of moet halverwege van software wisselen.' } }
+];
+var coinState = COIN_CARDS.map(function() { return null; }); // null, of { ok: true/false }
+
+function coinRender() {
+  var grid = document.getElementById('coin-grid');
+  grid.innerHTML = COIN_CARDS.map(function(c, i) {
+    var st = coinState[i], flipped = !!st;
+    // de juiste partij staat niet altijd op dezelfde plek
+    var opts = i % 2 ? [['pos', c.pos.who], ['neg', c.neg.who]] : [['neg', c.neg.who], ['pos', c.pos.who]];
+    var front = '<div class="coin-face coin-front"' + (flipped ? ' aria-hidden="true"' : '') + '>' +
+      '<div class="coin-top"><span class="coin-icon" aria-hidden="true"></span><span class="coin-kicker">GEBEURTENIS ' + (i + 1) + '</span></div>' +
+      '<div class="coin-event">' + c.event + '</div>' +
+      '<div class="coin-q" id="coin-q-' + i + '">Voor wie is dit een kans?</div>' +
+      '<div class="coin-opts" role="group" aria-labelledby="coin-q-' + i + '">' + opts.map(function(o) {
+        return '<button type="button" class="coin-opt"' + (flipped ? ' disabled tabindex="-1"' : '') + ' onclick="coinAnswer(' + i + ',\'' + o[0] + '\')">' + o[1] + '</button>';
+      }).join('') + '</div></div>';
+    var back = '<div class="coin-face coin-back"' + (flipped ? '' : ' aria-hidden="true"') + '>' +
+      '<div class="coin-verdict ' + (flipped && st.ok ? 'ok' : 'no') + '" tabindex="-1" id="coin-v-' + i + '">' + (flipped ? (st.ok ? 'Juist!' : 'Net omgekeerd!') : '') + '</div>' +
+      '<div class="coin-event small">' + c.event + '</div>' +
+      '<div class="coin-side pos"><span class="coin-tag">KANS VOOR</span><strong>' + c.pos.who + '</strong> ' + c.pos.why + '</div>' +
+      '<div class="coin-side neg"><span class="coin-tag">BEDREIGING VOOR</span><strong>' + c.neg.who + '</strong> ' + c.neg.why + '</div></div>';
+    return '<div class="coin-card' + (flipped ? ' flipped' : '') + '"><div class="coin-inner">' + front + back + '</div></div>';
+  }).join('');
+  var done = coinState.filter(Boolean).length, ok = coinState.filter(function(x) { return x && x.ok; }).length;
+  document.getElementById('coin-fill').style.width = (done / COIN_CARDS.length * 100) + '%';
+  document.getElementById('coin-progress-label').textContent = done + ' / ' + COIN_CARDS.length + ' omgedraaid' + (done ? ', ' + ok + ' juist' : '');
+  document.getElementById('coin-summary').classList.toggle('visible', done === COIN_CARDS.length);
+}
+function coinAnswer(i, side) {
+  if (coinState[i]) return;
+  FrogAudio.init();
+  coinState[i] = { ok: side === 'pos' };
+  FrogAudio.play(side === 'pos' ? 'cross' : 'meh');
+  coinRender();
+  var v = document.getElementById('coin-v-' + i); if (v) v.focus({ preventScroll: true });
+}
+coinRender();
+
+// ══ Deel 2 (positieve en negatieve risico's): het Rad van Risico ═══════════════
+(function() {
+// ══ Scenario's ═══════════════════════════════════════════════════════════════
+// Vakken: kind neg = bedreiging, pos = kans, neutral = rustige dag. p = kans per draai, v = gevolg in munten.
+// Het neutrale vak vangt alle kans op die maatregelen vrijmaken of innemen.
+// Maatregelen: fx = { p: factor | pTo: waarde, v: factor | vTo: waarde, shield: eigen risico }, cost = eenmalig, premium = per draai.
+var SCENARIOS = [
+  {
+    id: 'blackfriday', name: 'Black Friday', title: 'BLACK FRIDAY', budget: 70, unit: 'dag',
+    intro: 'Je webshop draait de drukste week van het jaar. Elke draai is een verkoopdag.',
+    neutral: { label: 'Gewone verkoopdag', short: 'GEWOON', v: 5 },
+    segments: [
+      { id: 'crash', label: 'Server crasht onder de drukte', short: 'CRASH', kind: 'neg', p: 0.18, v: -40 },
+      { id: 'influencer', label: 'Influencer deelt je shop', short: 'VIRAAL', kind: 'pos', p: 0.10, v: 60 },
+      { id: 'lek', label: 'Datalek met klantgegevens', short: 'DATALEK', kind: 'neg', p: 0.06, v: -90 },
+      { id: 'concurrent', label: 'Concurrent ligt plat', short: 'CONCURRENT', kind: 'pos', p: 0.08, v: 40 },
+      { id: 'laat', label: 'Pakjes komen te laat', short: 'TE LAAT', kind: 'neg', p: 0.14, v: -20 }
+    ],
+    measures: [
+      { id: 'servers', label: 'Extra servers huren voor de piek', target: 'crash', cost: 15, strat: 'Verminderen', how: 'oorzaak: de kans daalt', fx: { p: 0.33 } },
+      { id: 'gast', label: 'Geen klantaccounts meer: enkel afrekenen als gast', target: 'lek', cost: 25, strat: 'Vermijden', how: 'je bewaart geen gegevens meer', fx: { pTo: 0 } },
+      { id: 'cyber', label: 'Cyberverzekering afsluiten', target: 'lek', premium: 4, strat: 'Verzekeren', how: 'de verzekeraar betaalt, jij draagt nog 10', fx: { shield: 10 } },
+      { id: 'koerier', label: 'Tweede koerier achter de hand', target: 'laat', cost: 10, strat: 'Verminderen', how: 'oorzaak: de kans halveert', fx: { p: 0.5 } },
+      { id: 'betaal', label: 'Zelf een influencer betalen voor een post', target: 'influencer', cost: 25, strat: 'Exploiteren', how: 'je investeert alles zelf en houdt alle winst', fx: { pTo: 0.30 }, excludes: 'partner' },
+      { id: 'partner', label: 'Samen met een partnershop een influencer betalen', target: 'influencer', cost: 12, strat: 'Delen', how: 'jullie investeren samen en delen de winst', fx: { pTo: 0.35, v: 0.5 }, excludes: 'betaal' },
+      { id: 'voorraad', label: 'Extra voorraad en promo klaarzetten', target: 'concurrent', cost: 10, strat: 'Verbeteren', how: 'effect: als het gebeurt, verdien je dubbel', fx: { v: 2 } },
+      { id: 'meteoor', label: 'Verzekering tegen een meteorietinslag op het magazijn', target: null, cost: 10, strat: 'Verzekeren', how: 'je betaalt zodat een verzekeraar de schade draagt', fx: {} }
+    ]
+  },
+  {
+    id: 'tomorrowland', name: 'Tomorrowland', title: 'TOMORROWLAND', budget: 80, unit: 'festivaldag',
+    intro: 'Jij bent project- en risicomanager van Tomorrowland 2026. Elke draai is een festivaldag.',
+    neutral: { label: 'Alles loopt op wieltjes', short: 'VLOT', v: 5 },
+    segments: [
+      { id: 'onweer', label: 'Onweer boven de wei', short: 'ONWEER', kind: 'neg', p: 0.15, v: -50 },
+      { id: 'viraal', label: 'Aftermovie gaat viraal', short: 'VIRAAL', kind: 'pos', p: 0.10, v: 50 },
+      { id: 'headliner', label: 'Headliner zegt af', short: 'AFGEZEGD', kind: 'neg', p: 0.08, v: -60 },
+      { id: 'sponsor', label: 'Een sponsor wil instappen', short: 'SPONSOR', kind: 'pos', p: 0.08, v: 45 },
+      { id: 'drank', label: 'De drank is op', short: 'DRANK OP', kind: 'neg', p: 0.12, v: -25 }
+    ],
+    measures: [
+      { id: 'hal', label: 'Het festival in een overdekte hal organiseren', target: 'onweer', cost: 45, strat: 'Vermijden', how: 'geen open lucht, geen onweer', fx: { pTo: 0 } },
+      { id: 'podia', label: 'Overdekte podia en een evacuatieplan', target: 'onweer', cost: 20, strat: 'Verminderen', how: 'effect: de schade wordt kleiner', fx: { v: 0.3 } },
+      { id: 'annul', label: 'Annuleringsverzekering voor de headliner', target: 'headliner', premium: 3, strat: 'Verzekeren', how: 'de verzekeraar betaalt, jij draagt nog 10', fx: { shield: 10 } },
+      { id: 'backup', label: 'Een back-up-dj onder contract', target: 'headliner', cost: 15, strat: 'Verminderen', how: 'effect: het publiek blijft, de schade daalt', fx: { v: 0.35 } },
+      { id: 'brouwerij', label: 'De drankcatering uitbesteden aan een brouwerij', target: 'drank', cost: 10, strat: 'Overdragen', how: 'de brouwerij draagt het risico', fx: { vTo: 0 } },
+      { id: 'crew', label: 'Zelf een professionele aftermovie-crew inhuren', target: 'viraal', cost: 20, strat: 'Exploiteren', how: 'je investeert alles zelf en houdt alle winst', fx: { pTo: 0.30 }, excludes: 'radio' },
+      { id: 'radio', label: 'Samen met een radiozender een aftermovie-crew betalen', target: 'viraal', cost: 10, strat: 'Delen', how: 'jullie investeren samen en delen de winst', fx: { pTo: 0.35, v: 0.5 }, excludes: 'crew' },
+      { id: 'podium', label: 'De sponsor een eigen podium aanbieden', target: 'sponsor', cost: 10, strat: 'Verbeteren', how: 'effect: de sponsordeal wordt dubbel zo groot', fx: { v: 2 } },
+      { id: 'aliens', label: 'Verzekering tegen een bestorming door aliens', target: null, cost: 5, strat: 'Verzekeren', how: 'je betaalt zodat een verzekeraar de schade draagt', fx: {} }
+    ]
+  },
+  {
+    id: 'playstation', name: 'PlayStation 9¾', title: 'PLAYSTATION 9¾', budget: 90, unit: 'maand',
+    intro: 'Jouw team ontwikkelt de PlayStation 9¾. Elke draai is een maand ontwikkeling.',
+    neutral: { label: 'Ontwikkeling op schema', short: 'OP SCHEMA', v: 5 },
+    segments: [
+      { id: 'chip', label: 'Tekort aan chips', short: 'CHIPTEKORT', kind: 'neg', p: 0.14, v: -45 },
+      { id: 'ai', label: 'De nieuwe AI-chip is sneller klaar', short: 'AI-CHIP', kind: 'pos', p: 0.10, v: 50 },
+      { id: 'heet', label: 'Console raakt oververhit (terugroepactie)', short: 'OVERHIT', kind: 'neg', p: 0.10, v: -70 },
+      { id: 'exclusief', label: 'Een bekende game wordt exclusief', short: 'EXCLUSIEF', kind: 'pos', p: 0.07, v: 70 },
+      { id: 'hack', label: 'Hackers kraken de console', short: 'GEHACKT', kind: 'neg', p: 0.07, v: -60 }
+    ],
+    measures: [
+      { id: 'leverancier', label: 'Een tweede chipleverancier contracteren', target: 'chip', cost: 20, strat: 'Verminderen', how: 'oorzaak: de kans daalt', fx: { p: 0.4 } },
+      { id: 'tests', label: 'Stresstests op elk prototype', target: 'heet', cost: 15, strat: 'Verminderen', how: 'oorzaak: je vindt het probleem vooraf', fx: { p: 0.3 } },
+      { id: 'aansprakelijk', label: 'Productaansprakelijkheidsverzekering', target: 'heet', premium: 4, strat: 'Verzekeren', how: 'de verzekeraar betaalt, jij draagt nog 15', fx: { shield: 15 } },
+      { id: 'security', label: 'Beveiliging uitbesteden aan een gespecialiseerde firma', target: 'hack', cost: 20, strat: 'Overdragen', how: 'de firma draagt de schade', fx: { vTo: 0 } },
+      { id: 'engineers', label: 'Zelf extra engineers op de AI-chip zetten', target: 'ai', cost: 20, strat: 'Exploiteren', how: 'je investeert alles zelf en houdt alle winst', fx: { pTo: 0.30 }, excludes: 'chipmaker' },
+      { id: 'chipmaker', label: 'Samen met een chipfabrikant extra engineers inzetten', target: 'ai', cost: 10, strat: 'Delen', how: 'jullie investeren samen en delen de winst', fx: { pTo: 0.35, v: 0.5 }, excludes: 'engineers' },
+      { id: 'devkit', label: 'Gamestudio\'s gratis een ontwikkelkit geven', target: 'exclusief', cost: 15, strat: 'Verbeteren', how: 'oorzaak: de kans verdubbelt', fx: { p: 2 } },
+      { id: 'bliksem', label: 'Verzekering tegen blikseminslag op het hoofdkantoor', target: null, cost: 8, strat: 'Verzekeren', how: 'je betaalt zodat een verzekeraar de schade draagt', fx: {} }
+    ]
+  }
+];
+var SPINS = 5;
+var NEG_COLORS = ['#e63946', '#c92a3a', '#f0606b'], POS_COLORS = ['#e9b824', '#d39a12'], NEUTRAL_COLOR = '#3a3f4a', NEUTRAL_COLOR2 = '#31353f';
+
+// ══ Model ════════════════════════════════════════════════════════════════════
+// Het rad na maatregelen: lijst van vakken met p (kans) en v (gevolg na verzekering/overdracht)
+function buildWheel(sc, chosen) {
+  var segs = sc.segments.map(function(s) { return { id: s.id, kind: s.kind, label: s.label, short: s.short, p: s.p, v: s.v, shield: null, tags: [] }; });
+  // Maatregelen altijd in een vaste volgorde toepassen, zodat de klikvolgorde niet meetelt:
+  // 1. waarden die kans of gevolg OP iets zetten (pTo, vTo), 2. factoren (p, v), 3. verzekering (shield).
+  // De labels volgen de volgorde van de maatregelen in het scenario.
+  var ms = sc.measures.filter(function(m) { return m.target && chosen.indexOf(m.id) >= 0; });
+  function seg(m) { return segs.filter(function(x) { return x.id === m.target; })[0]; }
+  ms.forEach(function(m) { var s = seg(m); if (m.fx.pTo != null) s.p = m.fx.pTo; if (m.fx.vTo != null) s.v = m.fx.vTo; });
+  ms.forEach(function(m) { var s = seg(m); if (m.fx.p != null) s.p = s.p * m.fx.p; if (m.fx.v != null) s.v = Math.round(s.v * m.fx.v); });
+  ms.forEach(function(m) { var s = seg(m); if (m.fx.shield != null) s.shield = m.fx.shield; s.tags.push(m.strat); });
+  segs.forEach(function(s) { s.p = Math.min(0.6, Math.max(0, s.p)); });
+  var rest = Math.max(0.05, 1 - segs.reduce(function(a, s) { return a + s.p; }, 0));
+  // het neutrale vak staat twee keer op het rad (tegenover elkaar), dat oogt evenwichtiger
+  var n1 = { id: 'neutral', kind: 'neutral', label: sc.neutral.label, short: sc.neutral.short, p: rest / 2, v: sc.neutral.v, tags: [] };
+  var n2 = Object.assign({}, n1, { id: 'neutral2' });
+  var out = [n1].concat(segs.slice(0, 3), [n2], segs.slice(3));
+  var tot = out.reduce(function(a, s) { return a + s.p; }, 0);
+  out.forEach(function(s) { s.p = s.p / tot; });
+  return out;
+}
+function segValue(s) { return s.shield != null && s.v < 0 ? -s.shield : s.v; }
+function premium(sc, chosen) { return chosen.reduce(function(a, id) { var m = measureById(sc, id); return a + (m.premium || 0); }, 0); }
+function oneOff(sc, chosen) { return chosen.reduce(function(a, id) { var m = measureById(sc, id); return a + (m.cost || 0); }, 0); }
+function measureById(sc, id) { return sc.measures.filter(function(x) { return x.id === id; })[0]; }
+function evPerSpin(sc, chosen) {
+  return buildWheel(sc, chosen).reduce(function(a, s) { return a + s.p * segValue(s); }, 0) - premium(sc, chosen);
+}
+function evEnd(sc, chosen) { return sc.budget - oneOff(sc, chosen) + SPINS * evPerSpin(sc, chosen); }
+function bestPlan(sc) {
+  var ids = sc.measures.map(function(m) { return m.id; }), best = { e: -Infinity, ch: [] };
+  for (var mask = 0; mask < (1 << ids.length); mask++) {
+    var ch = ids.filter(function(_, i) { return mask & (1 << i); });
+    if (oneOff(sc, ch) > sc.budget) continue;
+    if (ch.some(function(id) { var m = measureById(sc, id); return m.excludes && ch.indexOf(m.excludes) >= 0; })) continue;
+    var e = evEnd(sc, ch);
+    if (e > best.e + 1e-9) best = { e: e, ch: ch };
+  }
+  return best;
+}
+function pick(wheel, u) {
+  var acc = 0;
+  for (var i = 0; i < wheel.length; i++) { acc += wheel[i].p; if (u < acc) return i; }
+  return wheel.length - 1;
+}
+
+// Het rad als "speler" voor FrogAudio: muziek enkel tijdens het draaien en als het rad zichtbaar is
+var radOwner = {
+  cfg: { tempo: 126 }, visible: false,
+  isActive: function() { return st.phase === 'spinning' || st.phase === 'between'; },
+  syncSound: function() {},
+  kick: function() {
+    if (!this.visible || document.hidden) { FrogAudio.stopMusic(this); return; }
+    if (this.isActive()) FrogAudio.startMusic(this, this.cfg.tempo);
+    if (!raf) { last = performance.now(); raf = requestAnimationFrame(loop); }
+  }
+};
+FROG_GAMES.push(radOwner);
+
+// ══ Toestand ═════════════════════════════════════════════════════════════════
+var st = { sc: 0, chosen: [], spin: 0, budget: 0, ghost: 0, rolls: [], log: [], phase: 'plan', rot: 0, done: {} };
+var view = { segs: [], target: [] }; // getoonde vakken (p wordt vloeiend naar het doel geanimeerd)
+var hosts = {
+  jan: { mode: 'idle', t: 0, cv: document.getElementById('rad-host-jan') },
+  lowie: { mode: 'idle', t: 0, cv: document.getElementById('rad-host-lowie') }
+};
+
+function sc() { return SCENARIOS[st.sc]; }
+function fmt(x, sign) {
+  var r = Math.round(x * 10) / 10, s = r.toLocaleString('nl-BE', { minimumFractionDigits: Math.abs(r % 1) > 0 ? 1 : 0, maximumFractionDigits: 1 });
+  return (sign && r > 0 ? '+' : '') + s.replace('-', '−');
+}
+function pct(p) { return Math.round(p * 100) + '%'; }
+
+function loadScenario(i) {
+  FrogAudio.stopMusic(radOwner);
+  st.sc = i; st.chosen = []; st.spin = 0; st.log = []; st.phase = 'plan'; st.vals = []; st.premPaid = 0; st.quiz = null; st.answered = {}; st.notes = {};
+  st.budget = sc().budget; st.ghost = sc().budget;
+  st.rolls = []; for (var k = 0; k < SPINS; k++) st.rolls.push(Math.random());
+  st.rot = 0;
+  var w = buildWheel(sc(), []);
+  view.segs = w.map(function(s) { return Object.assign({}, s); });
+  view.target = w;
+  setHost('jan', 'idle'); setHost('lowie', 'idle');
+  say('jan', 'WELKOM BIJ HET RAD VAN RISICO!'); say('lowie', sc().title + '. KIES JE MAATREGELEN.');
+  document.getElementById('rad-result').hidden = true;
+  document.getElementById('rad-log-panel').hidden = true;
+  renderAll();
+}
+function renderAll() { renderTabs(); renderHud(); renderLegend(); renderMeasures(); renderMeter(); renderLog(); }
+
+function renderTabs() {
+  document.getElementById('rad-sc-tabs').innerHTML = SCENARIOS.map(function(s, i) {
+    return '<button type="button" class="sc-tab" role="tab" aria-selected="' + (i === st.sc) + '" onclick="Rad.loadScenario(' + i + ')"><span class="nr">' + (i + 1) + '</span>' + s.name + (st.done[s.id] ? '<span class="done">✓</span>' : '') + '</button>';
+  }).join('');
+}
+function renderHud() {
+  document.getElementById('rad-hud-title').textContent = sc().title;
+  var shown = st.phase === 'plan' ? sc().budget - oneOff(sc(), st.chosen) : st.budget;
+  document.getElementById('rad-hud-budget').textContent = fmt(shown);
+  document.getElementById('rad-hud-spin').textContent = st.spin + '/' + SPINS;
+  var sp = document.getElementById('rad-spin');
+  sp.disabled = st.phase === 'spinning' || st.phase === 'done';
+  sp.textContent = st.spin === 0 ? 'DRAAI!' : st.spin < SPINS ? 'DRAAI ' + (st.spin + 1) + '/' + SPINS : 'KLAAR';
+}
+function segColor(s, i) {
+  if (s.kind === 'neutral') return s.id === 'neutral' ? NEUTRAL_COLOR : NEUTRAL_COLOR2;
+  var list = s.kind === 'neg' ? NEG_COLORS : POS_COLORS, idx = sc().segments.filter(function(x) { return x.kind === s.kind; }).map(function(x) { return x.id; }).indexOf(s.id);
+  return list[idx % list.length];
+}
+function renderLegend() {
+  var w = buildWheel(sc(), st.chosen), base = buildWheel(sc(), []);
+  var rows = w.filter(function(s) { return s.id !== 'neutral2'; }).map(function(s) {
+    var b = base.filter(function(x) { return x.id === s.id; })[0], p = s.kind === 'neutral' ? s.p * 2 : s.p, pb = s.kind === 'neutral' ? b.p * 2 : b.p;
+    var v = segValue(s), changed = Math.abs(p - pb) > 0.001 || v !== segValue(b);
+    var gone = p < 0.001;
+    var tag = s.tags.length ? '<span class="tag">' + s.tags.join(' + ') + (s.shield != null ? ' (eigen risico ' + s.shield + ')' : '') + '</span>' : (s.kind === 'neutral' ? '' : '<span class="tag">Geen maatregel: accepteren</span>');
+    return '<tr class="' + (gone ? 'gone' : '') + '"><td><span class="sw" style="background:' + segColor(s) + '"></span>' + s.label + tag + '</td>' +
+      '<td class="num' + (changed ? ' changed' : '') + '">' + pct(p) + '</td>' +
+      '<td class="num' + (changed ? ' changed' : '') + '">' + fmt(v, true) + '</td>' +
+      '<td class="num">' + fmt(p * v, true) + '</td></tr>';
+  }).join('');
+  var prem = premium(sc(), st.chosen);
+  document.getElementById('rad-legend').innerHTML = '<thead><tr><th>Gebeurtenis</th><th style="text-align:right">Kans</th><th style="text-align:right">Gevolg</th><th style="text-align:right">Kans × gevolg</th></tr></thead><tbody>' + rows +
+    (prem ? '<tr><td>Premie per draai</td><td></td><td></td><td class="num">' + fmt(-prem, true) + '</td></tr>' : '') +
+    '</tbody><tfoot><tr><td colspan="3">Verwachte winst per draai</td><td class="num">' + fmt(evPerSpin(sc(), st.chosen), true) + '</td></tr></tfoot>';
+}
+// Strategieën per type risico, met een hint die het mechanisme beschrijft zonder de naam te geven
+var STRAT_NEG = ['Vermijden', 'Verminderen', 'Verzekeren', 'Overdragen'], STRAT_POS = ['Exploiteren', 'Verbeteren', 'Delen'];
+var STRAT_HINT = {
+  Vermijden: 'Kijk wat er met het risico gebeurt: verdwijnt het helemaal van het rad?',
+  Verminderen: 'Het risico blijft bestaan en je draagt het nog zelf, maar het wordt kleiner: minder kans of minder schade.',
+  Verzekeren: 'Je betaalt elke draai een premie, en als het misgaat, betaalt iemand anders het grootste deel van de schade.',
+  Overdragen: 'Een andere partij neemt het werk én het risico van je over. Je betaalt geen premie per draai.',
+  Exploiteren: 'Je investeert alles zelf om de kans (bijna) zeker te laten gebeuren, en je houdt ook alle winst.',
+  Verbeteren: 'De kans blijft van jou, maar je maakt ze groter, of ze levert meer op als ze gebeurt.',
+  Delen: 'Je werkt samen met een partner: jullie investeren samen en delen ook de winst.'
+};
+function ceOf(m) { return m.fx.p != null || m.fx.pTo != null ? 'oorzaak' : 'effect'; }
+function ceText(m) {
+  var up = m.strat === 'Verbeteren';
+  return ceOf(m) === 'oorzaak' ? 'Oorzaak: de kans ' + (up ? 'stijgt' : 'daalt') + '.' : 'Effect: ' + (up ? 'als het gebeurt, levert het meer op' : 'als het gebeurt, is de schade kleiner') + '.';
+}
+function measureKind(m) {
+  var t = m.target ? sc().segments.filter(function(x) { return x.id === m.target; })[0] : null;
+  return t ? t.kind : 'neg'; // een "verzekering" die niet op het rad staat, hoort bij de bedreigingen
+}
+function renderMeasures() {
+  var locked = st.phase !== 'plan', left = sc().budget - oneOff(sc(), st.chosen), q = st.quiz;
+  document.getElementById('rad-measures').innerHTML = sc().measures.map(function(m) {
+    var on = st.chosen.indexOf(m.id) >= 0, tgt = m.target ? sc().segments.filter(function(x) { return x.id === m.target; })[0] : null;
+    var kind = measureKind(m), asking = q && q.id === m.id;
+    var blockedBy = m.excludes && st.chosen.indexOf(m.excludes) >= 0 ? measureById(sc(), m.excludes) : null;
+    var cant = !on && ((m.cost || 0) > left || !!blockedBy);
+    var cls = 'measure' + (on ? ' on' : '') + (asking ? ' asking' : '') + (locked ? ' locked' : '') + (cant && !locked ? ' off' : '');
+    var h = '<div class="' + cls + '">';
+    h += '<button type="button" class="m-main" aria-pressed="' + on + '" aria-expanded="' + !!asking + '"' + (locked || cant ? ' disabled' : '') + ' onclick="Rad.clickMeasure(\'' + m.id + '\')">' +
+      '<span class="m-title">' + m.label + '</span>' +
+      '<span class="m-target">' + (tgt ? '<i style="background:' + segColor(tgt) + '"></i>' + tgt.label : '<i style="background:#bbb"></i>Niet op het rad') + '</span>' +
+      '<span class="m-cost">' + (m.premium ? m.premium + ' PER DRAAI' : m.cost ? m.cost + ' MUNTEN' : 'GRATIS') + '</span></button>';
+    var body = '';
+    if (blockedBy && !locked) body += '<span class="m-note">Kan niet samen met "' + blockedBy.label + '": je benut dezelfde kans niet tegelijk alleen en samen.</span>';
+    if (asking) {
+      if (q.step === 'strat') {
+        var opts = kind === 'pos' ? STRAT_POS : STRAT_NEG;
+        body += '<span class="m-q" id="q-' + m.id + '">Welke strategie is dit?</span><div class="m-opts" role="group" aria-labelledby="q-' + m.id + '">' +
+          opts.map(function(o) { var w = q.wrong.indexOf(o) >= 0; return '<button type="button" class="m-opt ' + kind + (w ? ' wrong' : '') + '"' + (w ? ' disabled' : '') + ' onclick="Rad.answerStrat(\'' + o + '\')">' + o.toUpperCase() + '</button>'; }).join('') + '</div>';
+      } else {
+        body += '<span class="m-q" id="q-' + m.id + '">' + (q.revealed ? 'Het is ' + m.strat.toLowerCase() + '.' : 'Juist, ' + m.strat.toLowerCase() + '!') + ' Pakt deze maatregel de oorzaak of het effect aan?</span><div class="m-opts" role="group" aria-labelledby="q-' + m.id + '">' +
+          [['oorzaak', 'OORZAAK: KANS'], ['effect', 'EFFECT: GEVOLG']].map(function(o) { var w = q.wrong.indexOf(o[0]) >= 0; return '<button type="button" class="m-opt ce' + (w ? ' wrong' : '') + '"' + (w ? ' disabled' : '') + ' onclick="Rad.answerCe(\'' + o[0] + '\')">' + o[1] + '</button>'; }).join('') + '</div>';
+      }
+      if (q.fb) body += '<div class="m-fb" role="status">' + q.fb + '</div>';
+      body += '<button type="button" class="m-cancel" onclick="Rad.cancelQuiz()">Annuleer</button>';
+    } else if (on) {
+      var note = st.notes[m.id];
+      body += '<span class="m-strat ' + (m.target ? kind : 'none') + '">' + m.strat.toUpperCase() + '</span>' +
+        '<span class="m-why">' + m.how.charAt(0).toUpperCase() + m.how.slice(1) + '.' + (m.target ? '' : ' <strong>Maar dit risico staat niet eens op het rad.</strong>') + '</span>' +
+        (note ? '<span class="m-note' + (note.ok ? ' ok' : '') + '">' + note.text + '</span>' : '');
+    }
+    if (body) h += '<div class="m-body">' + body + '</div>';
+    return h + '</div>';
+  }).join('');
+  document.getElementById('rad-m-hint').hidden = locked;
+}
+function renderMeter() {
+  var e = evPerSpin(sc(), st.chosen), e0 = evPerSpin(sc(), []);
+  var el = document.getElementById('rad-ev');
+  el.textContent = fmt(e, true); el.className = e > e0 + 0.05 ? 'up' : e < e0 - 0.05 ? 'down' : '';
+  document.getElementById('rad-ev0').textContent = fmt(e0, true);
+  document.getElementById('rad-ev-end').textContent = fmt(evEnd(sc(), st.chosen));
+}
+function renderLog() {
+  document.getElementById('rad-log-panel').hidden = !st.log.length;
+  document.getElementById('rad-log').innerHTML = st.log.map(function(l, i) {
+    return '<span class="log-item ' + l.kind + '"><b>' + sc().unit.toUpperCase() + ' ' + (i + 1) + '</b>' + l.text + '</span>';
+  }).join('');
+}
+
+// Klik op de kop van een kaart: actieve maatregel uitzetten, of eerst de strategie laten benoemen
+function clickMeasure(id) {
+  if (st.phase !== 'plan') return;
+  FrogAudio.init();
+  var i = st.chosen.indexOf(id);
+  if (i >= 0) { st.chosen.splice(i, 1); view.target = buildWheel(sc(), st.chosen); renderAll(); refocus(id); return; }
+  if (st.quiz && st.quiz.id === id) { cancelQuiz(); return; }
+  if (st.answered[id] != null) { applyMeasure(id); return; } // al eens benoemd in dit scenario
+  st.quiz = { id: id, step: 'strat', wrong: [], ok: true, fb: '' };
+  say('jan', 'WELKE STRATEGIE IS DIT?'); say('lowie', '');
+  renderMeasures();
+  var first = document.querySelector('.measure.asking .m-opt'); if (first) first.focus();
+}
+function answerStrat(name) {
+  var q = st.quiz, m = measureById(sc(), q.id);
+  if (name === m.strat) {
+    if (m.strat === 'Verminderen' || m.strat === 'Verbeteren') {
+      q.step = 'ce'; q.wrong = []; q.fb = q.revealed || '';
+      FrogAudio.play('pick'); say('lowie', 'JUIST! ' + m.strat.toUpperCase() + '.'); say('jan', 'OORZAAK OF EFFECT?');
+      renderMeasures();
+      var first = document.querySelector('.measure.asking .m-opt'); if (first) first.focus();
+      return;
+    }
+    return finishQuiz();
+  }
+  q.ok = false; q.wrong.push(name);
+  if (q.wrong.length >= 2) { q.revealed = 'Het juiste antwoord was ' + m.strat.toLowerCase() + '. ' + STRAT_HINT[m.strat]; return answerStrat(m.strat); }
+  q.fb = '<strong>Niet helemaal.</strong> ' + STRAT_HINT[m.strat];
+  FrogAudio.play('meh'); say('jan', 'BIJNA...'); say('lowie', 'LEES DE HINT EENS.');
+  renderMeasures();
+}
+function answerCe(val) {
+  var q = st.quiz, m = measureById(sc(), q.id), right = ceOf(m);
+  if (val === right) return finishQuiz();
+  // bij twee opties zou een tweede poging altijd juist zijn: toon meteen het antwoord en ga verder
+  q.ok = false;
+  var up = m.strat === 'Verbeteren';
+  q.revealed = (q.revealed ? q.revealed + ' ' : '') + 'Deze maatregel pakt ' + (right === 'oorzaak' ? 'de oorzaak aan: ze verandert hoe vaak het gebeurt.' : 'het effect aan: ze verandert ' + (up ? 'hoeveel het oplevert' : 'hoe erg het is') + ' als het gebeurt.');
+  finishQuiz();
+}
+function finishQuiz() {
+  var q = st.quiz, id = q.id;
+  st.answered[id] = q.ok;
+  st.notes[id] = q.ok ? { ok: true, text: 'In één keer juist benoemd.' } : { ok: false, text: q.revealed || 'Na een hint juist benoemd.' };
+  st.quiz = null;
+  applyMeasure(id, q.ok);
+}
+function cancelQuiz() { var id = st.quiz && st.quiz.id; st.quiz = null; say('jan', ''); renderMeasures(); if (id) refocus(id); }
+function applyMeasure(id, ok) {
+  if (st.chosen.indexOf(id) < 0) st.chosen.push(id);
+  view.target = buildWheel(sc(), st.chosen);
+  var m = measureById(sc(), id);
+  FrogAudio.play('pick');
+  var good = evEnd(sc(), st.chosen) > evEnd(sc(), st.chosen.filter(function(x) { return x !== id; })) + 0.5;
+  say('lowie', (ok === false ? '' : ok ? 'JUIST! ' : '') + m.strat.toUpperCase() + '.');
+  say('jan', !m.target ? 'HMM... STAAT DAT WEL OP HET RAD?' : good ? 'DAT LOONT DE MOEITE.' : 'KOST DAT NIET MEER DAN HET OPBRENGT?');
+  renderAll();
+  refocus(id);
+}
+function refocus(id) { var btn = document.querySelector('.m-main[onclick*="\'' + id + '\'"]'); if (btn) btn.focus(); }
+// voor snelle tests: maatregel nemen zonder vraag
+function toggleMeasure(id) { if (st.chosen.indexOf(id) >= 0) clickMeasure(id); else { st.answered[id] = true; applyMeasure(id, true); } }
+
+// ══ Draaien ══════════════════════════════════════════════════════════════════
+var spinAnim = null;
+function spin() {
+  if (st.phase === 'spinning' || st.phase === 'done') return;
+  FrogAudio.init();
+  st.quiz = null;
+  if (st.spin === 0) {
+    st.budget = sc().budget - oneOff(sc(), st.chosen); st.ghost = sc().budget;
+    view.target = buildWheel(sc(), st.chosen);
+    view.segs = view.target.map(function(s) { return Object.assign({}, s); });
+  }
+  st.phase = 'spinning';
+  FrogAudio.startMusic(radOwner, radOwner.cfg.tempo);
+  var w = view.target, u = st.rolls[st.spin], idx = pick(w, u);
+  // positie van u op het rad (0 = bovenaan, met de klok mee); rad zo draaien dat dat punt onder de wijzer komt
+  var target = -u * Math.PI * 2, from = st.rot, turns = 5 + Math.floor(Math.random() * 2);
+  var to = target - Math.ceil((target - from) / (2 * Math.PI)) * 2 * Math.PI + 2 * Math.PI * turns;
+  if (to < from) to += 2 * Math.PI * Math.ceil((from - to) / (2 * Math.PI));
+  spinAnim = { from: from, to: to, t: 0, dur: 3.6, idx: idx, lastSeg: -1 };
+  say('jan', st.spin === 0 ? 'DRAAIEN MAAR!' : 'NOG EENS!'); say('lowie', '');
+  setHost('jan', 'idle'); setHost('lowie', 'idle');
+  renderAll();
+}
+function spinDone() {
+  var w = view.target, s = w[spinAnim.idx], v = segValue(s), prem = premium(sc(), st.chosen);
+  var gw = buildWheel(sc(), []), gs = gw[pick(gw, st.rolls[st.spin])];
+  st.ghost += segValue(gs);
+  st.budget += v - prem;
+  st.vals.push(v); st.premPaid += prem;
+  st.spin++;
+  var text, kind = s.kind;
+  if (s.kind === 'pos') { text = s.label + ': ' + fmt(v, true); FrogAudio.play('coin'); say('lowie', 'KASSA! ' + fmt(v, true)); say('jan', ''); setHost('jan', 'dance', 1.6); setHost('lowie', 'dance', 1.6); }
+  else if (s.kind === 'neg' && s.shield != null) { text = s.label + ': verzekerd, ' + fmt(v, true) + ' in plaats van ' + fmt(s.v, true); FrogAudio.play('shield'); say('jan', 'GELUKKIG VERZEKERD!'); say('lowie', fmt(v, true) + ' I.P.V. ' + fmt(s.v, true)); }
+  else if (s.kind === 'neg' && v === 0) { text = s.label + ': overgedragen, 0'; FrogAudio.play('shield'); say('jan', 'NIET ONS PROBLEEM!'); say('lowie', 'OVERGEDRAGEN.'); }
+  else if (s.kind === 'neg') { text = s.label + ': ' + fmt(v, true); FrogAudio.play('ouch'); say('jan', 'AUW! ' + fmt(v, true)); say('lowie', ''); setHost('jan', 'shock', 1.2); setHost('lowie', 'shock', 1.2); }
+  else { text = s.label + ': ' + fmt(v, true); FrogAudio.play('meh'); say('lowie', 'RUSTIGE ' + sc().unit.toUpperCase() + '.'); say('jan', ''); }
+  if (prem) text += ' (premie ' + fmt(-prem) + ')';
+  st.log.push({ kind: kind, text: text });
+  spinAnim = null;
+  st.phase = st.spin >= SPINS ? 'done' : 'between';
+  renderAll();
+  if (st.phase === 'done') setTimeout(finish, 900);
+}
+function finish() {
+  FrogAudio.stopMusic(radOwner);
+  var s = sc(), e = evEnd(s, st.chosen), e0 = evEnd(s, []), good = e > e0 + 0.5;
+  st.done[s.id] = true;
+  setHost('jan', good ? 'dance' : 'fall'); setHost('lowie', good ? 'dance' : 'fall');
+  var luck = st.budget - e, vsGhost = st.budget - st.ghost;
+  var gains = st.chosen.map(function(id) { return evEnd(s, st.chosen) - evEnd(s, st.chosen.filter(function(x) { return x !== id; })); });
+  var losers = gains.filter(function(g) { return g < -0.5; }).length, best = bestPlan(s);
+  if (good) {
+    FrogAudio.play('win');
+    if (luck < -8) { say('jan', 'PECH GEHAD...'); say('lowie', 'MAAR GOEDE KEUZES!'); }
+    else if (losers) { say('jan', 'GOED GEDAAN!'); say('lowie', 'MAAR NIET ALLES LOONDE.'); }
+    else { say('jan', 'GOEDE KEUZES!'); say('lowie', 'DAT VERDIENT EEN DANSJE.'); }
+  } else {
+    FrogAudio.play('over');
+    if (!st.chosen.length) { say('jan', 'NIETS GEDAAN?'); say('lowie', 'ALLES GEACCEPTEERD, OOK DE KANSEN.'); }
+    else if (luck > 8) { say('jan', 'GELUK GEHAD...'); say('lowie', 'MAAR TE DUUR BETAALD.'); }
+    else { say('jan', 'OEI...'); say('lowie', 'JE MAATREGELEN KOSTEN MEER DAN ZE OPBRENGEN.'); }
+  }
+  var luckTxt = Math.abs(luck) < 8 ? 'Je had ongeveer het verwachte geluk.' : luck > 0 ? 'Je had <strong>geluk</strong>: je kreeg ' + fmt(luck) + ' munten meer dan verwacht.' : 'Je had <strong>pech</strong>: je kreeg ' + fmt(-luck) + ' munten minder dan verwacht.';
+  var rows = st.chosen.map(function(id) {
+    var m = measureById(s, id), without = st.chosen.filter(function(x) { return x !== id; });
+    var gain = gains[st.chosen.indexOf(id)];
+    var cost = (m.cost || 0) + (m.premium || 0) * SPINS;
+    return '<tr><td>' + m.label + '</td><td>' + m.strat + '</td><td class="num">' + cost + '</td><td class="num ' + (gain > 0.5 ? 'good' : gain < -0.5 ? 'bad' : '') + '">' + fmt(gain, true) + '</td></tr>';
+  }).join('');
+  var el = document.getElementById('rad-result');
+  var wheelSum = st.vals.reduce(function(a, v) { return a + v; }, 0), pre = oneOff(s, st.chosen);
+  var prem = premium(s, st.chosen);
+  var breakdown = '<table class="res-table" style="max-width:560px;margin-bottom:1rem"><caption style="text-align:left;font-family:Raleway,sans-serif;font-weight:800;font-size:.9rem;padding-bottom:.3rem">Waar komt je eindbudget vandaan?</caption><tbody>' +
+    '<tr><td>Startbudget</td><td class="num">' + s.budget + '</td></tr>' +
+    '<tr><td>Maatregelen vooraf</td><td class="num">' + fmt(-pre) + '</td></tr>' +
+    (prem ? '<tr><td>Premies (' + SPINS + ' × ' + prem + ')</td><td class="num">' + fmt(-st.premPaid) + '</td></tr>' : '') +
+    '<tr><td>Opbrengst van het rad <span style="color:var(--muted)">(' + st.vals.map(function(v) { return fmt(v, true); }).join(', ') + ')</span></td><td class="num ' + (wheelSum >= 0 ? 'good' : 'bad') + '">' + fmt(wheelSum, true) + '</td></tr>' +
+    '<tr><td><strong>Eindbudget</strong></td><td class="num"><strong>' + fmt(st.budget) + '</strong></td></tr>' +
+    '</tbody></table>';
+  var verdict = good ? (luck < -8 ? 'Pech gehad, maar goede keuzes!' : losers ? 'Goed, maar het kan beter: ' + losers + (losers === 1 ? ' maatregel kost' : ' maatregelen kosten') + ' meer dan ' + (losers === 1 ? 'ze opbrengt.' : 'ze opbrengen.') : 'Goede keuzes!') :
+    (!st.chosen.length ? 'Je nam geen enkele maatregel.' : luck > 8 ? 'Geluk gehad, maar te duur betaald.' : 'Je maatregelen kosten meer dan ze opbrengen.');
+  el.innerHTML = '<h3>' + verdict + '</h3>' + breakdown +
+    '<div class="res-grid">' +
+    '<div class="res-stat"><div class="v">' + fmt(st.budget) + '</div><div class="l">jouw eindbudget</div></div>' +
+    '<div class="res-stat"><div class="v">' + fmt(st.ghost) + '</div><div class="l">zonder maatregelen, met dezelfde draaien</div></div>' +
+    '<div class="res-stat"><div class="v ' + (good ? 'good' : 'bad') + '">' + fmt(e) + '</div><div class="l">verwacht eindbudget met jouw keuzes</div></div>' +
+    '<div class="res-stat"><div class="v">' + fmt(e0) + '</div><div class="l">verwacht eindbudget zonder maatregelen</div></div>' +
+    (function() {
+      var ids = Object.keys(st.answered), ok = ids.filter(function(k) { return st.answered[k]; }).length;
+      return ids.length ? '<div class="res-stat"><div class="v ' + (ok === ids.length ? 'good' : '') + '">' + ok + ' / ' + ids.length + '</div><div class="l">strategieën in één keer juist benoemd</div></div>' : '';
+    })() +
+    '<div class="res-stat"><div class="v">' + fmt(best.e) + '</div><div class="l">beste haalbare verwachte eindbudget' + (e >= best.e - 0.05 ? ': dat heb jij!' : '. Lukt het je bij een nieuwe poging?') + '</div></div>' +
+    '</div>' +
+    '<p>' + luckTxt + ' ' + (vsGhost >= 0 ? 'Met dezelfde draaien deed je het ' + fmt(vsGhost) + ' munten beter dan zonder maatregelen.' : 'Met dezelfde draaien deed je het ' + fmt(-vsGhost) + ' munten slechter dan zonder maatregelen.') +
+    (good && vsGhost < 0 ? ' Toch waren je keuzes goed: een maatregel die je deze keer niet nodig had, was geen slechte beslissing. Daarom kijk je naar de <strong>verwachte</strong> waarde, niet naar één keer geluk of pech.' : '') + '</p>' +
+    (rows ? '<table class="res-table"><thead><tr><th>Maatregel</th><th>Strategie</th><th style="text-align:right">Kost</th><th style="text-align:right">Netto verwacht</th></tr></thead><tbody>' + rows + '</tbody></table>' : '<p>Je nam geen enkele maatregel: je <strong>accepteerde</strong> alle risico\'s, ook de grote bedreigingen en de kansen die je had kunnen benutten.</p>') +
+    '<div class="callout"><p>Een maatregel is pas zinvol als ze meer oplevert dan ze kost. "Netto verwacht" = hoeveel munten de maatregel gemiddeld oplevert over ' + SPINS + ' draaien, min wat ze kost.</p></div>' +
+    '<div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:1rem">' + (st.sc < SCENARIOS.length - 1 ? '<button class="btn-nav" onclick="Rad.loadScenario(' + (st.sc + 1) + ');document.getElementById(\'pn-rad\').scrollIntoView({behavior:\'smooth\'})">Volgend scenario: ' + SCENARIOS[st.sc + 1].name + ' →</button>' : '') +
+    '<button class="btn-nav outline" onclick="Rad.loadScenario(' + st.sc + ')">Opnieuw met andere keuzes</button></div>';
+  el.hidden = false;
+  renderTabs();
+}
+
+// ══ Hosts ════════════════════════════════════════════════════════════════════
+function setHost(who, mode, dur) { hosts[who].mode = mode; hosts[who].t = 0; hosts[who].dur = dur || 0; }
+var bubbleTimers = {};
+function say(who, text) {
+  var b = document.getElementById('rad-bub-' + who);
+  b.textContent = text; b.classList.toggle('show', !!text);
+}
+function drawHost(who, dt) {
+  var h = hosts[who], cv = h.cv, ctx = cv.getContext('2d');
+  h.t += dt;
+  if (h.dur && h.t > h.dur && h.mode !== 'fall') { h.mode = 'idle'; h.dur = 0; }
+  ctx.clearRect(0, 0, cv.width, cv.height);
+  ctx.imageSmoothingEnabled = false;
+  var img, ang = 0, lift = 0, P = DUO[who], dir = who === 'jan' ? 1 : -1, stars = false;
+  if (h.mode === 'dance') { var f = Math.floor(h.t / 0.25) % 4; img = duoFrame(who, 'd' + f, DUO_DANCE[f]); }
+  else if (h.mode === 'shock') img = duoFrame(who, 'shock', DUO_SHOCK);
+  else if (h.mode === 'fall') { var fs = duoFall(h.t); ang = fs.ang * dir; lift = fs.lift; stars = fs.stars; img = duoFrame(who, fs.pose, fs.pose === 'shock' ? DUO_SHOCK : DUO_DAZED); }
+  else { var b = Math.floor(h.t / 0.6) % 2; img = duoFrame(who, 'idle' + b, b ? { legs: 'stand', arms: ['down', 'down'], eyes: 'normal', dy: 1 } : { legs: 'stand', arms: ['down', 'down'], eyes: 'normal' }); }
+  var cx = 22 - dir * (Math.abs(ang) > 1 ? 8 * Math.sin(Math.abs(ang) * Math.PI / 180) : 0), lie = Math.sin(Math.abs(ang) * Math.PI / 180) * (DUO_SW / 2 - 3);
+  ctx.save(); ctx.translate(cx, 36 - lift - lie); ctx.rotate(ang * Math.PI / 180); ctx.drawImage(img, -DUO_SW / 2, -(DUO_SH - 1)); ctx.restore();
+  if (stars) {
+    var hx = cx + dir * 25, hy = 36 - 12;
+    for (var s = 0; s < 3; s++) { var a = h.t * 4 + s * 2.1; ctx.fillStyle = s === 1 ? '#fff' : '#ffd60a'; ctx.fillRect(Math.round(hx + Math.cos(a) * 6) - 1, Math.round(hy - 6 + Math.sin(a) * 2), 3, 1); ctx.fillRect(Math.round(hx + Math.cos(a) * 6), Math.round(hy - 7 + Math.sin(a) * 2), 1, 3); }
+  }
+}
+
+// ══ Het rad tekenen ══════════════════════════════════════════════════════════
+var wheelCv = document.getElementById('rad-wheel'), wctx = wheelCv.getContext('2d');
+var W = wheelCv.width, C = W / 2, R = W / 2 - 34, flap = 0;
+function drawWheel(time) {
+  wctx.clearRect(0, 0, W, W);
+  // rand met lampjes
+  wctx.beginPath(); wctx.arc(C, C, R + 24, 0, Math.PI * 2); wctx.fillStyle = '#7a6535'; wctx.fill();
+  wctx.beginPath(); wctx.arc(C, C, R + 16, 0, Math.PI * 2); wctx.fillStyle = '#AE9A64'; wctx.fill();
+  var bulbs = 24, chase = st.phase === 'spinning';
+  for (var b = 0; b < bulbs; b++) {
+    var a = b / bulbs * Math.PI * 2, on = chase ? (b + Math.floor(time * 12)) % 3 === 0 : (b + Math.floor(time * 2)) % 2 === 0;
+    wctx.beginPath(); wctx.arc(C + Math.cos(a) * (R + 20), C + Math.sin(a) * (R + 20), 5, 0, Math.PI * 2);
+    wctx.fillStyle = on ? '#fff6c8' : '#5a4a22'; wctx.fill();
+    if (on) { wctx.beginPath(); wctx.arc(C + Math.cos(a) * (R + 20), C + Math.sin(a) * (R + 20), 9, 0, Math.PI * 2); wctx.fillStyle = 'rgba(255,240,170,.18)'; wctx.fill(); }
+  }
+  wctx.save(); wctx.translate(C, C); wctx.rotate(st.rot);
+  var acc = 0;
+  view.segs.forEach(function(s, i) {
+    var a0 = acc * Math.PI * 2 - Math.PI / 2, a1 = (acc + s.p) * Math.PI * 2 - Math.PI / 2; acc += s.p;
+    if (s.p < 0.002) return;
+    wctx.beginPath(); wctx.moveTo(0, 0); wctx.arc(0, 0, R, a0, a1); wctx.closePath();
+    wctx.fillStyle = segColor(s, i); wctx.fill();
+    wctx.lineWidth = 3; wctx.strokeStyle = '#0b0b0f'; wctx.stroke();
+    // tekst langs de straal
+    var mid = (a0 + a1) / 2, span = (a1 - a0) * 180 / Math.PI;
+    // tekst op de linkerhelft draait 180 graden mee, zodat ze nooit op haar kop staat
+    var abs = ((mid + st.rot) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2), flip = abs > Math.PI / 2 && abs < Math.PI * 1.5;
+    wctx.save(); wctx.rotate(flip ? mid + Math.PI : mid);
+    wctx.textAlign = flip ? 'left' : 'right'; wctx.textBaseline = 'middle';
+    var tx = flip ? -(R - 14) : R - 14;
+    var ink = s.kind === 'pos' ? '#2a1d00' : '#ffffff';
+    var v = segValue(s), vt = fmt(v, true).replace('−', '-'); // het arcadelettertype heeft geen minteken
+    wctx.fillStyle = ink;
+    wctx.font = '15px "Press Start 2P", monospace';
+    var vw = wctx.measureText(vt).width;
+    if (span > 9) wctx.fillText(vt, tx, 0);
+    if (span > 17) { wctx.font = '8px "Press Start 2P", monospace'; wctx.globalAlpha = .9; wctx.fillText(s.short, tx, 17); wctx.globalAlpha = 1; }
+    if (s.shield != null && span > 9) {
+      // schildje: verzekerd, naast het bedrag aan de kant van de naaf
+      var x = flip ? tx + vw + 10 : tx - vw - 26;
+      wctx.fillStyle = '#ffffff'; wctx.beginPath(); wctx.moveTo(x, -9); wctx.lineTo(x + 16, -9); wctx.lineTo(x + 16, 1); wctx.lineTo(x + 8, 9); wctx.lineTo(x, 1); wctx.closePath(); wctx.fill();
+      wctx.fillStyle = '#1f5fbf'; wctx.fillRect(x + 6, -6, 4, 9);
+    }
+    wctx.restore();
+  });
+  wctx.restore();
+  // naaf
+  wctx.beginPath(); wctx.arc(C, C, 46, 0, Math.PI * 2); wctx.fillStyle = '#0b0b0f'; wctx.fill();
+  wctx.lineWidth = 4; wctx.strokeStyle = '#AE9A64'; wctx.stroke();
+  wctx.fillStyle = '#AE9A64'; wctx.textAlign = 'center'; wctx.textBaseline = 'middle'; wctx.font = '9px "Press Start 2P", monospace';
+  wctx.fillText('RAD VAN', C, C - 8); wctx.fillText('RISICO', C, C + 8);
+  // wijzer (klappert bij elk vak)
+  wctx.save(); wctx.translate(C, 20); wctx.rotate(flap);
+  wctx.beginPath(); wctx.moveTo(-16, -6); wctx.lineTo(16, -6); wctx.lineTo(0, 30); wctx.closePath();
+  wctx.fillStyle = '#ffd60a'; wctx.fill(); wctx.lineWidth = 3; wctx.strokeStyle = '#0b0b0f'; wctx.stroke();
+  wctx.restore();
+}
+function segAtPointer() {
+  var pos = ((-st.rot) / (Math.PI * 2)) % 1; if (pos < 0) pos += 1;
+  var acc = 0;
+  for (var i = 0; i < view.segs.length; i++) { acc += view.segs[i].p; if (pos < acc) return i; }
+  return view.segs.length - 1;
+}
+
+// ══ Lus ══════════════════════════════════════════════════════════════════════
+var last = performance.now(), raf = 0;
+function loop(now) {
+  var dt = Math.min(0.05, (now - last) / 1000); last = now;
+  // vakken vloeiend naar hun nieuwe grootte laten groeien of krimpen
+  view.segs.forEach(function(s, i) {
+    var t = view.target[i]; if (!t) return;
+    s.p += (t.p - s.p) * Math.min(1, dt * 7);
+    s.v = t.v; s.shield = t.shield; s.label = t.label; s.short = t.short; s.kind = t.kind; s.id = t.id;
+  });
+  if (spinAnim) {
+    spinAnim.t += dt;
+    var k = Math.min(1, spinAnim.t / spinAnim.dur), e = 1 - Math.pow(1 - k, 3);
+    st.rot = spinAnim.from + (spinAnim.to - spinAnim.from) * e;
+    var seg = segAtPointer();
+    if (seg !== spinAnim.lastSeg) { if (spinAnim.lastSeg >= 0) { FrogAudio.play('tick'); flap = -0.35; } spinAnim.lastSeg = seg; }
+    if (k >= 1) spinDone();
+  }
+  flap *= 0.8;
+  drawWheel(now / 1000);
+  drawHost('jan', dt); drawHost('lowie', dt);
+  raf = radOwner.visible && !document.hidden ? requestAnimationFrame(loop) : 0;
+}
+
+document.getElementById('rad-spin').addEventListener('click', spin);
+document.getElementById('rad-reset').addEventListener('click', function() { loadScenario(st.sc); });
+document.querySelectorAll('#rad-app [data-snd]').forEach(function(btn) {
+  btn.setAttribute('aria-pressed', String(!!FrogAudio[btn.getAttribute('data-snd')]));
+  btn.addEventListener('click', function() { FrogAudio.toggle(btn.getAttribute('data-snd')); });
+});
+new IntersectionObserver(function(entries) {
+  radOwner.visible = entries[0].isIntersecting;
+  radOwner.kick();
+}).observe(document.getElementById('rad-app'));
+loadScenario(0);
+drawWheel(0);
+
+// voor de knoppen in de kaarten (inline onclick) en om te testen
+window.Rad = { loadScenario: loadScenario, clickMeasure: clickMeasure, answerStrat: answerStrat, answerCe: answerCe, cancelQuiz: cancelQuiz, toggleMeasure: toggleMeasure, spin: spin, state: st,
+  // testhulp: een lopende draai meteen laten eindigen
+  skipSpin: function() { if (spinAnim) { st.rot = spinAnim.to; spinDone(); } }, scenarios: SCENARIOS, evEnd: evEnd, bestPlan: bestPlan };
+})();
 
 // ══ Nico-portret in de intro ═════════════════════════════════════════════════
 
