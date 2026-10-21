@@ -2060,6 +2060,7 @@ var FrogAudio = {
     else if (kind === 'hat') A.noise({ d: 0.035, f: 7500, filter: 'highpass', v: 0.09, at: t, bus: b });
     else if (kind === 'open') A.noise({ d: 0.18, f: 7000, filter: 'highpass', v: 0.08, at: t, bus: b });
     else if (kind === 'crash') A.noise({ d: 1.3, f: 4500, filter: 'highpass', v: 0.2, at: t, bus: b });
+    else if (kind === 'roll') A.noise({ d: 0.08, f: 1800, filter: 'bandpass', v: 0.34, at: t, bus: b });
   },
   scheduleSong: function() {
     var A = this, c = A.ctx, song = A.song, six = 60 / song.bpm / 4, total = song.bars * 16;
@@ -2146,6 +2147,18 @@ var FS_STEEN = [
   'D2 D2 D2 D2 D2 D2 D2 D2 D2 D2 D2 D2 F2! . G#2! .'
 ];
 
+// Het Rad van Risico: eigen deuntje in F groot (I, III7, IV, iv, I, VI7, II7, V7).
+var FS_RAD_CH = ['F', 'A7', 'Bb', 'Bbm', 'F', 'D7', 'G7', 'C7'];
+var FS_RAD_PAD = { F: ['A3', 'C4', 'F4'], A7: ['C#4', 'E4', 'G4'], Bb: ['A#3', 'D4', 'F4'], Bbm: ['A#3', 'C#4', 'F4'],
+  D7: ['A3', 'C4', 'F#4'], G7: ['G3', 'B3', 'F4'], C7: ['G3', 'A#3', 'E4'] };
+var FS_RAD_BASS = { F: 'F2 C2 F2 G#2', A7: 'A1 E2 G2 A1', Bb: 'A#1 F2 A#1 F2', Bbm: 'A#1 C#2 F2 E2',
+  D7: 'D2 A1 D2 F#2', G7: 'G1 D2 G1 B1', C7: 'C2 G1 C2 E2' };
+var FS_RAD_STAB = { F: 'F4', A7: 'A3', Bb: 'A#3', Bbm: 'A#3', D7: 'D4', G7: 'G3', C7: 'C4' };
+var FS_RAD_LEAD = [
+  'F5 . C5 A4 C5 . F5 G5', 'A5 . . G5 E5 . C#5 .', 'D5 . F5 . A#5 . A5 G5', 'F5 . C#5 . A#4 . - -',
+  'C5 A4 C5 F5 A5 . G5 F5', 'F#5 . A5 . D6 . C6 A5', 'B5 . G5 . F5 . D5 B4', 'C5 . E5 . G5 . A#5 .'
+];
+
 var FROG_SONGS = {
   // Het park: rustige new wave. Doorlopend gitaararpeggio met echo, bas in kwartnoten, rimshot.
   park: { bpm: 116, bars: 8, echo: { beats: 0.75, fb: 0.38, mix: 0.32 },
@@ -2193,7 +2206,20 @@ var FROG_SONGS = {
       snare: ['....x.......x...', '....x.......x...', '....x.......x...', '....x...x.x.x.x.', '....x.......x...', '....x.......x...', '....x.......x...', '............x.x.'],
       hat: ['x.x.x.x.x.x.x.x.', 'x.x.x.x.x.x.x.x.', 'x.x.x.x.x.x.x.x.', 'x.x.x.x.........', '................', '................', '................', 'x.x.x.x.x.x.....'],
       crash: ['................', '................', '................', '................', 'x...............', '................', 'x...............', '................']
-    } }
+    } },
+  // Het Rad van Risico: tv-spelprogramma. Koperachtige lead, orgelakkoorden, huppelende bas,
+  // koperstoten, shuffle-hihat en een roffel op de snare zolang het rad draait (FrogAudio.tension).
+  rad: { bpm: 136, bars: 8,
+    voices: [0, 1, 2].map(function(k) {
+      return { inst: 'pad', v: 0.045, pat: FS_RAD_CH.map(function(c) { return fsW1(FS_RAD_PAD[c][k]); }) };
+    }).concat([
+      { inst: 'lead', wave: 'sawtooth', fat: true, v: 0.08, cut: 3200, pat: FS_RAD_LEAD.map(fsE8) },
+      { inst: 'bass', wave: 'sawtooth', v: 0.22, cut: 800, stacc: 0.6, pat: FS_RAD_CH.map(function(c) { return fsQ4(FS_RAD_BASS[c]); }) },
+      { inst: 'stab', v: 0.065, pat: FS_RAD_CH.map(function(c) { var n = FS_RAD_STAB[c]; return n + ' . - - - - ' + n + ' . - - - - ' + n + ' . - -'; }) }
+    ]),
+    drums: { kick: ['x.......x.x.....'], snare: ['....x.......x...', '....x.......x...', '....x.......x...', '....x.......x...', '....x.......x...', '....x.......x...', '....x.......x...', '....x...x.xxxxxx'],
+      hat: ['x..xx..xx..xx..x'], crash: ['x...............', '................', '................', '................', 'x...............', '................', '................', '................'] },
+    tensionDrums: { roll: ['xxxxxxxxxxxxxxxx'] } }
 };
 
 // Maakt van de patronen een lijst gebeurtenissen per zestiende (één keer per nummer)
@@ -3304,12 +3330,12 @@ function pick(wheel, u) {
 
 // Het rad als "speler" voor FrogAudio: muziek enkel tijdens het draaien en als het rad zichtbaar is
 var radOwner = {
-  cfg: { tempo: 126 }, visible: false,
+  cfg: { tempo: 136, song: 'rad' }, visible: false,
   isActive: function() { return st.phase === 'spinning' || st.phase === 'between'; },
   syncSound: function() {},
   kick: function() {
     if (!this.visible || document.hidden) { FrogAudio.stopMusic(this); return; }
-    if (this.isActive()) FrogAudio.startMusic(this, this.cfg.tempo);
+    if (this.isActive()) FrogAudio.startMusic(this, this.cfg.tempo, this.cfg.song);
     if (!raf) { last = performance.now(); raf = requestAnimationFrame(loop); }
   }
 };
@@ -3529,7 +3555,7 @@ function spin() {
     view.segs = view.target.map(function(s) { return Object.assign({}, s); });
   }
   st.phase = 'spinning';
-  FrogAudio.startMusic(radOwner, radOwner.cfg.tempo);
+  FrogAudio.startMusic(radOwner, radOwner.cfg.tempo, radOwner.cfg.song);
   var w = view.target, u = st.rolls[st.spin], idx = pick(w, u);
   // positie van u op het rad (0 = bovenaan, met de klok mee); rad zo draaien dat dat punt onder de wijzer komt
   var target = -u * Math.PI * 2, from = st.rot, turns = 5 + Math.floor(Math.random() * 2);
@@ -3729,6 +3755,8 @@ function loop(now) {
     if (k >= 1) spinDone();
   }
   flap *= 0.8;
+  // roffel zolang het rad draait
+  if (FrogAudio.owner === radOwner) FrogAudio.tension = !!spinAnim;
   drawWheel(now / 1000);
   drawHost('jan', dt); drawHost('lowie', dt);
   raf = radOwner.visible && !document.hidden ? requestAnimationFrame(loop) : 0;
