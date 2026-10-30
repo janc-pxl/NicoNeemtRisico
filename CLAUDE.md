@@ -31,6 +31,8 @@ Same design tokens, typography, nav (hamburger + scroll spy), footer, badges, ca
 
 **Extra tokens on this page:** `--c-kans` (blue) = Kans, `--c-gevolg` (orange-brown) = Gevolg, `--c-risico` (black) = Risico; reused on cards, scales, sliders, matrix axes and formulas. Risk zones (`RISK_ZONES`, score = kans × gevolg on 1-5 scales): laag 1-4 (green), middel 5-9 (gold), hoog 10-16 (orange), kritiek 20-25 (red), each with `--z-<zone>`, `--z-<zone>-bg`, `--z-<zone>-ink`, applied via `[data-zone]`.
 
+**Numerals:** Raleway defaults to old-style figures (a "1" sits low, "1 tot 4" looks lowercase), so `body` sets `font-variant-numeric: lining-nums` for the whole page.
+
 **Arcade look:** the game frame is black with a gold border; HUD, overlays and toasts use the Google Font **Press Start 2P** (`--arcade`). Page text stays Raleway/Arial.
 
 ## Language
