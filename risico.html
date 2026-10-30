@@ -502,6 +502,12 @@ footer .f-inner a:hover { color: var(--gold); }
 .sim-history td.num { font-variant-numeric: tabular-nums; }
 
 
+/* Twee betekenissen van "kans": blauw = waarschijnlijkheid (zoals in de formule), goud = opportuniteit */
+#positief-negatief > .lead, #pn-munt + p { max-width: 75ch; }
+.pn-term { max-width: 75ch; font-size: .95rem; }
+.pn-kans-p { color: var(--c-kans); font-weight: 700; }
+.pn-kans-o { color: var(--c-pos-ink); font-weight: 700; }
+
 /* ── TWEE KANTEN VAN DEZELFDE MUNT ──────────────────────────────────────────── */
 
 .coin-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: .9rem; margin-top: 1.25rem; }
@@ -533,7 +539,7 @@ footer .f-inner a:hover { color: var(--gold); }
 }
 .coin-opt:hover:not(:disabled) { border-color: var(--primary); background: var(--bg); }
 .coin-verdict { font-family: var(--arcade); font-size: .65rem; outline: none; }
-.coin-verdict.ok { color: #1b655c; }
+.coin-verdict.ok { color: var(--z-laag-ink); }
 .coin-verdict.no { color: var(--c-neg-ink); }
 .coin-side { font-size: .85rem; line-height: 1.45; padding: .55rem .7rem; border-radius: 7px; }
 .coin-side.pos { background: var(--c-pos-bg); }
@@ -1288,6 +1294,7 @@ footer .f-inner a:hover { color: var(--gold); }
   <div class="badge">Risicostrategieën</div>
   <h2>Positieve en negatieve risico's</h2>
   <p class="lead">Een risico is niet altijd slecht nieuws. Elke gebeurtenis die een gewenst of ongewenst effect heeft op je project, is een risico. <strong>Negatieve risico's</strong> noemen we <strong>bedreigingen</strong>: die probeer je te vermijden, te verkleinen of te beheersen. <strong>Positieve risico's</strong> zijn <strong>kansen</strong>: die wil je niet vermijden, maar omarmen of versterken.</p>
+  <p class="pn-term"><strong>Let op, twee betekenissen van "kans".</strong> In Risico = Kans × Gevolg is <span class="pn-kans-p">kans</span> de <em>waarschijnlijkheid</em> dat iets gebeurt (Engels: probability). Hier is <span class="pn-kans-o">een kans</span> een <em>opportuniteit</em>: een gebeurtenis die je doel helpt (Engels: opportunity). Ook een opportuniteit heeft dus een kans dat ze zich voordoet.</p>
 
   <!-- Deel 1: warming-up -->
   <h3 class="sub-title" id="pn-munt"><span class="sub-step">Deel 1</span> Twee kanten van dezelfde munt</h3>
@@ -3368,8 +3375,17 @@ function coinAnswer(i, pick) {
   var ok = pick === coinCorrect(COIN_CARDS[i]);
   coinState[i] = { ok: ok, pick: pick };
   FrogAudio.play(ok ? 'cross' : 'meh');
-  coinRender();
-  var v = document.getElementById('coin-v-' + i); if (v) v.focus({ preventScroll: true });
+  // Alleen deze kaart bijwerken: nieuwe achterkant, voorkant uit, dan .flipped op de bestaande kaart,
+  // zodat de CSS-overgang echt draait (het hele raster opnieuw opbouwen sloeg de draai over)
+  var card = document.getElementById('coin-card-' + i), tmp = document.createElement('div');
+  tmp.innerHTML = coinCardHtml(i);
+  card.querySelector('.coin-back').replaceWith(tmp.querySelector('.coin-back'));
+  var front = card.querySelector('.coin-front');
+  front.setAttribute('aria-hidden', 'true');
+  front.querySelectorAll('.coin-opt').forEach(function(b) { b.disabled = true; b.tabIndex = -1; });
+  card.classList.add('flipped');
+  coinProgress();
+  document.getElementById('coin-v-' + i).focus({ preventScroll: true });
 }
 coinRender();
 
