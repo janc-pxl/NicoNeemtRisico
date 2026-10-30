@@ -455,7 +455,17 @@ footer .f-inner a:hover { color: var(--gold); }
 .sb-slider input[type="range"] { width: 100%; height: 30px; cursor: pointer; }
 .sb-slider.kans input { accent-color: var(--c-kans); }
 .sb-slider.gevolg input { accent-color: var(--c-gevolg); }
-.sb-ticks { display: flex; justify-content: space-between; font-size: .7rem; color: var(--muted); padding: 0 4px; }
+/* Streepjes onder de schuifknop: elk label staat gecentreerd op zijn stand (0 breed, de tekst loopt over),
+   onder gevolg ook de weggebruiker; de woorden aan de uiteinden lopen naar binnen */
+.sb-ticks { display: flex; justify-content: space-between; font-size: .7rem; color: var(--muted); padding: 0 8px; }
+.sb-ticks span { width: 0; display: flex; flex-direction: column; align-items: center; white-space: nowrap; line-height: 1.3; }
+.sb-ticks em { font-style: normal; }
+.sb-ticks span:first-child em { align-self: flex-start; margin-left: -8px; }
+.sb-ticks span:last-child em { align-self: flex-end; margin-right: -8px; }
+.sb-ticks span.on { font-weight: 700; }
+.sb-slider.kans .sb-ticks span.on { color: var(--c-kans); }
+.sb-slider.gevolg .sb-ticks span.on { color: var(--c-gevolg); }
+.sim-who { color: var(--muted); }
 .sb-result { display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; }
 .sb-result .frog-formula { margin: 0; }
 
@@ -1049,6 +1059,7 @@ footer .f-inner a:hover { color: var(--gold); }
   .sb-panel { grid-template-columns: minmax(0, 1fr) 132px; grid-template-areas: "sliders sliders" "result matrix"; gap: .9rem 1rem; }
   .sb-sliders { grid-template-columns: 1fr; gap: .8rem; }
   .sb-panel .frog-formula { font-size: 1rem; padding: .6rem .7rem; gap: .4rem .35rem; }
+  .sim-who { display: none; }
   .frog-game { padding: 6px 6px 10px; border-radius: 10px; }
   .frog-hud { font-size: .5rem; }
   .frog-overlay { padding: .5rem .75rem; gap: .35rem; }
@@ -1196,7 +1207,7 @@ footer .f-inner a:hover { color: var(--gold); }
 
   <!-- Deel 2: Wat als? -->
   <h3 class="sub-title" id="frog-wat-als"><span class="sub-step">Deel 2</span> Wat als de auto een trein is?</h3>
-  <p>Je staat met je fiets aan een kruispunt en ziet een auto in de verte. Wat als het geen auto is, maar een trein? Of een wandelaar? Speel zelf met de kans en het gevolg en kijk hoe de oversteek verandert. Het gevolg bepaalt <strong>wat</strong> er aankomt, de kans bepaalt <strong>hoe druk</strong> het is: meer rijstroken, meer verkeer en sneller. Speel het level daarna zelf: lukt het je nog bij kans 5?</p>
+  <p>Je staat met je fiets aan een kruispunt en ziet een auto in de verte. Wat als het geen auto is, maar een trein? Of een wandelaar? Stel hieronder de kans en het gevolg in en kijk hoe de oversteek verandert: het gevolg bepaalt <strong>wat</strong> er aankomt, de kans <strong>hoe druk</strong> het is (meer rijstroken, meer verkeer en sneller). Speel het level daarna zelf: lukt het je nog bij kans 5?</p>
 
   <!-- Regelaars vlak boven het spel: je ziet de weg veranderen terwijl je sleept -->
   <div class="sb-panel">
@@ -1204,12 +1215,12 @@ footer .f-inner a:hover { color: var(--gold); }
       <div class="sb-slider kans">
         <label for="sb-k">Kans <output id="sb-k-out" for="sb-k"></output></label>
         <input type="range" id="sb-k" min="1" max="5" step="1" value="2" />
-        <div class="sb-ticks" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div>
+        <div class="sb-ticks" id="sb-k-ticks" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div>
       </div>
       <div class="sb-slider gevolg">
         <label for="sb-g">Gevolg <output id="sb-g-out" for="sb-g"></output></label>
         <input type="range" id="sb-g" min="1" max="5" step="1" value="4" />
-        <div class="sb-ticks" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div>
+        <div class="sb-ticks named" id="sb-g-ticks" aria-hidden="true"></div>
       </div>
     </div>
     <div class="sb-result" id="sb-result" aria-live="polite"></div>
@@ -3096,11 +3107,11 @@ frogSelectLevel(0);
 // ══ Deel 2: wat als? ═════════════════════════════════════════════════════════
 
 var SB_KINDS = [
-  { s: 'path', kinds: ['wandelaar', 'jogger'], speed: 1.4, name: 'wandelaars', one: 'een wandelaar', hit: 'OEPS, SORRY!' },
-  { s: 'bike', kinds: ['fietser'], speed: 3.2, name: 'fietsers', one: 'een fietser', hit: 'BOTS!' },
-  { s: 'road', kinds: ['brommer'], speed: 4.2, name: 'brommers', one: 'een brommer', hit: 'AU!' },
-  { s: 'road', kinds: ['auto'], speed: 6, name: 'auto\'s', one: 'een auto', hit: 'AANGEREDEN!' },
-  { s: 'rail', kinds: ['trein'], speed: 14, name: 'treinen', one: 'de trein', hit: 'DE TREIN!' }
+  { s: 'path', kinds: ['wandelaar', 'jogger'], speed: 1.4, name: 'wandelaars', who: 'wandelaar', one: 'een wandelaar', hit: 'OEPS, SORRY!' },
+  { s: 'bike', kinds: ['fietser'], speed: 3.2, name: 'fietsers', who: 'fietser', one: 'een fietser', hit: 'BOTS!' },
+  { s: 'road', kinds: ['brommer'], speed: 4.2, name: 'brommers', who: 'brommer', one: 'een brommer', hit: 'AU!' },
+  { s: 'road', kinds: ['auto'], speed: 6, name: 'auto\'s', who: 'auto', one: 'een auto', hit: 'AANGEREDEN!' },
+  { s: 'rail', kinds: ['trein'], speed: 14, name: 'treinen', who: 'trein', one: 'de trein', hit: 'DE TREIN!' }
 ];
 // De kans bepaalt hoe druk het is: het aantal rijstroken (SB_LAYOUT, L = rijstrook, . = veilige strook),
 // de snelheid (SB_SPEED, per rijstrook nog gevarieerd met SB_VARY) en de bezetting per rijstrook (SB_OCC).
@@ -3175,10 +3186,19 @@ function frogSimulate(cfg, n, seed) {
 
 var sbGame = new FrogGame(document.getElementById('frog-sb'), { live: document.getElementById('frog-live'), compact: true });
 var sbK = 2, sbG = 4, sbRuns = 0, sbHistory = [];
+document.getElementById('sb-g-ticks').innerHTML = SB_KINDS.map(function(kind, i) { return '<span>' + (i + 1) + '<em>' + kind.who + '</em></span>'; }).join('');
 
 function sbUpdate(rebuild) {
-  document.getElementById('sb-k-out').textContent = sbK + ' · ' + RISK_K[sbK - 1].label + ' (' + RISK_K[sbK - 1].sub + ')';
-  document.getElementById('sb-g-out').textContent = sbG + ' · ' + SB_KINDS[sbG - 1].name + ' (' + RISK_G[sbG - 1].sub + ')';
+  var rk = RISK_K[sbK - 1], rg = RISK_G[sbG - 1], who = SB_KINDS[sbG - 1].who;
+  document.getElementById('sb-k-out').textContent = sbK + ' · ' + rk.label + ' (' + rk.sub + ')';
+  document.getElementById('sb-g-out').textContent = sbG + ' · ' + rg.label + ' (' + rg.sub + ')';
+  // Het gekozen streepje licht op; onder gevolg staat welke weggebruiker eraan komt
+  ['k', 'g'].forEach(function(id) {
+    var v = id === 'k' ? sbK : sbG;
+    document.querySelectorAll('#sb-' + id + '-ticks span').forEach(function(t, i) { t.classList.toggle('on', i === v - 1); });
+  });
+  document.getElementById('sb-k').setAttribute('aria-valuetext', sbK + ', ' + rk.label.toLowerCase() + ', ' + rk.sub);
+  document.getElementById('sb-g').setAttribute('aria-valuetext', sbG + ', ' + rg.label.toLowerCase() + ', er komt ' + SB_KINDS[sbG - 1].one + ' aan');
   var s = sbK * sbG;
   document.getElementById('sb-result').innerHTML = '<div class="frog-formula">Risico = <span class="fk">' + sbK + '</span> <span class="op">×</span> <span class="fg">' + sbG + '</span> = ' + s + ' ' + zoneChip(s) + '</div>';
   document.getElementById('sb-matrix').innerHTML = riskMatrixHtml('Jouw keuze', [], { k: sbK, g: sbG });
@@ -3211,7 +3231,7 @@ document.getElementById('sim-run').addEventListener('click', function() {
   document.getElementById('sim-history-wrap').innerHTML = sbHistory.length < 2 ? '' :
     '<table class="sim-history"><caption>Jouw simulaties</caption><thead><tr><th>Kans</th><th>Gevolg</th><th>Risico</th><th>Geraakt</th><th>Hartjes per oversteek</th></tr></thead><tbody>' +
     sbHistory.map(function(r) {
-      return '<tr><td class="num">' + r.k + '</td><td class="num">' + r.g + '</td><td>' + (r.k * r.g) + ' ' + zoneChip(r.k * r.g) + '</td><td class="num">' + r.hits + ' / 100</td><td class="num">' + nf(r.avg) + '</td></tr>';
+      return '<tr><td class="num">' + r.k + '</td><td class="num">' + r.g + ' <span class="sim-who">(' + SB_KINDS[r.g - 1].who + ')</span></td><td>' + (r.k * r.g) + ' ' + zoneChip(r.k * r.g) + '</td><td class="num">' + r.hits + ' / 100</td><td class="num">' + nf(r.avg) + '</td></tr>';
     }).join('') + '</tbody></table>';
 });
 
