@@ -205,6 +205,19 @@ footer .f-inner a:hover { color: var(--gold); }
 .formula-card[data-c="risico"] p { color: #ccc; }
 .formula-op { align-self: center; font-family: 'Raleway', sans-serif; font-weight: 900; font-size: 2rem; color: var(--gold); }
 
+/* Van inschatting naar score: uitleg met voorbeeld links, lege matrix rechts */
+.score-block { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 2.5rem; align-items: start; margin-top: 2rem; }
+.score-text { max-width: 68ch; }
+.score-example { background: var(--card); border: 1.5px solid var(--border); border-radius: 10px; padding: 1rem 1.1rem; margin-bottom: 1rem; }
+.score-example-title { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .95rem; color: var(--primary); margin-bottom: .6rem; }
+.score-example .frog-formula { margin-bottom: .6rem; }
+.score-example p { font-size: .92rem; margin: 0; }
+.score-k { color: var(--c-kans); }
+.score-g { color: var(--c-gevolg); }
+.score-text p:last-child { margin-bottom: 0; }
+.score-teaser { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: 1.05rem; color: var(--primary); margin: 1.75rem 0 0; }
+.score-aside .zone-legend { justify-content: center; margin: .9rem 0 0; }
+
 .zone-legend { display: flex; flex-wrap: wrap; gap: .5rem; margin: .5rem 0 1rem; }
 .zone-chip {
   display: inline-flex; align-items: center; gap: .4rem;
@@ -1008,6 +1021,8 @@ footer .f-inner a:hover { color: var(--gold); }
 @media (max-width: 900px) {
   .nico-intro { grid-template-columns: 1fr; gap: 1rem; }
   .nico-scene { max-width: 444px; }
+  .score-block { grid-template-columns: 1fr; gap: 1.5rem; }
+  .score-aside { max-width: 320px; }
   .formula { grid-template-columns: 1fr; }
   .formula-op { text-align: center; line-height: 1; }
   .frog-an-grid, .sb-panel { grid-template-columns: 1fr; }
@@ -1063,7 +1078,7 @@ footer .f-inner a:hover { color: var(--gold); }
   <div class="nico-intro">
     <div class="nico-intro-text">
       <p class="lead">Elke dag neem je risico's. Je steekt een drukke straat over, je fietst zonder licht naar huis, je gebruikt al jaren hetzelfde wachtwoord. Meestal sta je er niet bij stil. Een projectmanager doet dat wel, en gebruikt daarvoor één eenvoudige formule.</p>
-      <p>Maak kennis met <strong>Nico</strong>. Nico fietst elke dag naar de campus en moet onderweg heel wat oversteken. Bij elke oversteek stelt Nico zich (hopelijk) twee vragen.</p>
+      <p>Maak kennis met <strong>Nico</strong>. Nico fietst elke dag naar de campus en moet onderweg heel wat oversteken. Bij elke oversteek stelt Nico zich (hopelijk) twee vragen. Samen beantwoorden ze een derde.</p>
     </div>
     <figure class="nico-scene">
       <div class="nico-stage">
@@ -1077,7 +1092,7 @@ footer .f-inner a:hover { color: var(--gold); }
     <div class="formula-card" data-c="kans">
       <div class="formula-q">"Haal ik het?"</div>
       <div class="formula-name">Kans</div>
-      <p>Hoe waarschijnlijk is het dat het misloopt? Hoe druk is het, hoe snel gaat het verkeer?</p>
+      <p>Hoe waarschijnlijk is het dat het misloopt? Hoe druk is het, hoe snel gaat het verkeer? Twijfel je of je het haalt, dan is de kans groot.</p>
     </div>
     <div class="formula-op" aria-hidden="true">×</div>
     <div class="formula-card" data-c="gevolg">
@@ -1093,10 +1108,22 @@ footer .f-inner a:hover { color: var(--gold); }
     </div>
   </div>
 
-  <div class="callout"><p>Het doel van een risicoanalyse is het bepalen van de kans dat een dreiging zich voordoet en de gevolgen daarvan.</p></div>
-
-  <p>Kans en gevolg schat je in op een schaal van <strong>1 (zeer klein)</strong> tot <strong>5 (zeer groot)</strong>. Vermenigvuldig ze en je krijgt een risicoscore tussen 1 en 25. Die score valt in een van vier zones:</p>
-  <div class="zone-legend" id="zone-legend"></div>
+  <div class="score-block">
+    <div class="score-text">
+      <p>In een <strong>risicoanalyse</strong> stel je dezelfde twee vragen als Nico aan de stoeprand, maar dan voor alles wat in je project kan mislopen (een <em>bedreiging</em>). Je schat de kans en het gevolg in op een schaal van <strong>1 (zeer klein)</strong> tot <strong>5 (zeer groot)</strong> en vermenigvuldigt ze. Zo krijg je een risicoscore tussen 1 en 25.</p>
+      <div class="score-example">
+        <div class="score-example-title">Voorbeeld: al jaren hetzelfde wachtwoord</div>
+        <div class="frog-formula">Risico = <span class="fk">3</span> <span class="op">×</span> <span class="fg">4</span> = 12 <span class="zone-chip" data-zone="hoog">Hoog risico</span></div>
+        <p><strong class="score-k">Kans 3</strong>: datalekken komen regelmatig voor. <strong class="score-g">Gevolg 4</strong>: wie dat ene wachtwoord kent, raakt in al je accounts.</p>
+      </div>
+      <p>De score bepaalt de zone in de risicomatrix. Niet elk getal kan: 7, 11 of 18 krijg je nooit door twee getallen van 1 tot 5 te vermenigvuldigen. Daarom springt de matrix van hoog (tot 16) meteen naar kritiek (vanaf 20).</p>
+    </div>
+    <div class="score-aside">
+      <div class="frog-matrix-wrap" id="intro-matrix"></div>
+      <div class="zone-legend" id="zone-legend"></div>
+    </div>
+  </div>
+  <p class="score-teaser">Een drukke markt of een rustige spoorweg: welk risico is groter? Ontdek het in Deel 1.</p>
 
   <!-- Deel 1: De vier oversteken -->
   <h3 class="sub-title" id="frog-levels"><span class="sub-step">Deel 1</span>Nico steekt over</h3>
@@ -1456,6 +1483,10 @@ function zoneChip(score) {
   document.getElementById('zone-legend').innerHTML = RISK_ZONES.map(function(z) {
     return '<span class="zone-chip" data-zone="' + z.id + '">' + z.label + ' <span class="zone-range">' + z.min + ' tot ' + z.max + '</span></span>';
   }).join('');
+  // Lege matrix in de intro, met de cel van het wachtwoordvoorbeeld (kans 3, gevolg 4) aangeduid
+  var im = document.getElementById('intro-matrix');
+  im.innerHTML = riskMatrixHtml('Risicomatrix', [], { k: 3, g: 4 });
+  im.querySelector('.frog-matrix').setAttribute('aria-label', 'Risicomatrix met kans van 1 tot 5 en gevolg van 1 tot 5. Voorbeeld aangeduid: kans 3, gevolg 4, risico 12, hoog.');
 })();
 
 // Risicomatrix: kans horizontaal, gevolg verticaal (5 bovenaan).
