@@ -1227,7 +1227,7 @@ footer .f-inner a:hover { color: var(--gold); }
 
   <div class="sim-box">
     <h4>Laat Nico 100 keer onvoorzichtig oversteken</h4>
-    <p style="margin:0">Hoe groot is een risico eigenlijk? Laat Nico 100 keer oversteken zoals veel mensen dat doen: snel even kijken en gaan, en na een seconde wachten toch maar gaan. Met de kans en het gevolg die je hierboven koos. Tel daarna hoeveel hartjes Nico gemiddeld per oversteek verliest.</p>
+    <p style="margin:0">Hoe groot is een risico eigenlijk? Laat Nico 100 keer oversteken zonder te kijken, met de kans en het gevolg die je hierboven koos: de kans bepaalt hoe druk het is, het gevolg wie er aankomt. Tel daarna hoeveel hartjes Nico gemiddeld per oversteek verliest.</p>
     <div style="margin-top:.9rem"><button class="btn-nav" id="sim-run" type="button">Start de simulatie</button></div>
     <div class="sim-grid-wrap" id="sim-out" hidden>
       <div>
@@ -3092,12 +3092,12 @@ var SB_KINDS = [
 // De tussenafstand hangt af van de lengte en snelheid van het voertuig. Trage weggebruikers (wandelaars) kan
 // je makkelijker ontwijken, daarom krijgen ze bij een hoge kans een drukkere stroom (SB_GF, gewicht SB_GW),
 // zodat het gevolg de kans zo weinig mogelijk verandert.
-var SB_LAYOUT = ['..L.L..', '.L.L.L.', '.LL.LL.', 'LL.LLL.', 'LLLLLLL'];
-var SB_SPEED = [0.8, 0.95, 1.1, 1.3, 1.5];
+var SB_LAYOUT = ['..L.L..', '.L.L.L.', 'LLL.LL.', 'LLL.LLL', 'LLLLLLL'];
+var SB_SPEED = [0.8, 0.95, 1.2, 1.4, 1.5];
 var SB_VARY = [1, 1.35, 0.8, 1.2, 0.9, 1.45, 0.85];
-var SB_OCC = [0.05, 0.18, 0.3, 0.5, 0.7];
+var SB_OCC = [0.05, 0.18, 0.48, 0.62, 0.7];
 var SB_GF = [1.9, 1.5, 1.25, 1.1, 0.85];
-var SB_GW = [0, 0.2, 0.4, 0.7, 1];
+var SB_GW = [0, 0.2, 1, 1, 1];
 var SB_DWELL = 0.4;
 
 function frogSandboxCfg(k, gv) {
@@ -3122,34 +3122,38 @@ function frogSandboxCfg(k, gv) {
   };
 }
 
-// Nico steekt onvoorzichtig over: een snelle blik (0,1 s vooruit) op de volgende rijstrook en gaan.
-// Na 1 s wachten verliest Nico het geduld en gaat toch. Geen zijstapjes, geen terugkeren.
-var SIM_LOOK = 0.1, SIM_PATIENCE = 1.0;
+// De simulatie heeft haar eigen verkeer, los van het speelbare level: altijd twee rijstroken met de weggebruiker
+// van het gevolg, alleen de drukte (SIM_OCC) hangt af van de kans. Nico kijkt niet en fietst gewoon door, dus
+// de trefkans volgt de drukte en is voor elk gevolg gelijk. SIM_OCC is zo gekozen dat Nico ongeveer kans × 12%
+// van de keren geraakt wordt (12/24/36/48/60%): zo weegt kans 5 × gevolg 1 even zwaar als kans 1 × gevolg 5.
+// Het level zelf blijft afgestemd op speelbaarheid (zie frogSandboxCfg), daar is de trefkans niet lineair.
+var SIM_OCC = [0.07, 0.15, 0.23, 0.31, 0.41], SIM_LAYOUT = '..L.L..';
+function frogSimCfg(k, gv) {
+  var kind = SB_KINDS[gv - 1];
+  var avgW = kind.kinds.reduce(function(s, n) { return s + FROG_KINDS[n].w * FP; }, 0) / kind.kinds.length;
+  var rows = [{ s: 'goal' }], dir = 1, li = 0;
+  SIM_LAYOUT.split('').forEach(function(c) {
+    if (c !== 'L') { rows.push({ s: 'grass' }); return; }
+    var speed = kind.speed * SB_VARY[li++ % SB_VARY.length];
+    var base = ((avgW + 20) / (speed * FT) + SB_DWELL) / SIM_OCC[k - 1];
+    rows.push({ s: kind.s, dir: dir, speed: speed, kinds: kind.kinds, period: [base * 0.6, base * 1.25] });
+    dir = -dir;
+  });
+  rows.push({ s: 'start' });
+  return { rows: rows };
+}
 function frogSimulate(cfg, n, seed) {
   var rng = frogRng(seed), lanes = cfg.rows.map(function(spec, i) { return frogLaneInit(spec, i, rng); });
-  var dt = 1 / 60, out = [], row = FROWS - 1, cool = rng(), waited = 0, x = (2 + Math.floor(rng() * 9)) * FT;
-  function free(L) {
-    if (!L.spec.kinds) return true;
-    for (var i = 0; i < L.veh.length; i++) {
-      var v = L.veh[i];
-      for (var t = 0; t <= SIM_LOOK; t += 0.02) {
-        var vx = v.x + L.v * L.dir * t;
-        if (x + FROG_HIT_R > vx + 3 && x + FROG_HIT_L < vx + v.w - 3) return false;
-      }
-    }
-    return true;
-  }
+  var dt = 1 / 60, out = [], row = FROWS - 1, cool = rng(), x = (2 + Math.floor(rng() * 9)) * FT;
   for (var w = 0; w < 30; w += dt) lanes.forEach(function(L) { frogLaneUpdate(L, dt); });
   for (var guard = 0; out.length < n && guard < 600000; guard++) {
     lanes.forEach(function(L) { frogLaneUpdate(L, dt); });
     var done = -1;
     if (row === 0) done = 0;
     else if (lanes[row].veh.length && frogLaneHit(lanes[row], x + FROG_HIT_L, x + FROG_HIT_R)) done = 1;
-    if (done >= 0) { out.push(done); row = FROWS - 1; cool = rng() * 1.5; waited = 0; x = (2 + Math.floor(rng() * 9)) * FT; continue; }
+    if (done >= 0) { out.push(done); row = FROWS - 1; cool = rng() * 1.5; x = (2 + Math.floor(rng() * 9)) * FT; continue; }
     cool -= dt;
-    if (cool > 0) continue;
-    if (free(lanes[row - 1]) || waited > SIM_PATIENCE) { row--; cool = 0.3; waited = 0; }
-    else waited += dt;
+    if (cool <= 0) { row--; cool = 0.3; }
   }
   return out;
 }
@@ -3175,7 +3179,7 @@ function sbUpdate(rebuild) {
 });
 
 document.getElementById('sim-run').addEventListener('click', function() {
-  var cfg = frogSandboxCfg(sbK, sbG), res = frogSimulate(cfg, 100, 5000 + (sbRuns++) * 7919 + sbK * 31 + sbG);
+  var res = frogSimulate(frogSimCfg(sbK, sbG), 100, 5000 + (sbRuns++) * 7919 + sbK * 31 + sbG);
   var hits = res.reduce(function(s, v) { return s + v; }, 0), p = hits / 100, avg = p * sbG;
   document.getElementById('sim-out').hidden = false;
   document.getElementById('sim-dots').innerHTML = res.map(function(v, i) {
