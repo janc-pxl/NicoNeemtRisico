@@ -523,13 +523,15 @@ footer .f-inner a:hover { color: var(--gold); }
 .coin-kicker { font-family: var(--arcade); font-size: .55rem; color: var(--gold-dark); }
 .coin-event { font-family: 'Raleway', sans-serif; font-weight: 900; font-size: 1.08rem; line-height: 1.3; color: var(--primary); }
 .coin-event.small { font-size: .9rem; }
-.coin-q { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .85rem; color: var(--c-pos-ink); margin-top: auto; }
+.coin-q { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .85rem; color: var(--primary); margin-top: auto; }
+.coin-q.pos { color: var(--c-pos-ink); }
+.coin-q.neg { color: var(--c-neg-ink); }
 .coin-opts { display: flex; flex-direction: column; gap: .4rem; }
 .coin-opt {
   text-align: left; font: inherit; font-size: .88rem; padding: .6rem .75rem; min-height: 44px; cursor: pointer;
   border: 2px solid var(--border); border-radius: 7px; background: white; color: var(--text); transition: border-color .12s, background .12s;
 }
-.coin-opt:hover:not(:disabled) { border-color: var(--c-pos); background: var(--c-pos-bg); }
+.coin-opt:hover:not(:disabled) { border-color: var(--primary); background: var(--bg); }
 .coin-verdict { font-family: var(--arcade); font-size: .65rem; outline: none; }
 .coin-verdict.ok { color: #1b655c; }
 .coin-verdict.no { color: var(--c-neg-ink); }
@@ -539,6 +541,8 @@ footer .f-inner a:hover { color: var(--gold); }
 .coin-tag { display: block; font-family: var(--arcade); font-size: .5rem; margin-bottom: .3rem; }
 .coin-side.pos .coin-tag { color: var(--c-pos-ink); }
 .coin-side.neg .coin-tag { color: var(--c-neg-ink); }
+.coin-pick { display: block; font-family: Arial, system-ui, sans-serif; font-size: .82rem; color: var(--muted); margin-top: .35rem; }
+.coin-strat { font-size: .85rem; line-height: 1.45; margin: 0; color: var(--text); }
 @media (prefers-reduced-motion: reduce) { .coin-inner { transition: none; } }
 
 /* ── RAD VAN RISICO (alles onder #rad-app) ─────────────────────────────────── */
@@ -1287,7 +1291,7 @@ footer .f-inner a:hover { color: var(--gold); }
 
   <!-- Deel 1: warming-up -->
   <h3 class="sub-title" id="pn-munt"><span class="sub-step">Deel 1</span> Twee kanten van dezelfde munt</h3>
-  <p>Is een gebeurtenis een kans of een bedreiging? Dat hangt ervan af <strong>voor wie</strong>. Lees elke gebeurtenis en kies voor wie ze een kans is. De kaart draait om en toont beide kanten.</p>
+  <p>Is een gebeurtenis een kans of een bedreiging? Dat hangt ervan af <strong>voor wie</strong>, en soms van <strong>wat je ermee doet</strong>. Lees elke gebeurtenis en beantwoord de vraag. De kaart draait om en toont beide kanten.</p>
   <div class="coin-grid" id="coin-grid"></div>
   <div class="progress">
     <div class="progress-track"><div class="progress-fill" id="coin-fill"></div></div>
@@ -1296,7 +1300,7 @@ footer .f-inner a:hover { color: var(--gold); }
   <div class="summary" id="coin-summary">
     <h4>Kans of bedreiging? Dat hangt af van wiens doelen je bekijkt.</h4>
     <p>Dezelfde gebeurtenis kan voor de ene partij een kans zijn en voor de andere een bedreiging. Daarom begint een risicoanalyse altijd bij <strong>jouw doelstelling</strong>: helpt de gebeurtenis je doel, dan is het een kans. Brengt ze je doel in gevaar, dan is het een bedreiging.</p>
-    <p>Voor bedreigingen en kansen bestaan aparte strategieën, en ze spiegelen elkaar. Die oefen je hieronder op het Rad van Risico.</p>
+    <p>En soms hangt het af van wat je doet: het café dat omschakelt naar afhaal, maakt van een bedreiging een kans. Dat heet <strong>exploiteren</strong>, het spiegelbeeld van <strong>vermijden</strong>. Voor bedreigingen en kansen bestaan zo telkens strategieën die elkaar spiegelen. Die oefen je hieronder op het Rad van Risico.</p>
   </div>
 
   <!-- Deel 2: het Rad van Risico -->
@@ -3282,58 +3286,88 @@ sbUpdate(true);
 
 // ══ Deel 1 (positieve en negatieve risico's): twee kanten van dezelfde munt ═══
 // Dezelfde gebeurtenis is voor de ene partij een kans en voor de andere een bedreiging.
+// Twee soorten vragen. Twee partijen (ask 'pos' of 'neg'): voor wie is dit een kans / bedreiging?
+// Eén partij (party): is dit een kans, een bedreiging, of allebei (het hangt af van wat die partij doet)?
+// Elke kaart heeft drie opties, zodat het aantal opties het antwoord niet verraadt.
 var COIN_CARDS = [
-  { event: 'Een lockdown tijdens een pandemie',
-    pos: { who: 'Een videobelplatform zoals Zoom', why: 'ziet het aantal gebruikers op een paar weken exploderen.' },
-    neg: { who: 'Het café om de hoek', why: 'moet weken dicht en verliest al zijn inkomsten.' } },
-  { event: 'Een stortbui op Tomorrowland',
+  { event: 'Een stortbui op Tomorrowland', ask: 'pos',
     pos: { who: 'De verkoper van regenponcho\'s', why: 'verkoopt in een paar uur zijn hele voorraad.' },
     neg: { who: 'De organisator', why: 'krijgt een modderpoel, minder publiek aan de bars en extra schoonmaakkosten.' } },
-  { event: 'Een nieuwe AI-tool die zelf code schrijft',
-    pos: { who: 'Een IT-team met een grote backlog', why: 'kan sneller opleveren en extra functies toevoegen.' },
-    neg: { who: 'Een webbouwer die enkel eenvoudige sites maakt', why: 'ziet klanten hun website voortaan zelf in elkaar zetten.' } },
-  { event: 'Een strengere privacywet',
+  { event: 'Een lockdown tijdens een pandemie', party: 'het café om de hoek', actor: 'het café', answer: 'both',
+    neg: { why: 'als het café gewoon dicht blijft: weken zonder inkomsten.' },
+    pos: { why: 'als het café omschakelt naar afhaal of lockdownfeestjes aan huis: nieuwe klanten en nieuwe inkomsten.' },
+    strat: 'Van een bedreiging een kans maken door ze te benutten heet <strong>exploiteren</strong>.' },
+  { event: 'Een strengere privacywet', ask: 'neg',
     pos: { who: 'Een consultant in privacy en security', why: 'krijgt meer aanvragen dan er uren in een week zitten.' },
-    neg: { who: 'Een webshop die veel klantgegevens bewaart', why: 'moet extra beveiliging en procedures betalen.' } },
-  { event: 'Een hittegolf van twee weken',
-    pos: { who: 'Een ijsjesverkoper aan zee', why: 'draait recordomzet.' },
-    neg: { who: 'Een bouwbedrijf', why: 'moet de werken op de warmste uren stilleggen en loopt vertraging op.' } },
-  { event: 'De licentieprijs van je 3D-software verdubbelt plots',
+    neg: { who: 'Jouw webshopproject dat veel klantgegevens bewaart', why: 'moet extra beveiliging bouwen en loopt vertraging op.' } },
+  { event: 'Je team vindt een snellere manier om automatisch te testen', party: 'jouw project', actor: 'je team', answer: 'pos',
+    pos: { why: 'je bent sneller klaar en houdt tijd over voor extra functies. Zo\'n kans wil je net versterken (verbeteren).' },
+    note: 'Een bedreiging is het niet: niemand in je project verliest erbij.' },
+  { event: 'De licentieprijs van je 3D-software verdubbelt plots', ask: 'pos',
     pos: { who: 'Een concurrerend softwarebedrijf', why: 'ziet ontevreden klanten overstappen.' },
-    neg: { who: 'Jouw project dat op die software draait', why: 'gaat over budget, of moet halverwege van software wisselen.' } }
+    neg: { who: 'Jouw project dat op die software draait', why: 'gaat over budget, of moet halverwege van software wisselen.' } },
+  { event: 'Een nieuwe AI-tool die zelf code schrijft', party: 'jouw projectteam', actor: 'je team', answer: 'both',
+    neg: { why: 'als het team de code ongetest overneemt: bugs en beveiligingslekken.' },
+    pos: { why: 'als het team ze inzet voor routinewerk en alles test: sneller opleveren, met tijd voor extra functies.' },
+    strat: 'Of het een kans of een bedreiging wordt, hangt af van <strong>wat je ermee doet</strong>.' }
 ];
-var coinState = COIN_CARDS.map(function() { return null; }); // null, of { ok: true/false }
+var coinState = COIN_CARDS.map(function() { return null; }); // null, of { ok, pick }
 
-function coinRender() {
-  var grid = document.getElementById('coin-grid');
-  grid.innerHTML = COIN_CARDS.map(function(c, i) {
-    var st = coinState[i], flipped = !!st;
-    // de juiste partij staat niet altijd op dezelfde plek
-    var opts = i % 2 ? [['pos', c.pos.who], ['neg', c.neg.who]] : [['neg', c.neg.who], ['pos', c.pos.who]];
-    var front = '<div class="coin-face coin-front"' + (flipped ? ' aria-hidden="true"' : '') + '>' +
-      '<div class="coin-top"><span class="coin-icon" aria-hidden="true"></span><span class="coin-kicker">GEBEURTENIS ' + (i + 1) + '</span></div>' +
-      '<div class="coin-event">' + c.event + '</div>' +
-      '<div class="coin-q" id="coin-q-' + i + '">Voor wie is dit een kans?</div>' +
-      '<div class="coin-opts" role="group" aria-labelledby="coin-q-' + i + '">' + opts.map(function(o) {
-        return '<button type="button" class="coin-opt"' + (flipped ? ' disabled tabindex="-1"' : '') + ' onclick="coinAnswer(' + i + ',\'' + o[0] + '\')">' + o[1] + '</button>';
-      }).join('') + '</div></div>';
-    var back = '<div class="coin-face coin-back"' + (flipped ? '' : ' aria-hidden="true"') + '>' +
-      '<div class="coin-verdict ' + (flipped && st.ok ? 'ok' : 'no') + '" tabindex="-1" id="coin-v-' + i + '">' + (flipped ? (st.ok ? 'Juist!' : 'Net omgekeerd!') : '') + '</div>' +
-      '<div class="coin-event small">' + c.event + '</div>' +
-      '<div class="coin-side pos"><span class="coin-tag">KANS VOOR</span><strong>' + c.pos.who + '</strong> ' + c.pos.why + '</div>' +
-      '<div class="coin-side neg"><span class="coin-tag">BEDREIGING VOOR</span><strong>' + c.neg.who + '</strong> ' + c.neg.why + '</div></div>';
-    return '<div class="coin-card' + (flipped ? ' flipped' : '') + '"><div class="coin-inner">' + front + back + '</div></div>';
-  }).join('');
+// De opties per kaart; de eerste twee worden geschud met een vaste seed, "allebei" staat altijd laatst
+function coinOptions(c, i) {
+  var two = c.party ? [['pos', 'Een kans'], ['neg', 'Een bedreiging']] : [['pos', c.pos.who], ['neg', c.neg.who]];
+  if (frogRng(i * 7 + 3)() < 0.5) two.reverse();
+  return two.concat([['both', c.party ? 'Allebei: het hangt af van wat ' + c.actor + ' doet' : 'Voor allebei']]);
+}
+function coinCorrect(c) { return c.party ? c.answer : c.ask; }
+function coinCardHtml(i) {
+  var c = COIN_CARDS[i], st = coinState[i], flipped = !!st, opts = coinOptions(c, i);
+  var q = c.party ? 'Kans of bedreiging voor ' + c.party + '?' : 'Voor wie is dit ' + (c.ask === 'pos' ? 'een kans' : 'een bedreiging') + '?';
+  var front = '<div class="coin-face coin-front"' + (flipped ? ' aria-hidden="true"' : '') + '>' +
+    '<div class="coin-top"><span class="coin-icon" aria-hidden="true"></span><span class="coin-kicker">GEBEURTENIS ' + (i + 1) + '</span></div>' +
+    '<div class="coin-event" id="coin-ev-' + i + '">' + c.event + '</div>' +
+    '<div class="coin-q ' + (c.party ? 'self' : c.ask) + '" id="coin-q-' + i + '">' + q + '</div>' +
+    '<div class="coin-opts" role="group" aria-labelledby="coin-ev-' + i + ' coin-q-' + i + '">' + opts.map(function(o) {
+      return '<button type="button" class="coin-opt"' + (flipped ? ' disabled tabindex="-1"' : '') + ' onclick="coinAnswer(' + i + ',\'' + o[0] + '\')">' + o[1] + '</button>';
+    }).join('') + '</div></div>';
+  var verdict = '';
+  if (flipped) {
+    var picked = opts.filter(function(o) { return o[0] === st.pick; })[0][1];
+    verdict = st.ok ? 'Juist!' : 'Niet juist<span class="coin-pick">Jij koos: ' + picked + '</span>';
+  }
+  var sides;
+  if (!c.party) {
+    sides = '<div class="coin-side pos"><span class="coin-tag">KANS VOOR</span><strong>' + c.pos.who + '</strong> ' + c.pos.why + '</div>' +
+      '<div class="coin-side neg"><span class="coin-tag">BEDREIGING VOOR</span><strong>' + c.neg.who + '</strong> ' + c.neg.why + '</div>';
+  } else if (c.answer === 'both') {
+    sides = '<div class="coin-side neg"><span class="coin-tag">BEDREIGING</span>' + c.neg.why + '</div>' +
+      '<div class="coin-side pos"><span class="coin-tag">KANS</span>' + c.pos.why + '</div>' +
+      '<p class="coin-strat">' + c.strat + '</p>';
+  } else {
+    sides = '<div class="coin-side pos"><span class="coin-tag">KANS VOOR ' + c.party.toUpperCase() + '</span>' + c.pos.why + '</div>' +
+      '<p class="coin-strat">' + c.note + '</p>';
+  }
+  var back = '<div class="coin-face coin-back"' + (flipped ? '' : ' aria-hidden="true"') + '>' +
+    '<div class="coin-verdict ' + (flipped && st.ok ? 'ok' : 'no') + '" tabindex="-1" id="coin-v-' + i + '">' + verdict + '</div>' +
+    '<div class="coin-event small">' + c.event + '</div>' + sides + '</div>';
+  return '<div class="coin-card' + (flipped ? ' flipped' : '') + '" id="coin-card-' + i + '"><div class="coin-inner">' + front + back + '</div></div>';
+}
+function coinProgress() {
   var done = coinState.filter(Boolean).length, ok = coinState.filter(function(x) { return x && x.ok; }).length;
   document.getElementById('coin-fill').style.width = (done / COIN_CARDS.length * 100) + '%';
   document.getElementById('coin-progress-label').textContent = done + ' / ' + COIN_CARDS.length + ' omgedraaid' + (done ? ', ' + ok + ' juist' : '');
   document.getElementById('coin-summary').classList.toggle('visible', done === COIN_CARDS.length);
 }
-function coinAnswer(i, side) {
+function coinRender() {
+  document.getElementById('coin-grid').innerHTML = COIN_CARDS.map(function(c, i) { return coinCardHtml(i); }).join('');
+  coinProgress();
+}
+function coinAnswer(i, pick) {
   if (coinState[i]) return;
   FrogAudio.init();
-  coinState[i] = { ok: side === 'pos' };
-  FrogAudio.play(side === 'pos' ? 'cross' : 'meh');
+  var ok = pick === coinCorrect(COIN_CARDS[i]);
+  coinState[i] = { ok: ok, pick: pick };
+  FrogAudio.play(ok ? 'cross' : 'meh');
   coinRender();
   var v = document.getElementById('coin-v-' + i); if (v) v.focus({ preventScroll: true });
 }
