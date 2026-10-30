@@ -435,8 +435,19 @@ footer .f-inner a:hover { color: var(--gold); }
 
 /* ── DEEL 2: WAT ALS? ───────────────────────────────────────────────────────── */
 
-.sb-panel { display: grid; grid-template-columns: minmax(0, 1fr) 270px; gap: 1.75rem; align-items: start; margin-top: 1.5rem; }
-.sb-sliders { display: grid; gap: 1.1rem; }
+/* Regelbalk boven het vrije spel, even breed als het speelveld: regelaars en formule links, kleine matrix rechts */
+.sb-panel {
+  display: grid; grid-template-columns: minmax(0, 1fr) 172px; grid-template-areas: "sliders matrix" "result matrix";
+  gap: .9rem 2rem; align-items: center; max-width: 860px; margin: 1.5rem auto 0;
+}
+.sb-sliders { grid-area: sliders; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem 2rem; }
+.sb-panel .sb-result { grid-area: result; }
+.sb-panel #sb-matrix { grid-area: matrix; }
+#sb-matrix .frog-matrix-title { font-size: .7rem; margin-bottom: .25rem; }
+#sb-matrix .frog-matrix { grid-template-columns: 1.1rem .9rem repeat(5, minmax(0, 1fr)); grid-template-rows: repeat(5, auto) 1rem 1.1rem; gap: 2px; }
+#sb-matrix .frog-mx-cell .mx-score { top: 1px; left: 3px; font-size: .6rem; }
+#sb-matrix .frog-mx-axis { font-size: .62rem; }
+#frog-sb { margin-top: 1rem; }
 .sb-slider label { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .92rem; margin-bottom: .2rem; }
 .sb-slider.kans label { color: var(--c-kans); }
 .sb-slider.gevolg label { color: var(--c-gevolg); }
@@ -1026,7 +1037,7 @@ footer .f-inner a:hover { color: var(--gold); }
   .score-aside { max-width: 320px; }
   .formula { grid-template-columns: 1fr; }
   .formula-op { text-align: center; line-height: 1; }
-  .frog-an-grid, .sb-panel { grid-template-columns: 1fr; }
+  .frog-an-grid { grid-template-columns: 1fr; }
   .frog-matrix-wrap { max-width: 320px; }
 }
 @media (max-width: 620px) {
@@ -1035,6 +1046,9 @@ footer .f-inner a:hover { color: var(--gold); }
   main { padding: 0 1rem 4rem; }
   h2 { font-size: 1.6rem; }
   .nico-bubble { font-size: .78rem; padding: .25rem .5rem; }
+  .sb-panel { grid-template-columns: minmax(0, 1fr) 132px; grid-template-areas: "sliders sliders" "result matrix"; gap: .9rem 1rem; }
+  .sb-sliders { grid-template-columns: 1fr; gap: .8rem; }
+  .sb-panel .frog-formula { font-size: 1rem; padding: .6rem .7rem; gap: .4rem .35rem; }
   .frog-game { padding: 6px 6px 10px; border-radius: 10px; }
   .frog-hud { font-size: .5rem; }
   .frog-overlay { padding: .5rem .75rem; gap: .35rem; }
@@ -1184,6 +1198,24 @@ footer .f-inner a:hover { color: var(--gold); }
   <h3 class="sub-title" id="frog-wat-als"><span class="sub-step">Deel 2</span> Wat als de auto een trein is?</h3>
   <p>Je staat met je fiets aan een kruispunt en ziet een auto in de verte. Wat als het geen auto is, maar een trein? Of een wandelaar? Speel zelf met de kans en het gevolg en kijk hoe de oversteek verandert. Het gevolg bepaalt <strong>wat</strong> er aankomt, de kans bepaalt <strong>hoe druk</strong> het is: meer rijstroken, meer verkeer en sneller. Speel het level daarna zelf: lukt het je nog bij kans 5?</p>
 
+  <!-- Regelaars vlak boven het spel: je ziet de weg veranderen terwijl je sleept -->
+  <div class="sb-panel">
+    <div class="sb-sliders">
+      <div class="sb-slider kans">
+        <label for="sb-k">Kans <output id="sb-k-out" for="sb-k"></output></label>
+        <input type="range" id="sb-k" min="1" max="5" step="1" value="2" />
+        <div class="sb-ticks" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div>
+      </div>
+      <div class="sb-slider gevolg">
+        <label for="sb-g">Gevolg <output id="sb-g-out" for="sb-g"></output></label>
+        <input type="range" id="sb-g" min="1" max="5" step="1" value="4" />
+        <div class="sb-ticks" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div>
+      </div>
+    </div>
+    <div class="sb-result" id="sb-result" aria-live="polite"></div>
+    <div class="frog-matrix-wrap" id="sb-matrix"></div>
+  </div>
+
   <div class="frog-game" id="frog-sb" tabindex="0" role="application" aria-roledescription="spel" aria-label="Vrij spel. Gebruik de pijltjestoetsen om Nico te bewegen.">
     <div class="frog-hud">
       <span data-hud="level">VRIJ SPEL</span>
@@ -1206,23 +1238,6 @@ footer .f-inner a:hover { color: var(--gold); }
       <button type="button" data-move="down" tabindex="-1">▼</button>
       <button type="button" data-move="right" tabindex="-1">▶</button>
     </div>
-  </div>
-
-  <div class="sb-panel">
-    <div class="sb-sliders">
-      <div class="sb-slider kans">
-        <label for="sb-k">Kans <output id="sb-k-out" for="sb-k"></output></label>
-        <input type="range" id="sb-k" min="1" max="5" step="1" value="2" />
-        <div class="sb-ticks" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div>
-      </div>
-      <div class="sb-slider gevolg">
-        <label for="sb-g">Gevolg <output id="sb-g-out" for="sb-g"></output></label>
-        <input type="range" id="sb-g" min="1" max="5" step="1" value="4" />
-        <div class="sb-ticks" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span></div>
-      </div>
-      <div class="sb-result" id="sb-result" aria-live="polite"></div>
-    </div>
-    <div class="frog-matrix-wrap" id="sb-matrix"></div>
   </div>
 
   <div class="sim-box">
@@ -3166,7 +3181,7 @@ function sbUpdate(rebuild) {
   document.getElementById('sb-g-out').textContent = sbG + ' · ' + SB_KINDS[sbG - 1].name + ' (' + RISK_G[sbG - 1].sub + ')';
   var s = sbK * sbG;
   document.getElementById('sb-result').innerHTML = '<div class="frog-formula">Risico = <span class="fk">' + sbK + '</span> <span class="op">×</span> <span class="fg">' + sbG + '</span> = ' + s + ' ' + zoneChip(s) + '</div>';
-  document.getElementById('sb-matrix').innerHTML = riskMatrixHtml('Jouw keuze in de matrix', [], { k: sbK, g: sbG });
+  document.getElementById('sb-matrix').innerHTML = riskMatrixHtml('Jouw keuze', [], { k: sbK, g: sbG });
   if (rebuild) sbGame.setLevel(frogSandboxCfg(sbK, sbG));
 }
 ['k', 'g'].forEach(function(id) {
