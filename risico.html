@@ -167,11 +167,27 @@ footer .f-inner a:hover { color: var(--gold); }
 
 /* ── INTRO: NICO EN DE FORMULE ──────────────────────────────────────────────── */
 
-.nico-intro { display: grid; grid-template-columns: 1fr 150px; gap: 2rem; align-items: center; }
-.nico-portrait {
-  width: 150px; height: 150px; image-rendering: pixelated; display: block;
-  background: #0b0b0f; border: 3px solid var(--gold); border-radius: 14px; padding: 11px;
+.nico-intro { display: grid; grid-template-columns: minmax(0, 1fr) 444px; gap: 2rem; align-items: center; }
+.nico-intro-text { max-width: 68ch; }
+.nico-scene { margin: 0; background: #0b0b0f; border: 3px solid var(--gold); border-radius: 14px; padding: 3px; }
+.nico-stage { position: relative; }
+.nico-stage canvas { display: block; width: 100%; height: auto; image-rendering: pixelated; border-radius: 10px; }
+/* Tekstballon naast Nico op de stoep, in de kleur van het begrip (zelfde vragen als de kaarten eronder) */
+.nico-bubble {
+  position: absolute; left: 47%; top: 87.5%;
+  font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .9rem; line-height: 1.2; white-space: nowrap;
+  color: #fff; background: var(--bc, var(--c-kans)); padding: .3rem .6rem; border-radius: 7px;
+  opacity: 0; transform: translate(-6px, -50%);
+  transition: opacity .2s ease-out, transform .35s cubic-bezier(.16, 1, .3, 1);
 }
+.nico-bubble::before {
+  content: ''; position: absolute; right: 100%; top: 50%; margin-top: -6px;
+  border: 6px solid transparent; border-left: 0; border-right-color: var(--bc, var(--c-kans));
+}
+.nico-bubble.on { opacity: 1; transform: translate(0, -50%); }
+.nico-bubble[data-c="kans"] { --bc: var(--c-kans); }
+.nico-bubble[data-c="gevolg"] { --bc: var(--c-gevolg); }
+@media (prefers-reduced-motion: reduce) { .nico-bubble { transition: none; } }
 
 .formula { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: .75rem; align-items: stretch; margin: 1.75rem 0 .5rem; }
 .formula-card {
@@ -990,6 +1006,8 @@ footer .f-inner a:hover { color: var(--gold); }
   .sim-dot.ok, .sim-dot.hit, .frog-heart.lost { animation: none; }
 }
 @media (max-width: 900px) {
+  .nico-intro { grid-template-columns: 1fr; gap: 1rem; }
+  .nico-scene { max-width: 444px; }
   .formula { grid-template-columns: 1fr; }
   .formula-op { text-align: center; line-height: 1; }
   .frog-an-grid, .sb-panel { grid-template-columns: 1fr; }
@@ -1000,8 +1018,7 @@ footer .f-inner a:hover { color: var(--gold); }
   .nav-page { display: none; }
   main { padding: 0 1rem 4rem; }
   h2 { font-size: 1.6rem; }
-  .nico-intro { grid-template-columns: 1fr; gap: 1rem; }
-  .nico-portrait { width: 110px; height: 110px; padding: 8px; order: -1; }
+  .nico-bubble { font-size: .78rem; padding: .25rem .5rem; }
   .frog-game { padding: 6px 6px 10px; border-radius: 10px; }
   .frog-hud { font-size: .5rem; }
   .frog-overlay { padding: .5rem .75rem; gap: .35rem; }
@@ -1044,11 +1061,16 @@ footer .f-inner a:hover { color: var(--gold); }
   <div class="badge">Risicoanalyse</div>
   <h2>Risico = Kans × Gevolg</h2>
   <div class="nico-intro">
-    <div>
+    <div class="nico-intro-text">
       <p class="lead">Elke dag neem je risico's. Je steekt een drukke straat over, je fietst zonder licht naar huis, je gebruikt al jaren hetzelfde wachtwoord. Meestal sta je er niet bij stil. Een projectmanager doet dat wel, en gebruikt daarvoor één eenvoudige formule.</p>
       <p>Maak kennis met <strong>Nico</strong>. Nico fietst elke dag naar de campus en moet onderweg heel wat oversteken. Bij elke oversteek stelt Nico zich (hopelijk) twee vragen.</p>
     </div>
-    <canvas class="nico-portrait" id="nico-portrait" width="32" height="32" aria-hidden="true"></canvas>
+    <figure class="nico-scene">
+      <div class="nico-stage">
+        <canvas id="nico-scene" width="288" height="128" role="img" aria-label="Nico wacht met de fiets aan de stoeprand van een drukke weg, kijkt naar het verkeer en steekt dan over naar de campus."></canvas>
+        <div class="nico-bubble" id="nico-bubble" aria-hidden="true"></div>
+      </div>
+    </figure>
   </div>
 
   <div class="formula">
@@ -4642,12 +4664,88 @@ rrRenderMatrix(); rrPokerRender(); rrLineRender(); rrRegRender(); rrMonRender();
 window.RR = { state: rr, risks: RR_RISKS, mon: RR_MON, regAct: regAct, score: score, risk: risk, zone: rrZone, restart: rrRestartFromLine };
 })();
 
-// ══ Nico-portret in de intro ═════════════════════════════════════════════════
+// ══ Nico aan de stoeprand (intro) ════════════════════════════════════════════
+// Een stukje uit het spel: Nico wacht aan de stoeprand, stelt zich de twee vragen
+// en steekt pas over als er een gat is in beide rijstroken. Daarna opnieuw.
 
 (function() {
-  var c = document.getElementById('nico-portrait'), x = c.getContext('2d');
-  x.imageSmoothingEnabled = false;
-  x.drawImage(frogNico()[0], 0, 0);
+  var COL0 = 3, COLS = 9, ROWS = 4, NX = 6 * FT, HOP = 0.16;   // uitsnede kolom 3 tot 11, de campusdeur staat op kolom 6
+  var rows = [{ s: 'goal' }, { s: 'road' }, { s: 'road' }, { s: 'start' }];
+  while (rows.length < FROWS) rows.push({ s: 'grass' });
+  var cv = document.getElementById('nico-scene'), ctx = cv.getContext('2d'), bubble = document.getElementById('nico-bubble');
+  var bg = frogDrawBg({ seed: 11, rows: rows }), rng = frogRng(2026);
+  var lanes = [
+    frogLaneInit({ kinds: ['auto', 'auto', 'fietser', 'brommer'], dir: 1, speed: 2.1, gap: [1.5, 5.5] }, 1, rng),
+    frogLaneInit({ kinds: ['auto', 'vrachtwagen', 'fietser', 'auto'], dir: -1, speed: 1.6, gap: [2, 6] }, 2, rng)
+  ];
+  for (var i = 0; i < 160; i++) lanes.forEach(function(L) { frogLaneUpdate(L, 0.05); });
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)');
+  var n = { y: 3 * FT, from: 3 * FT, to: 3 * FT, hop: 0, hops: 0, alpha: 1 };
+  var phase = 'kans', pt = 0, time = 8, shown = null, visible = false, raf = 0, last = 0;
+
+  function say(c) {
+    if (c === shown) return;
+    shown = c;
+    bubble.classList.remove('on');
+    if (!c) return;
+    bubble.setAttribute('data-c', c);
+    bubble.textContent = c === 'kans' ? 'Haal ik het?' : 'Wat kan er gebeuren?';
+    void bubble.offsetWidth;
+    bubble.classList.add('on');
+  }
+  // Is Nico's plek in deze rijstrook vrij tussen t0 en t1 seconden van nu?
+  function clear(L, t0, t1) {
+    for (var t = t0; t <= t1; t += 0.05) for (var i = 0; i < L.veh.length; i++) {
+      var v = L.veh[i], x = v.x + L.v * L.dir * t;
+      if (NX + FROG_HIT_R + 6 > x + 3 && NX + FROG_HIT_L - 6 < x + v.w - 3) return false;
+    }
+    return true;
+  }
+  function hop() { n.from = n.y = Math.round(n.y); n.to = n.from - FT; n.hop = HOP; n.hops++; }
+  function go(p) { phase = p; pt = 0; }
+
+  function update(dt) {
+    time += dt; pt += dt;
+    lanes.forEach(function(L) { frogLaneUpdate(L, dt); });
+    if (n.hop > 0) { n.hop = Math.max(0, n.hop - dt); var k = 1 - n.hop / HOP; n.y = n.from + (n.to - n.from) * (1 - (1 - k) * (1 - k)); }
+    if (phase === 'kans') { say('kans'); if (pt > 2.6) go('gevolg'); }
+    else if (phase === 'gevolg') { say('gevolg'); if (pt > 2.6) go('wacht'); }
+    else if (phase === 'wacht') { if (clear(lanes[1], 0, 0.6) && clear(lanes[0], 0.3, 0.95)) { say(null); n.hops = 0; go('steek'); } }
+    else if (phase === 'steek') { if (n.hops < 3 && pt >= n.hops * 0.35) hop(); else if (n.hops === 3 && !n.hop) go('campus'); }
+    else if (phase === 'campus') { if (pt > 1.4) go('weg'); }
+    else if (phase === 'weg') { n.alpha = Math.max(0, 1 - pt / 0.4); if (pt > 0.5) { n.y = n.from = n.to = 3 * FT; go('terug'); } }
+    else if (phase === 'terug') { n.alpha = Math.min(1, pt / 0.4); if (pt > 0.6) go('kans'); }
+  }
+  function render() {
+    ctx.drawImage(bg, COL0 * FT, 0, COLS * FT, ROWS * FT, 0, 0, COLS * FT, ROWS * FT);
+    lanes.forEach(function(L) {
+      L.veh.forEach(function(v) {
+        var fr = L.dir > 0 ? v.spr.r : v.spr.l, img = fr.length > 1 ? fr[(Math.floor(time * 6) + v.seed) % fr.length] : fr[0];
+        ctx.drawImage(img, Math.round(v.x) - COL0 * FT, L.row * FT);
+      });
+    });
+    ctx.globalAlpha = n.alpha;
+    ctx.drawImage(frogNico()[n.hop > 0 ? 1 : 0], NX - COL0 * FT, Math.round(n.y));
+    ctx.globalAlpha = 1;
+  }
+  function step(t) {
+    if (!visible || document.hidden || reduce.matches) { raf = 0; return; }
+    var dt = Math.min(0.05, Math.max(0, (t - last) / 1000));
+    last = t;
+    update(dt); render();
+    raf = requestAnimationFrame(step);
+  }
+  function kick() {
+    if (raf || !visible || document.hidden || reduce.matches) return;
+    last = performance.now();
+    raf = requestAnimationFrame(step);
+  }
+  // Zonder beweging: een stilstaand beeld, de ballon wisselt om de 3 seconden van vraag
+  setInterval(function() { if (reduce.matches && visible) say(shown === 'kans' ? 'gevolg' : 'kans'); }, 3000);
+  render(); say('kans');
+  new IntersectionObserver(function(e) { visible = e[0].isIntersecting; kick(); }).observe(cv);
+  document.addEventListener('visibilitychange', kick);
+  reduce.addEventListener('change', kick);
 })();
 
 // ── Navigatie ───────────────────────────────────────────────────────────────
