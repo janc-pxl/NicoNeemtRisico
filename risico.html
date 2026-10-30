@@ -23,7 +23,7 @@
   --muted: #666;
 
   /* Vaste kleur per begrip, overal op de pagina dezelfde */
-  --c-kans: #3b74c4;
+  --c-kans: #3971c0;
   --c-gevolg: #c2410c;
   --c-risico: #030203;
 
@@ -391,7 +391,7 @@ footer .f-inner a:hover { color: var(--gold); }
 .frog-scale button b { display: block; font-family: 'Raleway', sans-serif; font-weight: 900; font-size: 1.05rem; }
 .frog-scale button small { display: block; font-size: .68rem; color: var(--muted); line-height: 1.2; }
 .frog-scale button:hover:not(:disabled) { border-color: #aaa; }
-.frog-scale.kans button[aria-checked="true"] { border-color: var(--c-kans); background: rgba(59,116,196,.09); }
+.frog-scale.kans button[aria-checked="true"] { border-color: var(--c-kans); background: rgba(57,113,192,.09); }
 .frog-scale.gevolg button[aria-checked="true"] { border-color: var(--c-gevolg); background: rgba(194,65,12,.08); }
 .frog-scale button:disabled { cursor: default; }
 .frog-scale button.expert { box-shadow: inset 0 0 0 2px var(--primary); }
@@ -469,6 +469,13 @@ footer .f-inner a:hover { color: var(--gold); }
 .sb-result { display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; }
 .sb-result .frog-formula { margin: 0; }
 
+/* Reflectie na een gespeeld level, even breed als het speelveld */
+.sb-reflect { max-width: 860px; margin: 1rem auto 0; background: var(--card); border: 1.5px solid var(--border); border-radius: 10px; padding: .9rem 1.1rem; animation: fadeIn .3s ease; }
+.sb-reflect[hidden] { display: none; }
+.sb-reflect p { font-size: .93rem; margin: 0; }
+.sb-reflect .sb-reflect-fact { font-size: .82rem; color: var(--muted); margin-bottom: .3rem; }
+.sb-reflect .sb-reflect-q { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: 1.02rem; color: var(--c-gevolg); margin-bottom: .25rem; }
+
 .sim-box { background: var(--card); border: 1.5px solid var(--border); border-radius: 12px; padding: 1.25rem 1.4rem; margin-top: 1.5rem; }
 .sim-box h4 { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: 1rem; margin-bottom: .35rem; }
 .sim-grid-wrap[hidden] { display: none; }
@@ -476,7 +483,11 @@ footer .f-inner a:hover { color: var(--gold); }
 .sim-dots { display: grid; grid-template-columns: repeat(10, 1fr); gap: 4px; }
 .sim-dot { aspect-ratio: 1; border-radius: 3px; background: var(--border); }
 .sim-dot.ok { background: var(--green); animation: dotIn .2s ease backwards; }
-.sim-dot.hit { background: var(--accent); animation: dotIn .2s ease backwards; }
+.sim-dot.hit { background: var(--accent); animation: dotIn .2s ease backwards; border-radius: 50%; }
+.sim-intro { margin: 0; }
+.sim-actions { margin-top: .9rem; }
+.sim-text p:last-child { margin-bottom: 0; }
+.sim-history tbody tr:first-child td { background: var(--bg); }
 @keyframes dotIn { from { transform: scale(0); } to { transform: scale(1); } }
 .sim-legend { display: flex; gap: 1rem; font-size: .78rem; color: var(--muted); margin-top: .5rem; }
 .sim-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 4px; vertical-align: -1px; }
@@ -1251,17 +1262,20 @@ footer .f-inner a:hover { color: var(--gold); }
     </div>
   </div>
 
+  <div class="sb-reflect" id="sb-reflect" aria-live="polite" hidden></div>
+
   <div class="sim-box">
     <h4>Laat Nico 100 keer onvoorzichtig oversteken</h4>
-    <p style="margin:0">Hoe groot is een risico eigenlijk? Laat Nico 100 keer oversteken zonder te kijken, met de kans en het gevolg die je hierboven koos: de kans bepaalt hoe druk het is, het gevolg wie er aankomt. Tel daarna hoeveel hartjes Nico gemiddeld per oversteek verliest.</p>
-    <div style="margin-top:.9rem"><button class="btn-nav" id="sim-run" type="button">Start de simulatie</button></div>
+    <p class="sim-intro">Hoe groot is een risico eigenlijk? Laat Nico 100 keer oversteken zonder te kijken, met de kans en het gevolg die je hierboven koos: de kans bepaalt hoe druk het is, het gevolg wie er aankomt. Tel daarna hoeveel hartjes Nico gemiddeld per oversteek verliest.</p>
+    <div class="sim-actions"><button class="btn-nav" id="sim-run" type="button">Start de simulatie</button></div>
     <div class="sim-grid-wrap" id="sim-out" hidden>
       <div>
         <div class="sim-dots" id="sim-dots" aria-hidden="true"></div>
-        <div class="sim-legend" aria-hidden="true"><span><i style="background:var(--green)"></i>veilig over</span><span><i style="background:var(--accent)"></i>geraakt</span></div>
+        <div class="sim-legend" aria-hidden="true"><span><i class="sim-dot ok"></i>veilig over</span><span><i class="sim-dot hit"></i>geraakt</span></div>
       </div>
-      <div class="sim-text" id="sim-text" aria-live="polite"></div>
+      <div class="sim-text" id="sim-text"></div>
     </div>
+    <div class="sr-only" id="sim-live" aria-live="polite"></div>
     <div id="sim-history-wrap"></div>
   </div>
 </section>
@@ -3184,7 +3198,31 @@ function frogSimulate(cfg, n, seed) {
   return out;
 }
 
-var sbGame = new FrogGame(document.getElementById('frog-sb'), { live: document.getElementById('frog-live'), compact: true });
+var sbGame = new FrogGame(document.getElementById('frog-sb'), { live: document.getElementById('frog-live'), compact: true, onEnd: sbReflect });
+
+// Na een gespeeld level: de vraag van de slide ("Heeft dit impact op de keuze die je maakt?"), passend bij het gevolg
+function sbReflect(res) {
+  var kind = SB_KINDS[sbG - 1], lost = Math.min(res.damage, 5), q, body;
+  var hearts = function(n) { return n + (n === 1 ? ' hartje' : ' hartjes'); };
+  var fact = (res.win ? 'Gehaald' : 'Game over') + ': ' + (res.hits ? 'Nico werd ' + res.hits + ' keer geraakt en verloor ' + hearts(lost) + '.' : 'Nico werd geen enkele keer geraakt.');
+  if (sbG >= 4) {
+    q = 'Speelde je voorzichtiger nu er ' + kind.name + ' reden?';
+    body = 'Eén botsing kost hier ' + hearts(sbG) + '. Bij zo\'n groot gevolg wacht je liever wat langer op een groot gat, ook al kost dat tijd. Dat is de vraag van deze les: verandert het gevolg de keuze die je maakt?';
+  } else if (sbG <= 2) {
+    q = 'Waagde je bij ' + kind.name + ' sneller een gokje?';
+    body = 'Een botsing kost maar ' + hearts(sbG) + ', dus een gokje is niet zo erg. Zet het gevolg nu op 5 bij dezelfde kans: speel je dan anders?';
+  } else {
+    q = 'Hoe lang wachtte je bij de ' + kind.name + ' op een gat?';
+    body = 'Een botsing kost ' + hearts(sbG) + '. Probeer dezelfde kans eens met wandelaars en daarna met de trein: verandert je keuze?';
+  }
+  var el = document.getElementById('sb-reflect');
+  el.innerHTML = '<p class="sb-reflect-fact">' + fact + '</p><p class="sb-reflect-q">' + q + '</p><p>' + body + '</p>';
+  el.hidden = false;
+}
+// Een nieuw spel (start of opnieuw) haalt de oude reflectie weg
+document.getElementById('frog-sb').addEventListener('click', function(e) {
+  if (e.target.closest('[data-act]')) document.getElementById('sb-reflect').hidden = true;
+});
 var sbK = 2, sbG = 4, sbRuns = 0, sbHistory = [];
 document.getElementById('sb-g-ticks').innerHTML = SB_KINDS.map(function(kind, i) { return '<span>' + (i + 1) + '<em>' + kind.who + '</em></span>'; }).join('');
 
@@ -3200,9 +3238,9 @@ function sbUpdate(rebuild) {
   document.getElementById('sb-k').setAttribute('aria-valuetext', sbK + ', ' + rk.label.toLowerCase() + ', ' + rk.sub);
   document.getElementById('sb-g').setAttribute('aria-valuetext', sbG + ', ' + rg.label.toLowerCase() + ', er komt ' + SB_KINDS[sbG - 1].one + ' aan');
   var s = sbK * sbG;
-  document.getElementById('sb-result').innerHTML = '<div class="frog-formula">Risico = <span class="fk">' + sbK + '</span> <span class="op">×</span> <span class="fg">' + sbG + '</span> = ' + s + ' ' + zoneChip(s) + '</div>';
+  document.getElementById('sb-result').innerHTML = '<div class="frog-formula">Risico <span aria-hidden="true">=</span><span class="sr-only">is</span> <span class="fk">' + sbK + '</span> <span class="op" aria-hidden="true">×</span><span class="sr-only">maal</span> <span class="fg">' + sbG + '</span> <span aria-hidden="true">=</span><span class="sr-only">is</span> ' + s + ' ' + zoneChip(s) + '</div>';
   document.getElementById('sb-matrix').innerHTML = riskMatrixHtml('Jouw keuze', [], { k: sbK, g: sbG });
-  if (rebuild) sbGame.setLevel(frogSandboxCfg(sbK, sbG));
+  if (rebuild) { sbGame.setLevel(frogSandboxCfg(sbK, sbG)); document.getElementById('sb-reflect').hidden = true; }
 }
 ['k', 'g'].forEach(function(id) {
   var input = document.getElementById('sb-' + id);
@@ -3221,11 +3259,15 @@ document.getElementById('sim-run').addEventListener('click', function() {
     return '<span class="sim-dot ' + (v ? 'hit' : 'ok') + '" style="animation-delay:' + (i * 12) + 'ms"></span>';
   }).join('');
   var nf = function(x) { return x.toLocaleString('nl-BE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); };
+  var heartsTxt = sbG + (sbG === 1 ? ' hartje' : ' hartjes');
   document.getElementById('sim-text').innerHTML =
-    '<div class="sim-calc"><span class="fk">' + nf(p) + '</span> <span class="op">×</span> <span class="fg">' + sbG + ' ♥</span> = ' + nf(avg) + ' hartjes per oversteek</div>' +
-    '<p>Nico werd <strong>' + hits + ' van de 100 keer</strong> geraakt. Elke botsing met ' + SB_KINDS[sbG - 1].one + ' kost <strong>' + sbG + (sbG === 1 ? ' hartje' : ' hartjes') + '</strong>. ' +
+    '<div class="sim-calc"><span class="fk">' + nf(p) + '</span> <span class="op" aria-hidden="true">×</span><span class="sr-only">maal</span> <span class="fg">' + sbG + ' <span aria-hidden="true">♥</span></span> <span aria-hidden="true">=</span><span class="sr-only">is</span> ' + nf(avg) + ' hartjes per oversteek</div>' +
+    '<p>Nico werd <strong>' + hits + ' van de 100 keer</strong> geraakt: een gemeten kans van ' + nf(p) + '. Elke botsing met ' + SB_KINDS[sbG - 1].one + ' kost <strong>' + heartsTxt + '</strong>. ' +
     'Gemiddeld verliest Nico dus <strong>' + nf(avg) + ' hartjes per oversteek</strong>.</p>' +
-    '<p style="margin:0">Dat bedoelt de formule: <strong>risico is de schade die je gemiddeld mag verwachten</strong>. Een hoge kans met een klein gevolg kan even zwaar wegen als een kleine kans met een groot gevolg. Probeer maar eens kans 5 × gevolg 1 en daarna kans 1 × gevolg 5.</p>';
+    '<p>Dat bedoelt de formule: <strong>risico is de schade die je gemiddeld mag verwachten</strong>. Een hoge kans met een klein gevolg kan even zwaar wegen als een kleine kans met een groot gevolg. Probeer maar eens kans 5 × gevolg 1 en daarna kans 1 × gevolg 5.</p>';
+  // Schermlezers krijgen één korte zin in plaats van de hele uitleg bij elke run
+  document.getElementById('sim-live').textContent = 'Nico werd ' + hits + ' van de 100 keer geraakt. Gemiddeld ' + nf(avg) + ' hartjes per oversteek.';
+  this.textContent = 'Nog eens 100 keer';
   sbHistory.unshift({ k: sbK, g: sbG, hits: hits, avg: avg });
   sbHistory = sbHistory.slice(0, 6);
   document.getElementById('sim-history-wrap').innerHTML = sbHistory.length < 2 ? '' :
