@@ -111,7 +111,7 @@ h3.sub-title {
 }
 h3.sub-title .sub-step {
   display: inline-block; font-size: .7rem; letter-spacing: .1em; text-transform: uppercase;
-  color: var(--gold-dark); margin-right: .5rem;
+  color: var(--gold-dark); margin-right: .2rem;
 }
 p { color: var(--text); margin-bottom: 1rem; }
 .lead { font-size: 1.08rem; color: var(--muted); margin-bottom: 1.25rem; }
@@ -203,7 +203,7 @@ footer .f-inner a:hover { color: var(--gold); }
 .formula-card[data-c="risico"] .formula-name { color: white; }
 .formula-card p { font-size: .85rem; color: var(--muted); line-height: 1.45; margin: 0; }
 .formula-card[data-c="risico"] p { color: #ccc; }
-.formula-op { align-self: center; font-family: 'Raleway', sans-serif; font-weight: 900; font-size: 2rem; color: var(--gold); }
+.formula-op { align-self: center; font-family: 'Raleway', sans-serif; font-weight: 900; font-size: 2rem; color: var(--gold-dark); }
 
 /* Van inschatting naar score: uitleg met voorbeeld links, lege matrix rechts */
 .score-block { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 2.5rem; align-items: start; margin-top: 2rem; }
@@ -225,7 +225,8 @@ footer .f-inner a:hover { color: var(--gold); }
   padding: .25rem .65rem; border-radius: 999px;
   background: var(--zbg); color: var(--zink); border: 1.5px solid var(--zc);
 }
-.zone-chip .zone-range { font-weight: 700; opacity: .8; }
+.zone-chip { font-variant-numeric: lining-nums; }
+.zone-chip .zone-range { font-weight: 700; }
 [data-zone="laag"] { --zc: var(--z-laag); --zbg: var(--z-laag-bg); --zink: var(--z-laag-ink); }
 [data-zone="middel"] { --zc: var(--z-middel); --zbg: var(--z-middel-bg); --zink: var(--z-middel-ink); }
 [data-zone="hoog"] { --zc: var(--z-hoog); --zbg: var(--z-hoog-bg); --zink: var(--z-hoog-ink); }
@@ -419,7 +420,7 @@ footer .f-inner a:hover { color: var(--gold); }
   background: var(--zbg); border: 1.5px solid transparent;
   display: flex; flex-wrap: wrap; align-content: center; justify-content: center; gap: 2px; padding: 2px;
 }
-.frog-mx-cell .mx-score { position: absolute; top: 2px; left: 4px; font-size: .62rem; font-weight: 700; color: var(--zink); opacity: .75; }
+.frog-mx-cell .mx-score { position: absolute; top: 2px; left: 4px; font-size: .62rem; font-weight: 700; color: var(--zink); font-variant-numeric: lining-nums; }
 .frog-mx-cell.cur { border-color: var(--primary); box-shadow: 0 0 0 2px var(--primary); z-index: 1; }
 .frog-mx-num { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .72rem; color: var(--muted); display: flex; align-items: center; justify-content: center; }
 .frog-mx-axis { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .72rem; letter-spacing: .06em; text-transform: uppercase; display: flex; align-items: center; justify-content: center; }
@@ -1071,6 +1072,7 @@ footer .f-inner a:hover { color: var(--gold); }
 </nav>
 
 <main>
+<h1 class="sr-only">Nico neemt risico: risicomanagement</h1>
 
 <section id="kans-gevolg">
   <div class="badge">Risicoanalyse</div>
@@ -1094,13 +1096,13 @@ footer .f-inner a:hover { color: var(--gold); }
       <div class="formula-name">Kans</div>
       <p>Hoe waarschijnlijk is het dat het misloopt? Hoe druk is het, hoe snel gaat het verkeer? Twijfel je of je het haalt, dan is de kans groot.</p>
     </div>
-    <div class="formula-op" aria-hidden="true">×</div>
+    <div class="formula-op"><span aria-hidden="true">×</span><span class="sr-only">maal</span></div>
     <div class="formula-card" data-c="gevolg">
       <div class="formula-q">"Wat kan er gebeuren?"</div>
       <div class="formula-name">Gevolg</div>
       <p>Ook <em>impact</em> genoemd. Hoe groot is de schade als het toch misloopt? Een schrammetje, of veel erger?</p>
     </div>
-    <div class="formula-op" aria-hidden="true">=</div>
+    <div class="formula-op"><span aria-hidden="true">=</span><span class="sr-only">is</span></div>
     <div class="formula-card" data-c="risico">
       <div class="formula-q">"Neem ik dit risico?"</div>
       <div class="formula-name">Risico</div>
@@ -1126,7 +1128,7 @@ footer .f-inner a:hover { color: var(--gold); }
   <p class="score-teaser">Een drukke markt of een rustige spoorweg: welk risico is groter? Ontdek het in Deel 1.</p>
 
   <!-- Deel 1: De vier oversteken -->
-  <h3 class="sub-title" id="frog-levels"><span class="sub-step">Deel 1</span>Nico steekt over</h3>
+  <h3 class="sub-title" id="frog-levels"><span class="sub-step">Deel 1</span> Nico steekt over</h3>
   <p>Help Nico vier keer de overkant te bereiken: door een rustig park, over een drukke markt, over de spoorweg en over een drukke steenweg. Nico heeft <strong>5 hartjes</strong>. Hoe erger een botsing, hoe meer hartjes Nico verliest. Na elk level schat je zelf de <strong>kans</strong> en het <strong>gevolg</strong> in.</p>
 
   <div class="frog-tabs" id="frog-tabs" role="tablist" aria-label="Levels"></div>
@@ -1179,7 +1181,7 @@ footer .f-inner a:hover { color: var(--gold); }
   </div>
 
   <!-- Deel 2: Wat als? -->
-  <h3 class="sub-title" id="frog-wat-als"><span class="sub-step">Deel 2</span>Wat als de auto een trein is?</h3>
+  <h3 class="sub-title" id="frog-wat-als"><span class="sub-step">Deel 2</span> Wat als de auto een trein is?</h3>
   <p>Je staat met je fiets aan een kruispunt en ziet een auto in de verte. Wat als het geen auto is, maar een trein? Of een wandelaar? Speel zelf met de kans en het gevolg en kijk hoe de oversteek verandert. Het gevolg bepaalt <strong>wat</strong> er aankomt, de kans bepaalt <strong>hoe druk</strong> het is: meer rijstroken, meer verkeer en sneller. Speel het level daarna zelf: lukt het je nog bij kans 5?</p>
 
   <div class="frog-game" id="frog-sb" tabindex="0" role="application" aria-roledescription="spel" aria-label="Vrij spel. Gebruik de pijltjestoetsen om Nico te bewegen.">
@@ -1244,7 +1246,7 @@ footer .f-inner a:hover { color: var(--gold); }
   <p class="lead">Een risico is niet altijd slecht nieuws. Elke gebeurtenis die een gewenst of ongewenst effect heeft op je project, is een risico. <strong>Negatieve risico's</strong> noemen we <strong>bedreigingen</strong>: die probeer je te vermijden, te verkleinen of te beheersen. <strong>Positieve risico's</strong> zijn <strong>kansen</strong>: die wil je niet vermijden, maar omarmen of versterken.</p>
 
   <!-- Deel 1: warming-up -->
-  <h3 class="sub-title" id="pn-munt"><span class="sub-step">Deel 1</span>Twee kanten van dezelfde munt</h3>
+  <h3 class="sub-title" id="pn-munt"><span class="sub-step">Deel 1</span> Twee kanten van dezelfde munt</h3>
   <p>Is een gebeurtenis een kans of een bedreiging? Dat hangt ervan af <strong>voor wie</strong>. Lees elke gebeurtenis en kies voor wie ze een kans is. De kaart draait om en toont beide kanten.</p>
   <div class="coin-grid" id="coin-grid"></div>
   <div class="progress">
@@ -1258,7 +1260,7 @@ footer .f-inner a:hover { color: var(--gold); }
   </div>
 
   <!-- Deel 2: het Rad van Risico -->
-  <h3 class="sub-title" id="pn-rad"><span class="sub-step">Deel 2</span>Het Rad van Risico</h3>
+  <h3 class="sub-title" id="pn-rad"><span class="sub-step">Deel 2</span> Het Rad van Risico</h3>
   <p>Elk vak op het rad is een risico. Hoe <strong>groter het vak</strong>, hoe groter de <strong>kans</strong>. Het getal in het vak is het <strong>gevolg</strong>: rode vakken kosten munten (bedreigingen), gouden vakken leveren munten op (kansen). Kies je maatregelen, benoem bij elke maatregel de strategie, kijk hoe het rad verandert, en draai 5 keer. Jan en Lowie presenteren.</p>
 
   <div id="rad-app">
@@ -1335,7 +1337,7 @@ footer .f-inner a:hover { color: var(--gold); }
   <div class="callout"><p>Vuistregel: kijk waar het gevolg landt. Bij de gebruiker? Dan is het een productrisico. In de planning, het budget of de scope? Dan is het een projectrisico.</p></div>
 
   <!-- Deel 1 -->
-  <h3 class="sub-title" id="pp-waar"><span class="sub-step">Deel 1</span>Waar landt het gevolg?</h3>
+  <h3 class="sub-title" id="pp-waar"><span class="sub-step">Deel 1</span> Waar landt het gevolg?</h3>
   <p>Je werkt mee aan de app van festival <strong>Vonk</strong>. Eén voor één schuiven er risico's binnen. Stuur elk risico naar de plek waar het gevolg landt: naar de <strong>app</strong> (productrisico) of naar het <strong>projectbord</strong> (projectrisico). Kijk wat er gebeurt.</p>
   <div class="ww-stage">
     <div class="pp-phone-wrap" id="ww-phone"></div>
@@ -1358,7 +1360,7 @@ footer .f-inner a:hover { color: var(--gold); }
   </div>
 
   <!-- Deel 2 -->
-  <h3 class="sub-title" id="pp-lancering"><span class="sub-step">Deel 2</span>Lanceerdag</h3>
+  <h3 class="sub-title" id="pp-lancering"><span class="sub-step">Deel 2</span> Lanceerdag</h3>
   <p>Over zes weken openen de poorten van Vonk, en dan moet de app werken. Onderweg lopen er zes dingen mis. Jij beslist hoe je ze oplost. Je hebt drie dingen om mee te "betalen": <strong>tijd</strong> (2 weken buffer), <strong>geld</strong> (een reserve van 50.000 euro) en, als je niet oplet, de <strong>kwaliteit</strong> van de app. Op lanceerdag zie je wat je keuzes opleverden.</p>
   <div id="ld-app">
     <div class="ld-weeks" id="ld-weeks"></div>
@@ -1397,7 +1399,7 @@ footer .f-inner a:hover { color: var(--gold); }
 
   <div class="rr-layout">
     <div class="rr-main">
-      <h3 class="sub-title" id="rr-poker"><span class="sub-step">Deel 1</span>Risico-poker</h3>
+      <h3 class="sub-title" id="rr-poker"><span class="sub-step">Deel 1</span> Risico-poker</h3>
       <p>Net zoals bij planning poker kiest iedereen eerst in stilte een kaart voor de <strong>kans</strong> en een kaart voor de <strong>impact</strong>. Pas dan draaien jullie ze samen om. Verschillen jullie sterk? Dan hoor je waarom, en kom je samen tot een inschatting.</p>
       <div class="rr-box" id="rr-poker-box"></div>
       <div class="progress"><div class="progress-track"><div class="progress-fill" id="rr-poker-fill"></div></div><span class="progress-label" id="rr-poker-label"></span></div>
@@ -1406,12 +1408,12 @@ footer .f-inner a:hover { color: var(--gold); }
         <p>Merk op hoe verschillend jullie soms schatten. Sara kijkt naar veiligheid, Ellen naar geld, Mehdi naar de techniek. Daarom schat je risico's in met een team en niet alleen: elke invalshoek ziet iets anders.</p>
       </div>
 
-      <h3 class="sub-title" id="rr-lijn"><span class="sub-step">Deel 2</span>Trek de lijn en vul het register</h3>
+      <h3 class="sub-title" id="rr-lijn"><span class="sub-step">Deel 2</span> Trek de lijn en vul het register</h3>
       <p>Niet elk risico verdient een aanpak. Beslis hoeveel risico Vonk aanvaardt: sleep de grens. Wat <strong>boven de lijn</strong> valt, komt in het register met een eigenaar, een preventieve actie (vooraf, om de kans of impact te verkleinen) en een noodplan (als het toch gebeurt). Wat eronder valt, aanvaard je.</p>
       <div class="rr-box" id="rr-line-box"></div>
       <div class="rr-reg" id="rr-reg"></div>
 
-      <h3 class="sub-title" id="rr-monitor"><span class="sub-step">Deel 3</span>Het register leeft</h3>
+      <h3 class="sub-title" id="rr-monitor"><span class="sub-step">Deel 3</span> Het register leeft</h3>
       <p>Het festival komt dichterbij. Volg het register week na week op en kijk wat er met je risico's gebeurt. Was je goed voorbereid?</p>
       <div class="rr-box" id="rr-mon-box"></div>
     </div>
