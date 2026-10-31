@@ -574,7 +574,7 @@ footer .f-inner a:hover { color: var(--gold); }
 #rad-app .host canvas { width: 154px; height: 126px; image-rendering: pixelated; display: block; }
 #rad-app .host-name { font-family: var(--arcade); font-size: .6rem; color: var(--gold); margin-top: 4px; }
 #rad-app .bubble {
-  position: relative; font-family: var(--arcade); font-size: .55rem; line-height: 1.7; color: var(--primary);
+  position: relative; font-family: var(--arcade); font-size: .62rem; line-height: 1.7; color: var(--primary);
   background: #fff; border-radius: 6px; padding: .55rem .6rem; margin-bottom: 10px; min-height: 2.8rem; width: 100%;
   text-align: center; opacity: 0; transform: translateY(6px); transition: opacity .15s, transform .15s;
 }
@@ -619,6 +619,11 @@ footer .f-inner a:hover { color: var(--gold); }
 #rad-app .arc-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--gold-dark); }
 #rad-app .arc-btn:disabled { opacity: .4; cursor: not-allowed; transform: none; }
 #rad-app .arc-btn.ghost { background: transparent; color: #ddd; box-shadow: inset 0 0 0 2px #555; }
+#rad-app .arc-btn.danger { background: #e63946; color: #fff; box-shadow: 0 4px 0 #9b1c26; }
+#rad-app .arc-btn.danger:active { box-shadow: 0 1px 0 #9b1c26; }
+#rad-app .rad-confirm { align-items: center; }
+#rad-app .rad-controls[hidden] { display: none; }
+#rad-app .rad-confirm-q { font-family: var(--arcade); font-size: .7rem; color: #fff; margin-right: .25rem; }
 #rad-app .snd { width: 30px; height: 26px; background: #1b1b22; border: 2px solid #3a3a44; border-radius: 4px; color: var(--gold); cursor: pointer; font-family: var(--arcade); font-size: .55rem; }
 #rad-app .snd[aria-pressed="false"] { color: #666; text-decoration: line-through; }
 
@@ -648,8 +653,8 @@ footer .f-inner a:hover { color: var(--gold); }
 #rad-app .m-title { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .9rem; line-height: 1.3; }
 #rad-app .m-target { font-size: .72rem; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; color: var(--muted); }
 #rad-app .m-target i { width: 9px; height: 9px; border-radius: 2px; display: inline-block; }
-#rad-app .m-cost { font-family: var(--arcade); font-size: .55rem; color: var(--gold-dark); margin-top: auto; }
-#rad-app .m-strat { font-family: var(--arcade); font-size: .5rem; letter-spacing: .03em; padding: .35rem .45rem; border-radius: 3px; align-self: flex-start; animation: radPop .35s ease; }
+#rad-app .m-cost { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .75rem; letter-spacing: .05em; color: var(--gold-dark); margin-top: auto; }
+#rad-app .m-strat { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .72rem; letter-spacing: .05em; padding: .35rem .45rem; border-radius: 3px; align-self: flex-start; animation: radPop .35s ease; }
 #rad-app .m-strat.neg { background: var(--c-neg-bg); color: var(--c-neg-ink); }
 #rad-app .m-strat.pos { background: var(--c-pos-bg); color: var(--c-pos-ink); }
 #rad-app .m-strat.none { background: #eee; color: #555; }
@@ -704,7 +709,7 @@ footer .f-inner a:hover { color: var(--gold); }
 #rad-app .m-q { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .8rem; color: var(--primary); }
 #rad-app .m-opts { display: flex; flex-wrap: wrap; gap: .3rem; }
 #rad-app .m-opt {
-  font-family: var(--arcade); font-size: .5rem; padding: .55rem .5rem; min-height: 32px; cursor: pointer;
+  font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .78rem; letter-spacing: .03em; padding: .5rem .7rem; min-height: 40px; cursor: pointer;
   border: 2px solid var(--border); border-radius: 4px; background: white; color: var(--primary);
 }
 #rad-app .m-opt.neg:hover { border-color: var(--c-neg); background: var(--c-neg-bg); }
@@ -713,7 +718,16 @@ footer .f-inner a:hover { color: var(--gold); }
 #rad-app .m-opt.wrong { opacity: .4; text-decoration: line-through; }
 #rad-app .m-fb { font-size: .78rem; line-height: 1.4; padding: .4rem .55rem; border-radius: 5px; background: rgba(174,154,100,.14); border-left: 3px solid var(--gold); }
 #rad-app .m-fb.ok { background: rgba(42,157,143,.1); border-left-color: var(--green); }
-#rad-app .m-cancel { all: unset; font-size: .72rem; color: var(--muted); text-decoration: underline; cursor: pointer; align-self: flex-start; }
+#rad-app .m-cancel { all: unset; font-size: .78rem; color: var(--muted); text-decoration: underline; cursor: pointer; align-self: flex-start; padding: .2rem 0; }
+#rad-app .m-cancel:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; border-radius: 2px; }
+#rad-app .mirror-wrap summary { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .85rem; cursor: pointer; margin-bottom: .3rem; }
+#rad-app .mirror-wrap:not([open]) { margin-bottom: .7rem; }
+#rad-app .result h3:focus { outline: none; }
+#rad-app .result h3:focus-visible { outline: 2px solid var(--primary); outline-offset: 4px; }
+@media (prefers-reduced-motion: reduce) {
+  #rad-app .m-strat, #rad-app .log-item { animation: none; }
+  #rad-app .bubble { transition: none; }
+}
 #rad-app .m-note { font-size: .74rem; color: var(--muted); }
 #rad-app .m-note.ok { color: #1b655c; font-weight: 700; }
 #rad-app .m-why { font-size: .78rem; }
@@ -1355,18 +1369,24 @@ footer .f-inner a:hover { color: var(--gold); }
       </span>
     </div>
     <div class="rad-stage">
-      <div class="host"><div class="bubble" id="rad-bub-jan" aria-live="polite"></div><canvas id="rad-host-jan" width="44" height="36" aria-hidden="true"></canvas><div class="host-name">JAN</div></div>
+      <div class="host"><div class="bubble" id="rad-bub-jan"></div><canvas id="rad-host-jan" width="44" height="36" aria-hidden="true"></canvas><div class="host-name">JAN</div></div>
       <div class="wheel-wrap"><canvas id="rad-wheel" width="560" height="560" role="img" aria-label="Rad van Risico"></canvas></div>
-      <div class="host"><div class="bubble" id="rad-bub-lowie" aria-live="polite"></div><canvas id="rad-host-lowie" width="44" height="36" aria-hidden="true"></canvas><div class="host-name">LOWIE</div></div>
+      <div class="host"><div class="bubble" id="rad-bub-lowie"></div><canvas id="rad-host-lowie" width="44" height="36" aria-hidden="true"></canvas><div class="host-name">LOWIE</div></div>
     </div>
     <div class="rad-meter">
       <span>VERWACHTE WINST PER DRAAI<b id="rad-ev">0</b></span>
       <span>ZONDER MAATREGELEN<b id="rad-ev0">0</b></span>
       <span>VERWACHT EINDBUDGET<b id="rad-ev-end">0</b></span>
     </div>
-    <div class="rad-controls">
+    <div class="rad-controls" id="rad-controls">
       <button type="button" class="arc-btn" id="rad-spin">DRAAI!</button>
       <button type="button" class="arc-btn ghost" id="rad-reset">OPNIEUW</button>
+    </div>
+    <!-- Bevestiging voor OPNIEUW: wist je maatregelen en draaien van dit scenario -->
+    <div class="rad-controls rad-confirm" id="rad-confirm" role="group" aria-labelledby="rad-confirm-q" hidden>
+      <span class="rad-confirm-q" id="rad-confirm-q">ALLES WISSEN?</span>
+      <button type="button" class="arc-btn ghost" id="rad-confirm-no">NEE</button>
+      <button type="button" class="arc-btn danger" id="rad-confirm-yes">JA, OPNIEUW</button>
     </div>
   </div>
 
@@ -1390,6 +1410,7 @@ footer .f-inner a:hover { color: var(--gold); }
     </div>
     <div>
       <h3>Kies je maatregelen</h3>
+      <details class="mirror-wrap" id="rad-mirror" open><summary>Spiekbriefje: de strategieën</summary>
       <table class="mirror" aria-label="Strategieën per type risico">
         <thead><tr><th class="neg">Bedreiging (rood vak)</th><th aria-hidden="true"></th><th class="pos">Kans (goud vak)</th></tr></thead>
         <tbody>
@@ -1399,6 +1420,7 @@ footer .f-inner a:hover { color: var(--gold); }
           <tr><td><b>Accepteren</b> niets doen</td><td class="mid" aria-hidden="true">↔</td><td><b>Accepteren</b> niets doen</td></tr>
         </tbody>
       </table>
+      </details>
       <p class="hint" id="rad-m-hint">Klik op een maatregel en benoem eerst de strategie. Pas als je juist antwoordt, wordt de maatregel actief en verandert het rad. Nog eens klikken op de kop = ongedaan maken. Zodra je draait, liggen je keuzes vast.</p>
       <div class="measures" id="rad-measures"></div>
     </div>
@@ -1406,6 +1428,7 @@ footer .f-inner a:hover { color: var(--gold); }
 
   <div class="panel" id="rad-log-panel" hidden><h3>Je project, week per week</h3><div class="log" id="rad-log"></div></div>
   <div class="panel result" id="rad-result" hidden></div>
+  <div class="sr-only" id="rad-live" aria-live="polite"></div>
   </div>
 </section>
 
@@ -3595,6 +3618,9 @@ function loadScenario(i) {
   say('jan', 'WELKOM BIJ HET RAD VAN RISICO!'); say('lowie', sc().title + '. KIES JE MAATREGELEN.');
   document.getElementById('rad-result').hidden = true;
   document.getElementById('rad-log-panel').hidden = true;
+  document.getElementById('rad-controls').hidden = false; document.getElementById('rad-confirm').hidden = true;
+  // het spiekbriefje staat open bij het eerste scenario; daarna ingeklapt (je kan het zelf openen)
+  document.getElementById('rad-mirror').open = !Object.keys(st.done).length;
   renderAll();
 }
 function renderAll() { renderTabs(); renderHud(); renderLegend(); renderMeasures(); renderMeter(); renderLog(); }
@@ -3612,8 +3638,8 @@ function renderHud() {
   document.getElementById('rad-hud-spin').textContent = st.spin + '/' + SPINS;
   ['rad-spin', 'rad-dock-spin'].forEach(function(id) {
     var sp = document.getElementById(id);
-    sp.disabled = st.phase === 'spinning' || st.phase === 'done';
-    sp.textContent = st.spin === 0 ? 'DRAAI!' : st.spin < SPINS ? 'DRAAI ' + (st.spin + 1) + '/' + SPINS : 'KLAAR';
+    sp.disabled = st.phase === 'spinning';
+    sp.textContent = st.spin === 0 ? 'DRAAI!' : st.spin < SPINS ? 'DRAAI ' + (st.spin + 1) + '/' + SPINS : 'NAAR RESULTAAT';
   });
 }
 function segColor(s, i) {
@@ -3648,6 +3674,16 @@ var STRAT_HINT = {
   Exploiteren: 'Je investeert alles zelf om de kans zo groot mogelijk te maken, en je houdt ook alle winst.',
   Verbeteren: 'De kans blijft van jou, maar je maakt ze groter, of ze levert meer op als ze gebeurt.',
   Delen: 'Je werkt samen met een partner die het beter kan: jullie investeren samen en delen ook de winst.'
+};
+// Bij een fout antwoord: wat betekent de strategie die je koos? (verklapt het juiste antwoord niet)
+var STRAT_DEF = {
+  Vermijden: 'Bij vermijden verdwijnt het risico helemaal van het rad.',
+  Verminderen: 'Bij verminderen blijft het risico bestaan, maar wordt het vak kleiner of de schade minder.',
+  Verzekeren: 'Bij verzekeren betaal je elke draai een premie en draagt de verzekeraar het grootste deel van de schade.',
+  Overdragen: 'Bij overdragen neemt een andere partij het werk én het risico over, zonder premie per draai.',
+  Exploiteren: 'Bij exploiteren investeer je alleen om de kans groter te maken, en hou je alle winst.',
+  Verbeteren: 'Bij verbeteren maak je de kans zelf groter, of laat je ze meer opleveren als ze gebeurt.',
+  Delen: 'Bij delen werk je samen met een partner die het beter kan, en deel je de winst.'
 };
 function ceOf(m) { return m.fx.p != null || m.fx.pTo != null ? 'oorzaak' : 'effect'; }
 function ceText(m) {
@@ -3715,7 +3751,7 @@ function clickMeasure(id) {
   if (st.phase !== 'plan') return;
   FrogAudio.init();
   var i = st.chosen.indexOf(id);
-  if (i >= 0) { st.chosen.splice(i, 1); view.target = buildWheel(sc(), st.chosen); renderAll(); refocus(id); return; }
+  if (i >= 0) { st.chosen.splice(i, 1); view.target = buildWheel(sc(), st.chosen); renderAll(); refocus(id); announce('Maatregel uitgezet. Verwacht eindbudget nu ' + fmt(evEnd(sc(), st.chosen)) + '.'); return; }
   if (st.quiz && st.quiz.id === id) { cancelQuiz(); return; }
   if (st.answered[id] != null) { applyMeasure(id); return; } // al eens benoemd in dit scenario
   st.quiz = { id: id, step: 'strat', wrong: [], ok: true, fb: '' };
@@ -3737,9 +3773,11 @@ function answerStrat(name) {
   }
   q.ok = false; q.wrong.push(name);
   if (q.wrong.length >= 2) { q.revealed = 'Het juiste antwoord was ' + m.strat.toLowerCase() + '. ' + STRAT_HINT[m.strat]; return answerStrat(m.strat); }
-  q.fb = '<strong>Niet helemaal.</strong> ' + STRAT_HINT[m.strat];
+  q.fb = '<strong>Niet ' + name.toLowerCase() + '.</strong> ' + STRAT_DEF[name] + ' Past dat bij deze maatregel? Kijk wat ze met het vak doet.';
   FrogAudio.play('meh'); say('jan', 'BIJNA...'); say('lowie', 'LEES DE HINT EENS.');
   renderMeasures();
+  // de knoppen worden opnieuw opgebouwd: zet de focus op de eerste optie die nog kan
+  var next = document.querySelector('.measure.asking .m-opt:not(:disabled)'); if (next) next.focus();
 }
 function answerCe(val) {
   var q = st.quiz, m = measureById(sc(), q.id), right = ceOf(m);
@@ -3747,7 +3785,7 @@ function answerCe(val) {
   // bij twee opties zou een tweede poging altijd juist zijn: toon meteen het antwoord en ga verder
   q.ok = false;
   var up = m.strat === 'Verbeteren';
-  q.revealed = (q.revealed ? q.revealed + ' ' : '') + 'Deze maatregel pakt ' + (right === 'oorzaak' ? 'de oorzaak aan: ze verandert hoe vaak het gebeurt.' : 'het effect aan: ze verandert ' + (up ? 'hoeveel het oplevert' : 'hoe erg het is') + ' als het gebeurt.');
+  q.revealed = (q.revealed ? q.revealed + ' ' : '') + 'Niet juist: deze maatregel pakt ' + (right === 'oorzaak' ? 'de oorzaak aan: ze verandert hoe vaak het gebeurt.' : 'het effect aan: ze verandert ' + (up ? 'hoeveel het oplevert' : 'hoe erg het is') + ' als het gebeurt.');
   finishQuiz();
 }
 function finishQuiz() {
@@ -3768,7 +3806,10 @@ function applyMeasure(id, ok) {
   say('jan', !m.target ? 'HMM... STAAT DAT WEL OP HET RAD?' : good ? 'DAT LOONT DE MOEITE.' : 'KOST DAT NIET MEER DAN HET OPBRENGT?');
   renderAll();
   refocus(id);
+  announce(m.strat + ' gekozen. Verwacht eindbudget nu ' + fmt(evEnd(sc(), st.chosen)) + '.');
 }
+// Eén verborgen meldingsregel voor schermlezers (de ballonnen worden niet voorgelezen)
+function announce(t) { var el = document.getElementById('rad-live'); el.textContent = ''; setTimeout(function() { el.textContent = t; }, 30); }
 function refocus(id) { var btn = document.querySelector('.m-main[onclick*="\'' + id + '\'"]'); if (btn) btn.focus(); }
 // voor snelle tests: maatregel nemen zonder vraag
 function toggleMeasure(id) { if (st.chosen.indexOf(id) >= 0) clickMeasure(id); else { st.answered[id] = true; applyMeasure(id, true); } }
@@ -3776,8 +3817,12 @@ function toggleMeasure(id) { if (st.chosen.indexOf(id) >= 0) clickMeasure(id); e
 // ══ Draaien ══════════════════════════════════════════════════════════════════
 var spinAnim = null;
 function spin() {
-  if (st.phase === 'spinning' || st.phase === 'done') return;
+  if (st.phase === 'done') { goResult(); return; }
+  if (st.phase === 'spinning') return;
   FrogAudio.init();
+  document.getElementById('rad-controls').hidden = false; document.getElementById('rad-confirm').hidden = true;
+  // wie met het toetsenbord draait, krijgt de focus na de draai terug op de knop
+  st.spinFocus = document.activeElement && document.activeElement.id === 'rad-spin';
   st.quiz = null;
   if (st.spin === 0) {
     st.budget = sc().budget - oneOff(sc(), st.chosen); st.ghost = sc().budget;
@@ -3791,7 +3836,7 @@ function spin() {
   var target = -u * Math.PI * 2, from = st.rot, turns = 5 + Math.floor(Math.random() * 2);
   var to = target - Math.ceil((target - from) / (2 * Math.PI)) * 2 * Math.PI + 2 * Math.PI * turns;
   if (to < from) to += 2 * Math.PI * Math.ceil((from - to) / (2 * Math.PI));
-  spinAnim = { from: from, to: to, t: 0, dur: 3.6, idx: idx, lastSeg: -1 };
+  spinAnim = { from: from, to: to, t: 0, dur: reduceMotion.matches ? 1.2 : 3.6, idx: idx, lastSeg: -1 };
   say('jan', st.spin === 0 ? 'DRAAIEN MAAR!' : 'NOG EENS!'); say('lowie', '');
   setHost('jan', 'idle'); setHost('lowie', 'idle');
   renderAll();
@@ -3814,7 +3859,16 @@ function spinDone() {
   spinAnim = null;
   st.phase = st.spin >= SPINS ? 'done' : 'between';
   renderAll();
+  announce(sc().unit.charAt(0).toUpperCase() + sc().unit.slice(1) + ' ' + st.spin + ': ' + text + '. Budget ' + fmt(st.budget) + '.');
+  if (st.spinFocus) document.getElementById('rad-spin').focus({ preventScroll: true });
   if (st.phase === 'done') setTimeout(finish, 900);
+}
+// Naar het resultaat: zichtbaar maken en de kop de focus geven (de kop heeft tabindex -1)
+function goResult() {
+  var el = document.getElementById('rad-result'), h = el.querySelector('h3');
+  if (el.hidden || !h) return;
+  h.focus({ preventScroll: true });
+  el.scrollIntoView({ behavior: reduceMotion.matches ? 'auto' : 'smooth', block: 'start' });
 }
 function finish() {
   FrogAudio.stopMusic(radOwner);
@@ -3859,7 +3913,7 @@ function finish() {
   var loserNames = st.chosen.filter(function(id, k) { return gains[k] < -0.5; }).map(function(id) { return measureById(s, id).label; });
   var sub = (loserNames.length ? '<p class="res-sub">Kost meer dan ' + (loserNames.length === 1 ? 'het' : 'ze') + ' opbreng' + (loserNames.length === 1 ? 't' : 'en') + ': <strong>' + loserNames.join('</strong>, <strong>') + '</strong>.</p>' : '') +
     '<p class="res-sub">Verwacht eindbudget: <strong>' + fmt(e) + '</strong> met jouw keuzes, ' + fmt(e0) + ' zonder maatregelen, ' + fmt(best.e) + ' haalbaar.</p>';
-  el.innerHTML = '<h3>' + choiceTxt + luckHead + '</h3>' + sub + breakdown +
+  el.innerHTML = '<h3 tabindex="-1">' + choiceTxt + luckHead + '</h3>' + sub + breakdown +
     '<div class="res-grid">' +
     '<div class="res-stat"><div class="v">' + fmt(st.budget) + '</div><div class="l">jouw eindbudget</div></div>' +
     '<div class="res-stat"><div class="v">' + fmt(st.ghost) + '</div><div class="l">zonder maatregelen, met dezelfde draaien</div></div>' +
@@ -3879,6 +3933,8 @@ function finish() {
     '<button class="btn-nav outline" onclick="Rad.loadScenario(' + st.sc + ')">Opnieuw met andere keuzes</button></div>';
   el.hidden = false;
   renderTabs();
+  announce('Klaar. ' + choiceTxt + luckHead + ' Verwacht eindbudget ' + fmt(e) + ', jouw eindbudget ' + fmt(st.budget) + '.');
+  if (st.spinFocus) goResult();
 }
 
 // ══ Hosts ════════════════════════════════════════════════════════════════════
@@ -3912,15 +3968,17 @@ function drawHost(who, dt) {
 
 // ══ Het rad tekenen ══════════════════════════════════════════════════════════
 var wheelCv = document.getElementById('rad-wheel'), wctx = wheelCv.getContext('2d');
+var reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
 var W = wheelCv.width, C = W / 2, R = W / 2 - 34, flap = 0;
 function drawWheel(time) {
   wctx.clearRect(0, 0, W, W);
   // rand met lampjes
   wctx.beginPath(); wctx.arc(C, C, R + 24, 0, Math.PI * 2); wctx.fillStyle = '#7a6535'; wctx.fill();
   wctx.beginPath(); wctx.arc(C, C, R + 16, 0, Math.PI * 2); wctx.fillStyle = '#AE9A64'; wctx.fill();
-  var bulbs = 24, chase = st.phase === 'spinning';
+  var bulbs = 24, chase = st.phase === 'spinning', still = reduceMotion.matches;
   for (var b = 0; b < bulbs; b++) {
-    var a = b / bulbs * Math.PI * 2, on = chase ? (b + Math.floor(time * 12)) % 3 === 0 : (b + Math.floor(time * 2)) % 2 === 0;
+    // met prefers-reduced-motion staan de lampjes stil (om en om aan)
+    var a = b / bulbs * Math.PI * 2, on = still ? b % 2 === 0 : chase ? (b + Math.floor(time * 12)) % 3 === 0 : (b + Math.floor(time * 2)) % 2 === 0;
     wctx.beginPath(); wctx.arc(C + Math.cos(a) * (R + 20), C + Math.sin(a) * (R + 20), 5, 0, Math.PI * 2);
     wctx.fillStyle = on ? '#fff6c8' : '#5a4a22'; wctx.fill();
     if (on) { wctx.beginPath(); wctx.arc(C + Math.cos(a) * (R + 20), C + Math.sin(a) * (R + 20), 9, 0, Math.PI * 2); wctx.fillStyle = 'rgba(255,240,170,.18)'; wctx.fill(); }
@@ -4014,7 +4072,25 @@ function dockUpdate() {
 }
 window.addEventListener('scroll', dockUpdate, { passive: true });
 window.addEventListener('resize', dockUpdate);
-document.getElementById('rad-reset').addEventListener('click', function() { loadScenario(st.sc); });
+// OPNIEUW vraagt eerst een bevestiging als er iets te verliezen is (gekozen maatregelen of al gedraaid);
+// de focus gaat naar NEE, zodat een tweede Enter niets wist
+function showConfirm(on) {
+  document.getElementById('rad-controls').hidden = on;
+  document.getElementById('rad-confirm').hidden = !on;
+  document.getElementById(on ? 'rad-confirm-no' : 'rad-reset').focus({ preventScroll: true });
+}
+document.getElementById('rad-reset').addEventListener('click', function() {
+  if (!st.chosen.length && !st.spin) { loadScenario(st.sc); return; }
+  showConfirm(true);
+});
+document.getElementById('rad-confirm-no').addEventListener('click', function() { showConfirm(false); });
+document.getElementById('rad-confirm-yes').addEventListener('click', function() {
+  document.getElementById('rad-controls').hidden = false;
+  document.getElementById('rad-confirm').hidden = true;
+  loadScenario(st.sc);
+  document.getElementById('rad-spin').focus({ preventScroll: true });
+});
+document.getElementById('rad-confirm').addEventListener('keydown', function(e) { if (e.key === 'Escape') showConfirm(false); });
 document.querySelectorAll('#rad-app [data-snd]').forEach(function(btn) {
   btn.setAttribute('aria-pressed', String(!!FrogAudio[btn.getAttribute('data-snd')]));
   btn.addEventListener('click', function() { FrogAudio.toggle(btn.getAttribute('data-snd')); });
