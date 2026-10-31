@@ -760,9 +760,9 @@ footer .f-inner a:hover { color: var(--gold); }
 }
 #product-project .pp-phone::before { content: ''; position: absolute; top: 14px; left: 50%; width: 54px; height: 6px; margin-left: -27px; background: #222; border-radius: 3px; z-index: 3; }
 #product-project .pp-screen { position: relative; border-radius: 22px; overflow: hidden; background: #1b1430; min-height: 330px; }
-#product-project .pp-app-head { background: linear-gradient(135deg, #ff7a18, #c2185b 70%); color: white; padding: 26px 14px 12px; }
+#product-project .pp-app-head { background: linear-gradient(135deg, #c2410c, #a3154d 70%); color: white; padding: 26px 14px 12px; }
 #product-project .pp-app-name { font-family: 'Raleway', sans-serif; font-weight: 900; font-size: 1.35rem; letter-spacing: .08em; line-height: 1; }
-#product-project .pp-app-sub { font-size: .66rem; opacity: .85; letter-spacing: .06em; }
+#product-project .pp-app-sub { font-size: .66rem; letter-spacing: .06em; }
 #product-project .pp-tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 12px; }
 #product-project .pp-tile {
   background: rgba(255,255,255,.08); border-radius: 11px; padding: 10px 8px; color: #f3e9ff; font-size: .68rem; font-weight: 700;
@@ -770,7 +770,7 @@ footer .f-inner a:hover { color: var(--gold); }
 }
 #product-project .pp-tile svg { width: 20px; height: 20px; stroke: #ffb27a; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 #product-project .pp-tile.gone { opacity: 0; transform: scale(.6); }
-#product-project .pp-tile.new { animation: ppTileIn .5s cubic-bezier(.3,1.6,.5,1); }
+#product-project .pp-tile.new { animation: ppTileIn .5s cubic-bezier(.16,1,.3,1); }
 @keyframes ppTileIn { from { transform: scale(.3); opacity: 0; } }
 #product-project .pp-bugs { position: absolute; inset: 0; pointer-events: none; z-index: 2; }
 #product-project .pp-bug { position: absolute; width: 16px; height: 16px; left: 0; top: 0; transition: opacity .3s; }
@@ -801,7 +801,7 @@ footer .f-inner a:hover { color: var(--gold); }
 @keyframes ppBump { 30% { transform: scaleY(1.9); } }
 
 /* ── Deel 1: Waar landt het gevolg? ─────────────────────────────────────────── */
-#product-project .ww-stage { display: grid; grid-template-columns: 240px minmax(0, 1fr) 300px; gap: 1.25rem; align-items: center; margin-top: 1.25rem; background: var(--card); border: 1.5px solid var(--border); border-radius: 14px; padding: 1.4rem; position: relative; overflow: hidden; }
+#product-project .ww-stage { display: grid; grid-template-columns: 240px minmax(0, 1fr) 300px; gap: 1.25rem; align-items: center; margin-top: 1.25rem; background: var(--card); border: 1.5px solid var(--border); border-radius: 14px; padding: 1.4rem; position: relative; overflow: clip; }
 #product-project .ww-center { display: flex; flex-direction: column; align-items: center; gap: .9rem; min-height: 360px; justify-content: center; position: relative; }
 #product-project .ww-belt { position: relative; width: 100%; max-width: 340px; height: 210px; }
 #product-project .ww-belt::after {
@@ -832,6 +832,7 @@ footer .f-inner a:hover { color: var(--gold); }
 #product-project .ww-fb.ok { background: rgba(42,157,143,.09); border-left: 3px solid var(--green); }
 #product-project .ww-fb.no { background: rgba(174,154,100,.12); border-left: 3px solid var(--gold); }
 #product-project .ww-fb .row { display: flex; justify-content: flex-end; margin-top: .55rem; }
+#product-project .ww-fb-risk { display: block; font-family: 'Raleway', sans-serif; font-weight: 800; color: var(--primary); margin-bottom: .3rem; }
 #product-project .ww-count { font-size: .8rem; color: var(--muted); font-weight: 700; }
 #product-project .ww-spark { position: absolute; width: 14px; height: 14px; border-radius: 50%; background: #ffb27a; box-shadow: 0 0 12px 4px rgba(255,140,60,.7); z-index: 5; pointer-events: none; transition: transform .8s cubic-bezier(.4,0,.2,1), opacity .3s; }
 
@@ -840,7 +841,7 @@ footer .f-inner a:hover { color: var(--gold); }
 #product-project .ld-wk { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .78rem; padding: .35rem .7rem; border-radius: 999px; border: 2px solid var(--border); background: white; color: var(--muted); }
 #product-project .ld-wk.done { border-color: var(--green); color: #1b655c; }
 #product-project .ld-wk.cur { border-color: var(--primary); background: var(--primary); color: white; }
-#product-project .ld-wk.launch.cur { background: linear-gradient(135deg, #ff7a18, #c2185b); border-color: #c2185b; }
+#product-project .ld-wk.launch.cur { background: linear-gradient(135deg, #c2410c, #a3154d); border-color: #a3154d; }
 #product-project .ld-stage { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 1.4rem; align-items: start; margin-top: 1rem; background: var(--card); border: 1.5px solid var(--border); border-radius: 14px; padding: 1.4rem; }
 #product-project .ld-right { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
 #product-project .ld-event { border: 2px solid var(--primary); border-radius: 12px; padding: 1rem 1.15rem; background: #fff; animation: fadeIn .35s ease; }
@@ -872,20 +873,24 @@ footer .f-inner a:hover { color: var(--gold); }
 #product-project .gantt-bar.late { background: var(--accent); }
 #product-project .gantt-ms { position: absolute; top: -1px; width: 16px; height: 16px; margin-left: -8px; transform: rotate(45deg); background: #c2185b; border-radius: 2px; transition: left .8s cubic-bezier(.3,.8,.3,1); }
 #product-project .gantt-axis { position: absolute; left: 78px; right: 0; top: 0; bottom: 0; pointer-events: none; }
-#product-project .gantt-wk { position: absolute; top: 0; font-size: .6rem; color: #999; transform: translateX(-50%); }
+#product-project .gantt-wk { position: absolute; top: 0; font-size: .66rem; color: var(--muted); transform: translateX(-50%); }
 #product-project .gantt-line { position: absolute; top: 14px; bottom: 0; width: 0; border-left: 1px dashed #ddd; }
 #product-project .gantt-deadline { position: absolute; top: 12px; bottom: -4px; width: 3px; margin-left: -1px; background: #c2185b; }
 #product-project .gantt-deadline span { position: absolute; bottom: -18px; left: 50%; transform: translateX(-50%); font-size: .62rem; font-weight: 800; color: #c2185b; white-space: nowrap; }
 #product-project .gantt-today { position: absolute; top: 12px; bottom: -4px; width: 2px; background: var(--primary); transition: left .8s; }
 #product-project .gantt-today span { position: absolute; bottom: -18px; left: 50%; transform: translateX(-50%); font-size: .62rem; font-weight: 800; white-space: nowrap; }
 #product-project .gantt-buffer { position: absolute; top: 14px; bottom: 0; background: repeating-linear-gradient(45deg, rgba(42,157,143,.10) 0 6px, rgba(42,157,143,.04) 6px 12px); }
+#product-project .gantt-buffer span { position: absolute; top: 3px; left: 50%; transform: translateX(-50%); font-size: .66rem; font-weight: 800; color: var(--c-project-ink); background: rgba(255,255,255,.85); padding: 0 .25rem; border-radius: 3px; white-space: nowrap; }
 #product-project .gauge { display: block; width: 100%; height: auto; }
-#product-project .gauge .needle { transition: transform 1s cubic-bezier(.3,1.4,.5,1); transform-origin: 100px 100px; }
+#product-project .gauge .needle { transition: transform 1s cubic-bezier(.16,1,.3,1); transform-origin: 100px 100px; }
 #product-project .gauge-lbl { text-align: center; font-size: .8rem; font-weight: 700; margin-top: -4px; }
 #product-project .ld-scope { font-size: .76rem; color: var(--muted); margin-top: .55rem; }
 
 #product-project .ld-launch { margin-top: 1.25rem; background: var(--card); border: 1.5px solid var(--border); border-radius: 14px; padding: 1.4rem; display: none; }
 #product-project .ld-launch.visible { display: block; animation: fadeIn .4s ease; }
+#product-project .ld-launch, #product-project #ww-summary { scroll-margin-top: 80px; }
+#product-project [tabindex="-1"]:focus { outline: none; }
+#product-project [tabindex="-1"]:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
 #product-project .ld-stamp { display: inline-block; font-family: 'Raleway', sans-serif; font-weight: 900; font-size: 1.1rem; letter-spacing: .08em; padding: .35rem .9rem; border: 3px solid; border-radius: 6px; transform: rotate(-4deg); animation: ppStamp .45s cubic-bezier(.3,1.8,.5,1); margin: 0 .5rem .5rem 0; }
 #product-project .ld-stamp.good { color: #1b655c; border-color: #1b655c; }
 #product-project .ld-stamp.bad { color: #b4232f; border-color: #b4232f; }
@@ -897,8 +902,8 @@ footer .f-inner a:hover { color: var(--gold); }
 #product-project .ld-matrix { display: grid; grid-template-columns: 110px 1fr 1fr; gap: 4px; max-width: 560px; margin: 1rem 0; font-size: .84rem; }
 #product-project .ld-matrix > div { padding: .55rem .65rem; border-radius: 6px; background: #f1efea; }
 #product-project .ld-matrix .hd { background: none; font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .74rem; color: var(--muted); display: flex; align-items: flex-end; }
-#product-project .ld-matrix .cell { font-weight: 700; opacity: .45; transition: opacity .3s, transform .3s; }
-#product-project .ld-matrix .cell.me { opacity: 1; outline: 3px solid var(--primary); transform: scale(1.04); }
+#product-project .ld-matrix .cell { font-weight: 700; color: var(--muted); transition: transform .3s; }
+#product-project .ld-matrix .cell.me { color: var(--text); outline: 3px solid var(--primary); transform: scale(1.04); }
 #product-project .ld-matrix .cell.ok { background: rgba(42,157,143,.15); }
 #product-project .ld-matrix .cell.half { background: rgba(174,154,100,.2); }
 #product-project .ld-matrix .cell.bad { background: rgba(230,57,70,.14); }
@@ -912,9 +917,29 @@ footer .f-inner a:hover { color: var(--gold); }
 @media (prefers-reduced-motion: reduce) {
   #product-project .ww-belt::after { animation: none; }
   #product-project .pp-screen.glitch { animation: none; }
+  #product-project .ww-card, #product-project .ww-spark, #product-project .gauge .needle, #product-project .gantt-bar, #product-project .gantt-ms, #product-project .gantt-today { transition: none; }
+  #product-project .ld-stamp, #product-project .pp-tile.new { animation: none; }
+  #product-project .ld-review { transition: none; opacity: 1; transform: none; }
 
 }
+/* Statusbalk: enkel op kleine schermen, waar telefoon, keuze en bord onder elkaar staan */
+#product-project .pp-strip { display: none; }
+#product-project .ar-v { display: none; }
 @media (max-width: 900px) {
+  #product-project .pp-strip {
+    display: flex; flex-wrap: wrap; gap: .2rem .9rem; position: sticky; top: 62px; z-index: 6; grid-column: 1 / -1;
+    background: var(--card); border: 1.5px solid var(--border); border-radius: 10px; padding: .45rem .7rem; font-size: .8rem; box-shadow: 0 6px 16px rgba(0,0,0,.08);
+  }
+  #product-project .pp-strip b { font-weight: 800; }
+  #product-project .pp-strip .p { color: var(--c-product-ink); }
+  #product-project .pp-strip .j { color: var(--c-project-ink); }
+  #product-project .pp-strip .bad { color: var(--accent); }
+  #product-project .ar-h { display: none; }
+  #product-project .ar-v { display: inline; }
+  #product-project .ww-card.to-product { transform: translate(0, -280px) scale(.4); }
+  #product-project .ww-card.to-project { transform: translate(0, 280px) scale(.4); }
+  #product-project .ww-stage .pp-phone, #product-project .ld-stage .pp-phone { zoom: .8; }
+  #product-project .gauge { max-width: 240px; margin: 0 auto; }
   #product-project .ww-stage, #product-project .ld-stage { grid-template-columns: 1fr; }
   #product-project .ww-stage .pp-phone-wrap, #product-project .ld-stage .pp-phone-wrap { order: 0; }
   #product-project .ww-center { min-height: 300px; }
@@ -1454,13 +1479,14 @@ footer .f-inner a:hover { color: var(--gold); }
   <h3 class="sub-title" id="pp-waar"><span class="sub-step">Deel 1</span> Waar landt het gevolg?</h3>
   <p>Je werkt mee aan de app van festival <strong>Vonk</strong>. Eén voor één schuiven er risico's binnen. Stuur elk risico naar de plek waar het gevolg landt: naar de <strong>app</strong> (productrisico) of naar het <strong>projectbord</strong> (projectrisico). Kijk wat er gebeurt.</p>
   <div class="ww-stage">
+    <div class="pp-strip" id="ww-strip" aria-hidden="true"></div>
     <div class="pp-phone-wrap" id="ww-phone"></div>
     <div class="ww-center">
       <div class="ww-count" id="ww-count"></div>
       <div class="ww-belt" id="ww-belt"></div>
       <div class="ww-btns">
-        <button type="button" class="ww-btn product" id="ww-to-product">← Productrisico</button>
-        <button type="button" class="ww-btn project" id="ww-to-project">Projectrisico →</button>
+        <button type="button" class="ww-btn product" id="ww-to-product"><span class="ar-h" aria-hidden="true">←</span><span class="ar-v" aria-hidden="true">↑</span> Productrisico</button>
+        <button type="button" class="ww-btn project" id="ww-to-project">Projectrisico <span class="ar-h" aria-hidden="true">→</span><span class="ar-v" aria-hidden="true">↓</span></button>
       </div>
       <div id="ww-fb" aria-live="polite"></div>
     </div>
@@ -1468,20 +1494,21 @@ footer .f-inner a:hover { color: var(--gold); }
   </div>
   <div class="progress"><div class="progress-track"><div class="progress-fill" id="ww-fill"></div></div><span class="progress-label" id="ww-label"></span></div>
   <div class="summary" id="ww-summary">
-    <h4>Twee soorten risico's, één vraag: waar landt het gevolg?</h4>
+    <h4 tabindex="-1" id="ww-summary-h">Twee soorten risico's, één vraag: waar landt het gevolg?</h4>
     <p>Productrisico's raken de gebruiker: een app die crasht, dubbel afrekent of gegevens lekt. Projectrisico's raken de oplevering: mensen die uitvallen, wensen die veranderen, kosten die stijgen.</p>
     <p>De laatste kaart toonde het verband: een projectkeuze (minder testen om tijd te winnen) schuift het risico door naar het product. Dat ervaar je zelf in Lanceerdag.</p>
   </div>
 
   <!-- Deel 2 -->
   <h3 class="sub-title" id="pp-lancering"><span class="sub-step">Deel 2</span> Lanceerdag</h3>
-  <p>Over zes weken openen de poorten van Vonk, en dan moet de app werken. Onderweg lopen er zes dingen mis. Jij beslist hoe je ze oplost. Je hebt drie dingen om mee te "betalen": <strong>tijd</strong> (2 weken buffer), <strong>geld</strong> (een reserve van 50.000 euro) en, als je niet oplet, de <strong>kwaliteit</strong> van de app. Op lanceerdag zie je wat je keuzes opleverden.</p>
+  <p>Over zes weken openen de poorten van Vonk, en dan moet de app werken. Onderweg lopen er zes dingen mis. Jij beslist hoe je ze oplost. Je kan "betalen" met <strong>tijd</strong> (2 weken buffer), <strong>geld</strong> (een reserve van 50.000 euro), <strong>scope</strong> (een functie schrappen) en, als je niet oplet, met de <strong>kwaliteit</strong> van de app. Op lanceerdag zie je wat je keuzes opleverden.</p>
   <div id="ld-app">
     <div class="ld-weeks" id="ld-weeks"></div>
     <div class="ld-stage">
+      <div class="pp-strip" id="ld-strip" aria-hidden="true"></div>
       <div class="pp-phone-wrap" id="ld-phone"></div>
       <div class="ld-right">
-        <div id="ld-event" aria-live="polite"></div>
+        <div id="ld-event"></div>
         <div class="ld-board">
           <div>
             <h4>Planning</h4>
@@ -1496,8 +1523,9 @@ footer .f-inner a:hover { color: var(--gold); }
         </div>
       </div>
     </div>
-    <div class="ld-launch" id="ld-launch" aria-live="polite"></div>
+    <div class="ld-launch" id="ld-launch"></div>
   </div>
+  <div class="sr-only" id="pp-live" aria-live="polite"></div>
 </section>
 
 <section id="register">
@@ -4161,7 +4189,7 @@ PPPhone.prototype.setBugs = function(n) {
     p.bugLayer.appendChild(b); p.bugs.push(bug);
   }
   while (p.bugs.length > n) { var gone = p.bugs.pop(); gone.el.style.opacity = 0; setTimeout(function(e) { return function() { e.remove(); }; }(gone.el), 300); }
-  if (p.bugs.length && !p.raf) { p.last = performance.now(); p.raf = requestAnimationFrame(function step(t) { p.crawl(t); p.raf = p.bugs.length ? requestAnimationFrame(step) : 0; }); }
+  if (p.bugs.length && !p.raf && !matchMedia('(prefers-reduced-motion: reduce)').matches) { p.last = performance.now(); p.raf = requestAnimationFrame(function step(t) { p.crawl(t); p.raf = p.bugs.length ? requestAnimationFrame(step) : 0; }); }
 };
 // kevertjes wandelen willekeurig over het scherm
 PPPhone.prototype.crawl = function(t) {
@@ -4217,7 +4245,12 @@ var wwPhone = new PPPhone(document.getElementById('ww-phone'), ['lineup', 'timet
 document.getElementById('ww-board').innerHTML = '<h4>Project Vonk-app</h4>' + ppMeter('ww-m-tijd', 'Tijd (vertraging)') + ppMeter('ww-m-budget', 'Budget (overschrijding)') + ppMeter('ww-m-scope', 'Scope (wijzigingen)');
 
 function wwMeterText(k) { var n = ww.meters[k]; return n === 0 ? 'in orde' : n + (n === 1 ? ' probleem' : ' problemen'); }
-function wwRenderMeters(bumpKey) { ['tijd', 'budget', 'scope'].forEach(function(k) { ppSetMeter('ww-m-' + k, ww.meters[k] / 4, wwMeterText(k), k === bumpKey); }); }
+function wwRenderMeters(bumpKey) { ['tijd', 'budget', 'scope'].forEach(function(k) { ppSetMeter('ww-m-' + k, ww.meters[k] / 4, wwMeterText(k), k === bumpKey); }); wwStrip(); }
+// statusbalk voor kleine schermen: app-kwaliteit en de drie projectmeters in één regel
+function wwStrip() {
+  var m = ww.meters;
+  document.getElementById('ww-strip').innerHTML = '<span class="p">App <b>' + Math.max(0, ww.quality) + '%</b></span><span class="j">Tijd <b>' + m.tijd + '</b></span><span class="j">Budget <b>' + m.budget + '</b></span><span class="j">Scope <b>' + m.scope + '</b></span>';
+}
 function wwShowCard() {
   var belt = document.getElementById('ww-belt'), done = ww.i >= WW_CARDS.length;
   document.getElementById('ww-count').textContent = done ? '' : 'Risico ' + (ww.i + 1) + ' van ' + WW_CARDS.length;
@@ -4247,7 +4280,8 @@ function wwAnswer(side) {
   };
   if (ok) { go(); }
   else { card.classList.add('shake'); setTimeout(go, 500); }
-  fb.innerHTML = '<div class="ww-fb ' + (ok ? 'ok' : 'no') + '"><strong>' + (c.side === 'both' ? '' : ok ? 'Juist: ' : 'Niet helemaal, dit is een ' + (c.side === 'product' ? 'productrisico' : 'projectrisico') + '. ') + '</strong>' + c.why +
+  // de kaart vliegt weg: herhaal het risico zelf boven de uitleg
+  fb.innerHTML = '<div class="ww-fb ' + (ok ? 'ok' : 'no') + '"><span class="ww-fb-risk">' + c.t + '</span><strong>' + (c.side === 'both' ? '' : ok ? 'Juist. ' : 'Niet juist:dit is een ' + (c.side === 'product' ? 'productrisico' : 'projectrisico') + '. ') + '</strong>' + c.why +
     '<div class="row"><button type="button" class="btn-nav" id="ww-next">' + (ww.i < WW_CARDS.length - 1 ? 'Volgend risico →' : 'Afronden') + '</button></div></div>';
   document.getElementById('ww-next').addEventListener('click', wwNext);
   document.getElementById('ww-next').focus({ preventScroll: true });
@@ -4255,7 +4289,7 @@ function wwAnswer(side) {
 }
 function wwLand(c) {
   if (c.side === 'product') {
-    ww.quality -= 8; wwPhone.setQuality(ww.quality); wwPhone.glitch();
+    ww.quality -= 8; wwPhone.setQuality(ww.quality); wwPhone.glitch(); wwStrip();
   } else {
     ww.meters[c.meter]++; wwRenderMeters(c.meter);
     if (c.side === 'both') wwSpark();
@@ -4271,14 +4305,24 @@ function wwSpark() {
   requestAnimationFrame(function() { requestAnimationFrame(function() {
     s.style.transform = 'translate(' + (b.left + b.width / 2 - a.left - a.width / 2) + 'px,' + (b.top + b.height / 2 - a.top) + 'px)';
   }); });
-  setTimeout(function() { s.style.opacity = 0; ww.quality -= 16; wwPhone.setQuality(ww.quality); wwPhone.glitch(); setTimeout(function() { s.remove(); }, 300); }, 820);
+  setTimeout(function() { s.style.opacity = 0; ww.quality -= 16; wwPhone.setQuality(ww.quality); wwPhone.glitch(); wwStrip(); setTimeout(function() { s.remove(); }, 300); }, 820);
 }
 function wwNext() {
   ww.i++;
   document.getElementById('ww-fb').innerHTML = '';
   wwShowCard();
-  if (ww.i >= WW_CARDS.length) document.getElementById('ww-summary').classList.add('visible');
+  if (ww.i >= WW_CARDS.length) {
+    document.getElementById('ww-summary').classList.add('visible');
+    document.getElementById('ww-summary-h').focus({ preventScroll: true });
+    ppAnnounce('Alle risico\'s gesorteerd: ' + ww.score + ' van ' + WW_CARDS.length + ' juist.');
+    return;
+  }
+  // de oude knop is weg: focus op de eerste keuzeknop en lees het nieuwe risico voor
+  document.getElementById('ww-to-product').focus({ preventScroll: true });
+  ppAnnounce('Risico ' + (ww.i + 1) + ' van ' + WW_CARDS.length + ': ' + WW_CARDS[ww.i].t);
 }
+// Eén korte melding voor schermlezers voor de hele sectie
+function ppAnnounce(t) { var el = document.getElementById('pp-live'); el.textContent = ''; setTimeout(function() { el.textContent = t; }, 30); }
 function wwProgress(n) {
   document.getElementById('ww-fill').style.width = (n / WW_CARDS.length * 100) + '%';
   document.getElementById('ww-label').textContent = n + ' / ' + WW_CARDS.length + ' risico\'s, ' + ww.score + ' juist';
@@ -4301,7 +4345,7 @@ var LD_EVENTS = [
   { type: 'project', title: 'De enige iOS-developer valt drie weken uit.', options: [
     { label: 'Een freelancer inhuren', fx: { budget: 20, quality: -5 }, tag: 'budget', result: 'Duur, en de freelancer moet zich nog inwerken in de code: een klein beetje kwaliteitsverlies.' },
     { label: 'De kaart schrappen, zodat de Android-developer het iOS-werk kan overnemen', fx: { remove: 'kaart', quality: -5 }, tag: 'scope', result: 'Minder scope. De planning en het budget blijven, maar bezoekers missen een functie die ze verwachten: de app is minder waard.' },
-    { label: 'Wachten tot de developer terug is', fx: { delay: 2 }, tag: 'tijd', result: 'Twee weken vertraging, terwijl je maar één week buffer hebt.' }
+    { label: 'Wachten tot de developer terug is', fx: { delay: 2 }, tag: 'tijd', result: 'De developer is drie weken weg, maar de Android-developer vangt een week op: twee weken vertraging.' }
   ] },
   { type: 'project', title: 'De organisatie wil er last minute een chatfunctie bij.', options: [
     { label: 'Ja, met een week extra en extra budget', fx: { delay: 1, budget: 10, add: 'chat' }, tag: 'tijd', result: 'De chat komt er, maar dat kost tijd en geld.' },
@@ -4334,7 +4378,7 @@ var ldPhone = new PPPhone(document.getElementById('ld-phone'), ['lineup', 'timet
 
 function ldReset() {
   ld = { w: 0, picked: null, delay: 0, budget: 0, quality: LD_Q0, features: ['lineup', 'timetable', 'kaart', 'cashless', 'push'], trail: [],
-    tasks: LD_TASKS0.map(function(t) { return Object.assign({}, t); }), launch: LD_PLAN };
+    tasks: LD_TASKS0.map(function(t) { return Object.assign({}, t); }), launch: LD_PLAN, span: LD_SPAN };
   PP_FEATURES.forEach(function(f) { var t = ldPhone.el.querySelector('[data-f="' + f.id + '"]'); var on = ld.features.indexOf(f.id) >= 0; t.hidden = !on; t.classList.toggle('gone', !on); t.classList.remove('new'); });
   ldPhone.setQuality(ld.quality, LD_QMIN);
   ldBuildGantt(); ldBuildGauge(); ldRenderBoard();
@@ -4342,11 +4386,12 @@ function ldReset() {
   document.getElementById('ld-launch').innerHTML = '';
   ldRenderWeeks(); ldRenderEvent();
 }
-function ldX(w) { return (w / LD_SPAN * 100) + '%'; }
+// De as is minstens LD_SPAN weken en groeit mee met de lancering (ld.span), zodat late balken nooit buiten de planning lopen
+function ldX(w) { return (w / ld.span * 100) + '%'; }
 function ldBuildGantt() {
   var g = document.getElementById('ld-gantt'), h = '<div class="gantt-axis">';
-  for (var w = 0; w <= LD_SPAN; w++) h += '<div class="gantt-line" style="left:' + ldX(w) + '"></div>' + (w < LD_SPAN ? '<div class="gantt-wk" style="left:' + ldX(w + 0.5) + '">W' + (w + 1) + '</div>' : '');
-  h += '<div class="gantt-buffer" style="left:' + ldX(LD_PLAN) + ';width:' + (LD_BUFFER / LD_SPAN * 100) + '%" title="buffer"></div>';
+  for (var w = 0; w <= ld.span; w++) h += '<div class="gantt-line" style="left:' + ldX(w) + '"></div>' + (w < ld.span ? '<div class="gantt-wk" style="left:' + ldX(w + 0.5) + '">W' + (w + 1) + '</div>' : '');
+  h += '<div class="gantt-buffer" style="left:' + ldX(LD_PLAN) + ';width:' + (LD_BUFFER / ld.span * 100) + '%"><span>buffer</span></div>';
   h += '<div class="gantt-deadline" style="left:' + ldX(LD_FEST) + '"><span>Poorten open</span></div>';
   h += '<div class="gantt-today" id="ld-today" style="left:' + ldX(0) + '"><span>vandaag</span></div></div>';
   ld.tasks.forEach(function(t, i) { h += '<div class="gantt-row"><span class="nm">' + t.name + '</span><div class="gantt-lane"><div class="gantt-bar" id="ld-bar-' + i + '"></div></div></div>'; });
@@ -4363,19 +4408,27 @@ function ldBuildGauge() {
     '<g class="needle" id="ld-needle"><line x1="100" y1="100" x2="30" y2="100" stroke="#030203" stroke-width="4" stroke-linecap="round"/></g><circle cx="100" cy="100" r="7" fill="#030203"/>' +
     '<text x="12" y="116" font-size="10" fill="#666">0</text><text x="176" y="116" font-size="10" fill="#666">70k</text>';
 }
+// De echte "vandaag": de geplande week van het probleem plus de vertraging die je al opliep
+function ldNow() { return ld.w < LD_EVENTS.length ? ldT(ld.w) + ld.delay : ld.launch; }
 function ldRenderBoard() {
+  var span = Math.max(LD_SPAN, Math.ceil(ld.launch + 0.5));
+  if (span !== ld.span) { ld.span = span; ldBuildGantt(); }
   ld.tasks.forEach(function(t, i) {
     var b = document.getElementById('ld-bar-' + i);
-    b.style.left = ldX(t.s); b.style.width = ((t.e - t.s) / LD_SPAN * 100) + '%';
+    b.style.left = ldX(t.s); b.style.width = ((t.e - t.s) / ld.span * 100) + '%';
     b.classList.toggle('late', t.e > LD_FEST);
   });
   document.getElementById('ld-ms').style.left = ldX(ld.launch);
-  document.getElementById('ld-today').style.left = ldX(ld.w < 6 ? ldT(ld.w) : LD_PLAN);
+  document.getElementById('ld-today').style.left = ldX(ldNow());
   var deg = Math.min(70, ld.budget) / 70 * 180;
   document.getElementById('ld-needle').style.transform = 'rotate(' + deg + 'deg)';
   var lbl = document.getElementById('ld-gauge-lbl');
   lbl.textContent = ld.budget + 'k van ' + LD_RESERVE + 'k gebruikt';
   lbl.style.color = ld.budget > LD_RESERVE ? 'var(--accent)' : 'var(--text)';
+  var leftW = LD_BUFFER - ld.delay;
+  document.getElementById('ld-strip').innerHTML = '<span class="j' + (leftW < 0 ? ' bad' : '') + '">Vertraging <b>' + fmtW(ld.delay) + '</b>, ' + (leftW > 0 ? 'buffer nog ' + fmtW(leftW) : leftW === 0 ? 'buffer op' : 'te laat') + '</span>' +
+    '<span class="j' + (ld.budget > LD_RESERVE ? ' bad' : '') + '">Budget <b>' + ld.budget + 'k</b>/' + LD_RESERVE + 'k</span>' +
+    '<span class="p' + (ld.quality < LD_QMIN ? ' bad' : '') + '">Kwaliteit <b>' + ld.quality + '%</b></span>';
   var missing = ['kaart'].filter(function(f) { return ld.features.indexOf(f) < 0; }), extra = ld.features.indexOf('chat') >= 0;
   document.getElementById('ld-scope').innerHTML = '<strong>Scope:</strong> ' + ld.features.length + ' functies' + (missing.length ? ', kaart geschrapt' : '') + (extra ? ', chat toegevoegd' : '') +
     '<br><strong>Vertraging:</strong> ' + fmtW(ld.delay) + (ld.delay > LD_BUFFER ? ' <span style="color:var(--accent);font-weight:700">(meer dan je buffer)</span>' : ' (buffer: 2 weken)');
@@ -4401,12 +4454,12 @@ function ldCosts(fx) {
 function ldRenderEvent() {
   var el = document.getElementById('ld-event');
   if (ld.w >= LD_EVENTS.length) {
-    el.innerHTML = '<div class="ld-event"><span class="chip product" style="background:linear-gradient(135deg,#ff7a18,#c2185b);color:#fff">Lanceerdag</span><h4>Zes weken zijn voorbij. De poorten van Vonk gaan open.</h4><button type="button" class="btn-nav" id="ld-go">Lanceer de app</button></div>';
+    el.innerHTML = '<div class="ld-event"><span class="chip product" style="background:linear-gradient(135deg,#c2410c,#a3154d);color:#fff">Lanceerdag</span><h4>Zes weken zijn voorbij. De poorten van Vonk gaan open.</h4><button type="button" class="btn-nav" id="ld-go">Lanceer de app</button></div>';
     document.getElementById('ld-go').addEventListener('click', ldLaunch);
     return;
   }
   var ev = LD_EVENTS[ld.w], picked = ld.picked;
-  var h = '<div class="ld-event"><span class="chip ' + ev.type + '">Probleem ' + (ld.w + 1) + ' · ' + (ev.type === 'product' ? 'Productrisico' : 'Projectrisico') + '</span><h4>' + ev.title + '</h4><div class="ld-opts" role="group" aria-label="Kies je aanpak">';
+  var h = '<div class="ld-event"><span class="chip ' + ev.type + '">Probleem ' + (ld.w + 1) + ' · ' + (ev.type === 'product' ? 'Productrisico' : 'Projectrisico') + '</span><h4 tabindex="-1" id="ld-title">' + ev.title + '</h4><div class="ld-opts" role="group" aria-label="Kies je aanpak">';
   ev.options.forEach(function(o, i) {
     h += '<button type="button" class="ld-opt' + (picked === i ? ' picked' : '') + '"' + (picked != null ? ' disabled' : '') + ' data-i="' + i + '"><span class="lbl">' + o.label + '</span><span class="ld-costs">' + ldCosts(o.fx) + '</span></button>';
   });
@@ -4431,37 +4484,58 @@ function ldPick(i) {
     label += lucky ? ' (gelukt)' : ' (geweigerd)';
   }
   if (delay) {
+    // vanaf de echte vandaag: afgewerkte taken blijven staan, een lopende taak wordt langer, latere taken schuiven op
+    var now = t + ld.delay;
     ld.delay += delay;
-    ld.tasks.forEach(function(task) { if (task.e > t) { if (task.s >= t) task.s += delay; task.e += delay; } });
+    ld.tasks.forEach(function(task) { if (task.e > now) { if (task.s >= now) task.s += delay; task.e += delay; } });
     ld.launch += delay;
+  }
+  if (delay) {
+    var left = LD_BUFFER - ld.delay;
+    ld.result += ' ' + (left > 0 ? 'Je hebt nog ' + fmtW(left) + ' buffer.' : left === 0 ? 'Je buffer is nu op.' : 'Dat is meer dan je buffer: de app wordt te laat.');
   }
   if (fx.budget) ld.budget += fx.budget;
   if (fx.quality) { ld.quality += fx.quality; ldPhone.setQuality(ld.quality, LD_QMIN); if (fx.quality < 0) ldPhone.glitch(); }
   if (fx.remove) { ld.features = ld.features.filter(function(f) { return f !== fx.remove; }); ldPhone.setFeature(fx.remove, false); }
   if (fx.add) { ld.features.push(fx.add); ldPhone.setFeature(fx.add, true); }
-  ld.trail.push({ w: ld.w, type: ev.type, title: ev.title, label: label, tag: o.tag });
+  ld.trail.push({ w: ld.w, type: ev.type, title: ev.title, label: label, tag: o.tag, over: delay > 0 && ld.delay > LD_BUFFER });
   ldRenderBoard(); ldRenderEvent();
+  ppAnnounce(ld.result + ' ' + ldStatus());
 }
-function ldNext() { ld.w++; ld.picked = null; ldRenderWeeks(); ldRenderBoard(); ldRenderEvent(); }
+function ldNext() {
+  ld.w++; ld.picked = null; ldRenderWeeks(); ldRenderBoard(); ldRenderEvent();
+  if (ld.w < LD_EVENTS.length) { document.getElementById('ld-title').focus({ preventScroll: true }); ppAnnounce('Probleem ' + (ld.w + 1) + ': ' + LD_EVENTS[ld.w].title); }
+  else { document.getElementById('ld-go').focus({ preventScroll: true }); ppAnnounce('Zes weken zijn voorbij. Lanceer de app.'); }
+}
+// De stand na een keuze, in één zin
+function ldStatus() {
+  var left = LD_BUFFER - ld.delay;
+  return 'Vertraging ' + fmtW(ld.delay) + ', ' + (left > 0 ? 'nog ' + fmtW(left) + ' buffer' : left === 0 ? 'je buffer is op' : 'meer dan je buffer') + '. Budget ' + ld.budget + 'k van ' + LD_RESERVE + 'k. Kwaliteit ' + ld.quality + '%.';
+}
 
 function ldReviews(onTime, inBudget, q) {
   var r = [];
+  // te laat = er was geen app tijdens het festival: dan gaan de reviews daarover, niet over de kwaliteit
+  if (!onTime) {
+    r.push([1, 'De app kwam pas na het festival. Wat heb ik daar nog aan?'], [1, 'Het hele weekend met een papieren timetable rondgelopen.']);
+    if (q >= LD_QMIN) r.push([3, 'Achteraf bekeken een mooie app. Jammer dat ze te laat was.']);
+    return r;
+  }
   if (q >= 78) r.push([5, 'Supervlotte app, de timetable altijd bij de hand!'], [5, 'Cashless betalen werkte zonder één hapering.']);
   else if (q >= LD_QMIN) r.push([4, 'Werkt goed, soms wat traag bij de grote podia.'], [4, 'Handig, al moest ik af en toe opnieuw inloggen.']);
   else if (q >= 50) r.push([2, 'Crashte twee keer tijdens de headliner.'], [2, 'Mijn betaling werd dubbel afgerekend. Niet oké.']);
   else r.push([1, 'De app ging plat zodra de poorten opengingen.'], [1, 'Onbruikbaar. Uiteindelijk een papieren plannetje gezocht.']);
   if (ld.features.indexOf('kaart') < 0) r.push([3, 'Waar is de kaart? Ik vond het tweede podium niet.']);
   if (ld.features.indexOf('chat') >= 0) r.push(q >= LD_QMIN ? [5, 'De chat om je vrienden terug te vinden is goud waard!'] : [2, 'De chat stuurt mijn berichten drie keer door.']);
-  if (!onTime) r.push([2, 'De app was er pas na de eerste festivaldag. Te laat!']);
-  if (q >= LD_QMIN && onTime) r.push([5, 'Meldingen kwamen meteen binnen toen het optreden verplaatst werd.']);
+  if (q >= LD_QMIN) r.push([5, 'Meldingen kwamen meteen binnen toen het optreden verplaatst werd.']);
   return r.slice(0, 5);
 }
 function ldLaunch() {
   var onTime = ld.delay <= LD_BUFFER, inBudget = ld.budget <= LD_RESERVE, projOk = onTime && inBudget, prodOk = ld.quality >= LD_QMIN;
   ld.w = LD_EVENTS.length + 1; ldRenderWeeks();
-  document.getElementById('ld-today').style.left = ldX(Math.min(ld.launch, LD_SPAN));
-  document.getElementById('ld-event').innerHTML = '<div class="ld-event"><span class="chip product" style="background:linear-gradient(135deg,#ff7a18,#c2185b);color:#fff">Lanceerdag</span><h4>' + (onTime ? 'De app staat klaar als de poorten opengaan.' : 'De poorten gaan open, maar de app is er nog niet.') + '</h4><button type="button" class="btn-nav outline" id="ld-again">Opnieuw spelen</button></div>';
-  document.getElementById('ld-again').addEventListener('click', function() { ldReset(); document.getElementById('pp-lancering').scrollIntoView({ behavior: 'smooth' }); });
+  document.getElementById('ld-today').style.left = ldX(ld.launch);
+  document.getElementById('ld-event').innerHTML = '<div class="ld-event"><span class="chip product" style="background:linear-gradient(135deg,#c2410c,#a3154d);color:#fff">Lanceerdag</span><h4>' + (onTime ? 'De app staat klaar als de poorten opengaan.' : 'De poorten gaan open, maar de app is er nog niet.') + '</h4><button type="button" class="btn-nav outline" id="ld-again">Opnieuw spelen</button></div>';
+  document.getElementById('ld-again').addEventListener('click', function() { ldReset(); document.getElementById('pp-lancering').scrollIntoView({ behavior: 'smooth' }); var first = document.querySelector('#ld-event .ld-opt'); if (first) first.focus({ preventScroll: true }); });
   var cell = projOk && prodOk ? 'ok' : projOk ? 'sonos' : prodOk ? 'late' : 'both';
   var verdict = {
     ok: ['Geslaagde lancering', 'Je ving de projectrisico\'s op met tijd, geld of scope, zonder ze door te schuiven naar het product. Zowel het project als het product zijn geslaagd.'],
@@ -4475,13 +4549,13 @@ function ldLaunch() {
     nee: ['guard', 'Scope bewaakt'], kwaliteit: ['shift', 'Doorgeschoven naar het product'], accept: ['shift', 'Productrisico geaccepteerd']
   };
   var shifted = ld.trail.filter(function(s) { return s.tag === 'kwaliteit' || s.tag === 'accept'; }).length;
-  var h = '<h3 style="font-family:Raleway,sans-serif;font-weight:900;font-size:1.25rem;margin-bottom:.6rem">' + verdict[0] + '</h3>' +
+  var h = '<h3 tabindex="-1" id="ld-verdict" style="font-family:Raleway,sans-serif;font-weight:900;font-size:1.25rem;margin-bottom:.6rem">' + verdict[0] + '</h3>' +
     '<span class="ld-stamp ' + (onTime ? 'good' : 'bad') + '">' + (onTime ? 'OP TIJD' : 'TE LAAT') + '</span>' +
     '<span class="ld-stamp ' + (inBudget ? 'good' : 'bad') + '" style="animation-delay:.25s">' + (inBudget ? 'BINNEN BUDGET' : 'OVER BUDGET') + '</span>' +
     '<span class="ld-stamp ' + (prodOk ? 'good' : 'bad') + '" style="animation-delay:.5s">' + (prodOk ? 'APP WERKT' : 'APP VOL BUGS') + '</span>' +
     '<p style="margin-top:.6rem">' + verdict[1] + '</p>' +
     '<h4 style="font-family:Raleway,sans-serif;font-weight:800;margin-top:1rem">Wat de bezoekers zeggen</h4><div class="ld-reviews">' +
-    rev.map(function(r) { return '<div class="ld-review"><span class="st">' + '★★★★★'.slice(0, r[0]) + '<span style="color:#ddd">' + '★★★★★'.slice(r[0]) + '</span></span><span>' + r[1] + '</span></div>'; }).join('') + '</div>' +
+    rev.map(function(r) { return '<div class="ld-review"><span class="st" aria-hidden="true">' + '★★★★★'.slice(0, r[0]) + '<span style="color:#ddd">' + '★★★★★'.slice(r[0]) + '</span></span><span class="sr-only">' + r[0] + ' van 5 sterren: </span><span>' + r[1] + '</span></div>'; }).join('') + '</div>' +
     '<h4 style="font-family:Raleway,sans-serif;font-weight:800">Waar kom je uit?</h4>' +
     '<div class="ld-matrix"><div class="hd"></div><div class="hd">App werkt</div><div class="hd">App vol bugs</div>' +
     '<div class="hd">Project geslaagd</div><div class="cell ok' + (cell === 'ok' ? ' me' : '') + '">Geslaagde lancering</div><div class="cell bad' + (cell === 'sonos' ? ' me' : '') + '">De Sonos-val</div>' +
@@ -4489,15 +4563,16 @@ function ldLaunch() {
     '<h4 style="font-family:Raleway,sans-serif;font-weight:800;margin-top:1rem">Jouw keuzes, probleem per probleem</h4>' +
     '<p style="font-size:.9rem">' + (shifted ? 'Je schoof <strong>' + shifted + ' keer</strong> een risico door naar het product. Een projectprobleem oplossen met kwaliteit lijkt gratis, maar de bezoeker betaalt de rekening.' : 'Je schoof geen enkel risico door naar het product. Je betaalde met tijd, geld of scope.') + '</p>' +
     '<div class="ld-trail">' + ld.trail.map(function(s) {
-      var ti = tagInfo[s.tag];
+      var ti = s.over ? ['shift', 'Met tijd, maar over je buffer'] : tagInfo[s.tag];
       return '<div class="ld-step"><span class="wk">Probleem ' + (s.w + 1) + '<br><span class="chip ' + s.type + '" style="font-size:.6rem;padding:.05rem .35rem">' + (s.type === 'product' ? 'Product' : 'Project') + '</span></span><span>' + s.label + '</span><span class="ld-tag ' + ti[0] + '">' + ti[1] + '</span></div>';
     }).join('') + '</div>' +
     '<div class="callout"><p>Projectrisico\'s kan je opvangen met tijd, geld of scope. Wie ze "oplost" door minder te testen of minder zorg te besteden, verplaatst ze naar het product. Daarom bekijk je product- en projectrisico\'s altijd samen.</p></div>';
   var box = document.getElementById('ld-launch');
-  box.innerHTML = h; box.classList.add('visible');
+  box.innerHTML = h.replace(/(<div class="cell [^"]* me">)([^<]*)/, '$1$2<span class="sr-only"> (jouw uitkomst)</span>'); box.classList.add('visible');
+  ppAnnounce('Lanceerdag: ' + verdict[0] + '. ' + (onTime ? 'Op tijd' : 'Te laat') + ', ' + (inBudget ? 'binnen budget' : 'over budget') + ', ' + (prodOk ? 'de app werkt.' : 'de app zit vol bugs.'));
   if (!prodOk) { ldPhone.glitch(); setTimeout(function() { ldPhone.glitch(); }, 700); }
   box.querySelectorAll('.ld-review').forEach(function(r, i) { setTimeout(function() { r.classList.add('in'); }, 400 + i * 350); });
-  setTimeout(function() { box.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 200);
+  setTimeout(function() { box.scrollIntoView({ behavior: 'smooth', block: 'start' }); document.getElementById('ld-verdict').focus({ preventScroll: true }); }, 200);
 }
 ldReset();
 
