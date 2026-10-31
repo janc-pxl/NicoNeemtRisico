@@ -4377,14 +4377,18 @@ function loop(now) {
 
 document.getElementById('rad-spin').addEventListener('click', spin);
 document.getElementById('rad-dock-spin').addEventListener('click', spin);
-// De balk verschijnt als het rad grotendeels boven het scherm verdwenen is en je nog in het rad-deel zit
+// De balk verschijnt als het rad grotendeels boven het scherm verdwenen is, en enkel zolang de maatregelen in beeld
+// zijn: bij het logboek en het resultaat verdwijnt ze weer, anders bedekt ze de uitslag.
+// Zolang ze zichtbaar is, krijgt de pagina scroll-padding: een maatregel of knop die de focus krijgt, schuift er niet onder.
 var dock = document.getElementById('rad-dock'), dockCv = document.getElementById('rad-dock-wheel'), dctx = dockCv.getContext('2d'), dockOn = false;
+var dockPanel = document.querySelector('#rad-app .panel-grid');
 function dockUpdate() {
-  var w = wheelCv.getBoundingClientRect(), app = document.getElementById('rad-app').getBoundingClientRect();
-  var on = w.bottom < 70 + w.height * 0.35 && app.bottom > 320;
+  var w = wheelCv.getBoundingClientRect(), p = dockPanel.getBoundingClientRect(), bottom = dock.offsetTop + dock.offsetHeight;
+  var on = w.bottom < 70 + w.height * 0.35 && p.bottom > bottom + 60;
   if (on === dockOn) return;
   dockOn = on;
   dock.classList.toggle('show', on);
+  document.documentElement.style.scrollPaddingTop = on ? (bottom + 12) + 'px' : '';
 }
 window.addEventListener('scroll', dockUpdate, { passive: true });
 window.addEventListener('resize', dockUpdate);
