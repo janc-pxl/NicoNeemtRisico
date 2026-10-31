@@ -958,7 +958,7 @@ footer .f-inner a:hover { color: var(--gold); }
 
 /* ── RISICOMATRIX EN RISICOREGISTER (alles onder #register) ──────────────── */
 /* ── Opbouw: inhoud links, meescrollende matrix rechts ─────────────────────── */
-#register .rr-layout { display: grid; grid-template-columns: minmax(0, 1fr) 330px; gap: 1.75rem; align-items: start; }
+#register .rr-layout { display: grid; grid-template-columns: minmax(0, 1fr) 350px; gap: 1.75rem; align-items: start; }
 #register .rr-aside { position: sticky; top: 70px; background: var(--card); border: 1.5px solid var(--border); border-radius: 12px; padding: 1rem 1rem .9rem; }
 #register .rr-aside h4 { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .95rem; margin-bottom: .2rem; }
 #register .rr-aside .sub { font-size: .76rem; color: var(--muted); margin-bottom: .6rem; }
@@ -968,27 +968,45 @@ footer .f-inner a:hover { color: var(--gold); }
 #register .rr-plot { position: relative; aspect-ratio: 1; }
 #register .rr-cells { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(5, 1fr); gap: 3px; }
 #register .rr-cell { position: relative; border-radius: 4px; background: var(--zbg); transition: box-shadow .3s; }
-#register .rr-cell .sc { position: absolute; left: 4px; bottom: 2px; font-size: .58rem; font-weight: 700; color: var(--zink); opacity: .65; }
+#register .rr-cell .sc { position: absolute; left: 4px; bottom: 2px; font-size: .58rem; font-weight: 700; color: var(--zink); }
 #register .rr-cell.above::after { content: ''; position: absolute; inset: 0; border-radius: 4px; background: repeating-linear-gradient(45deg, rgba(3,2,3,.07) 0 4px, transparent 4px 9px); }
 #register .rr-line { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
 #register .rr-line path { transition: d .5s ease; }
 #register .rr-notes { position: absolute; inset: 0; }
 #register .rr-note {
-  position: absolute; width: 18.5%; padding: 2px 3px; font-size: .56rem; line-height: 1.15; font-weight: 700; color: #3b2f00;
+  position: absolute; width: 19.2%; padding: 2px; font-size: .6rem; letter-spacing: -.015em; line-height: 1.15; font-weight: 700; color: #3b2f00;
   background: #ffe066; border-radius: 2px; box-shadow: 0 2px 4px rgba(0,0,0,.18); text-align: center;
-  transition: left .8s cubic-bezier(.3,.8,.3,1), top .8s cubic-bezier(.3,.8,.3,1), opacity .5s, background .4s, transform .4s;
-  transform: rotate(-3deg); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  transition: left .8s cubic-bezier(.3,.8,.3,1), top .8s cubic-bezier(.3,.8,.3,1), background .4s, transform .4s, box-shadow .3s;
+  transform: rotate(-3deg);
+}
+#register .rr-note .lb { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#register .rr-note .own { position: absolute; top: -7px; right: -6px; width: 14px; height: 14px; border-radius: 50%; font-style: normal; font-size: .5rem; line-height: 14px; letter-spacing: 0; color: white; box-shadow: 0 0 0 1.5px white; }
+#register .own[data-o="sara"] { background: #e07a2e; }
+#register .own[data-o="mehdi"] { background: #3b74c4; }
+#register .own[data-o="ellen"] { background: #2a9d8f; }
+#register .rr-note.inreg { box-shadow: 0 0 0 1.5px #030203, 0 2px 4px rgba(0,0,0,.18); }
+#register .rr-ghost {
+  position: absolute; width: 19.2%; padding: 1px 2px; font-size: .6rem; letter-spacing: -.015em; line-height: 1.15; font-weight: 700; color: var(--muted); text-align: center;
+  border: 1.5px dashed #8a8580; border-radius: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; animation: fadeIn .5s ease;
 }
 #register .rr-note:nth-child(even) { transform: rotate(2deg); }
 #register .rr-note.drop { animation: rrDrop .55s cubic-bezier(.3,1.5,.5,1); }
 @keyframes rrDrop { from { transform: translateY(-60px) scale(1.6) rotate(-10deg); opacity: 0; } }
-#register .rr-note.closed { background: #e4e1da; color: #888; opacity: .6; }
+#register .rr-note.closed { background: #e4e1da; color: #555; }
 #register .rr-note.hit-ok { background: #b9e6dd; }
 #register .rr-note.hit-bad { background: #ffb3ba; }
 #register .rr-note.pulse { animation: rrPulse .9s ease 2; }
 @keyframes rrPulse { 50% { transform: scale(1.35) rotate(0deg); box-shadow: 0 0 0 6px rgba(230,57,70,.25); } }
 #register .rr-aside-legend { display: flex; flex-wrap: wrap; gap: .3rem .8rem; font-size: .72rem; color: var(--muted); margin-top: .55rem; }
-#register .rr-aside-legend i { display: inline-block; width: 12px; height: 9px; border-radius: 2px; margin-right: 4px; vertical-align: -1px; }
+#register .rr-aside-legend i { display: inline-block; width: 12px; height: 9px; border-radius: 2px; margin-right: 4px; vertical-align: -1px; box-sizing: border-box; }
+#register .rr-aside-legend [hidden] { display: none; }
+#register .lg-open { background: #ffe066; }
+#register .lg-reg { background: #ffe066; box-shadow: 0 0 0 1.5px #030203; }
+#register .lg-ghost { border: 1.5px dashed #8a8580; }
+#register .lg-closed { background: #e4e1da; }
+#register .lg-ok { background: #b9e6dd; }
+#register .lg-bad { background: #ffb3ba; }
+#register .lg-above { background: repeating-linear-gradient(45deg, #bbb 0 3px, transparent 3px 6px); }
 
 /* ── Begrippen ─────────────────────────────────────────────────────────────── */
 #register .rr-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: .75rem; margin: 1.25rem 0 .5rem; }
@@ -1023,6 +1041,7 @@ footer .f-inner a:hover { color: var(--gold); }
 #register .rr-card:disabled { cursor: default; }
 #register .rr-team { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .6rem; margin-top: 1rem; }
 #register .rr-mate { display: flex; flex-direction: column; align-items: center; gap: .35rem; text-align: center; }
+#register .rr-ava.me { background: #030203; }
 #register .rr-ava { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-family: 'Raleway', sans-serif; font-weight: 900; font-size: 1rem; }
 #register .rr-mate .nm { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .82rem; line-height: 1.1; }
 #register .rr-mate .rl { font-size: .68rem; color: var(--muted); line-height: 1.2; }
@@ -1050,6 +1069,27 @@ footer .f-inner a:hover { color: var(--gold); }
 #register .rr-split .acc { background: rgba(42,157,143,.08); }
 #register .rr-split .act { background: rgba(230,57,70,.07); }
 #register .rr-split b { display: block; font-family: 'Raleway', sans-serif; font-size: .78rem; text-transform: uppercase; letter-spacing: .06em; margin-bottom: .2rem; }
+#register .rr-split ul { list-style: none; margin: 0; padding: 0; }
+#register .rr-split li { display: flex; justify-content: space-between; gap: .5rem; }
+#register .rr-split li span { color: var(--muted); font-size: .78rem; font-variant-numeric: tabular-nums; }
+#register .rr-budget { margin: 0 0 .8rem; font-size: .85rem; }
+#register .rr-budget .lbl { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; font-family: 'Raleway', sans-serif; font-weight: 800; }
+#register .rr-budget .bar { height: 8px; border-radius: 4px; background: var(--bg); margin: .3rem 0; overflow: hidden; }
+#register .rr-budget .bar i { display: block; height: 100%; background: var(--green); border-radius: 4px; transition: width .3s, background .3s; }
+#register .rr-budget .msg { font-size: .8rem; color: var(--muted); }
+#register .rr-budget.over .bar i { background: var(--accent); }
+#register .rr-budget.over strong, #register .rr-budget.over .msg { color: #b3202c; }
+#register .rr-lock-row { display: flex; align-items: center; gap: .7rem; flex-wrap: wrap; }
+#register .rr-hint-inline { font-size: .85rem; color: var(--muted); }
+#register .rr-msg { font-size: .9rem; margin: 0 0 .7rem; }
+#register .rr-muted { color: var(--muted); }
+#register .rr-val { padding-top: .3rem; }
+#register .rr-val.muted { color: var(--muted); }
+#register .rr-reg-title { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: .3rem 1rem; font-family: 'Raleway', sans-serif; font-weight: 900; font-size: 1.05rem; margin-top: .5rem; }
+#register .rr-reg-title span { font-weight: 700; font-size: .82rem; color: var(--muted); }
+#register .rr-row-sub { display: flex; gap: .4rem .9rem; flex-wrap: wrap; align-items: baseline; font-size: .8rem; margin: -.25rem 0 .45rem; }
+#register .rr-cost { font-weight: 700; color: var(--muted); }
+#register .rr-rest { color: #1b655c; }
 #register .rr-warn { font-size: .88rem; background: rgba(230,57,70,.08); border-left: 3px solid var(--accent); border-radius: 0 6px 6px 0; padding: .6rem .8rem; margin-bottom: .7rem; animation: fadeIn .3s ease; }
 #register .rr-reg { display: grid; gap: .8rem; margin-top: 1rem; }
 #register .rr-row { border: 1.5px solid var(--border); border-radius: 11px; padding: .85rem 1rem; background: white; transition: border-color .3s; }
@@ -1060,7 +1100,7 @@ footer .f-inner a:hover { color: var(--gold); }
 #register .rr-status { font-size: .68rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; padding: .15rem .5rem; border-radius: 4px; background: #eee; color: #555; }
 #register .rr-status.open { background: #fff3bf; color: #6b5300; }
 #register .rr-status.ready { background: rgba(42,157,143,.15); color: #1b655c; }
-#register .rr-status.closed { background: #e4e1da; color: #666; }
+#register .rr-status.closed { background: #e4e1da; color: #4a4744; }
 #register .rr-status.hit-ok { background: rgba(42,157,143,.2); color: #1b655c; }
 #register .rr-status.hit-bad { background: rgba(230,57,70,.15); color: #9b1c26; }
 #register .rr-field { display: grid; grid-template-columns: 130px minmax(0, 1fr); gap: .6rem; align-items: start; padding: .45rem 0; border-top: 1px dashed var(--border); font-size: .86rem; }
@@ -1073,6 +1113,7 @@ footer .f-inner a:hover { color: var(--gold); }
 #register .rr-opt:disabled { cursor: default; }
 #register .rr-chosen { display: flex; gap: .5rem; align-items: flex-start; }
 #register .rr-chosen .ok { color: var(--green); font-weight: 900; }
+#register .rr-chosen .mark { color: var(--muted); font-weight: 900; }
 #register .rr-owner { display: inline-flex; align-items: center; gap: .45rem; padding: .3rem .7rem .3rem .3rem; border: 2px solid var(--border); border-radius: 999px; background: white; cursor: pointer; font: inherit; font-size: .8rem; text-align: left; }
 #register .rr-owner .who { display: flex; flex-direction: column; line-height: 1.15; }
 #register .rr-owner .who small { font-size: .68rem; color: var(--muted); }
@@ -1083,7 +1124,7 @@ footer .f-inner a:hover { color: var(--gold); }
 #register .rr-fb.ok { background: rgba(42,157,143,.09); border-left: 3px solid var(--green); }
 
 /* ── Deel 3: monitoren ─────────────────────────────────────────────────────── */
-#register .rr-timeline { position: relative; display: flex; justify-content: space-between; margin: .5rem 0 1.2rem; padding-top: 6px; }
+#register .rr-timeline { position: relative; display: flex; justify-content: space-between; margin: .5rem 0 1.2rem; padding: 6px 0 0; list-style: none; }
 #register .rr-timeline::before { content: ''; position: absolute; left: 6px; right: 6px; top: 13px; height: 3px; background: var(--border); }
 #register .rr-tick { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: .25rem; font-size: .68rem; font-weight: 700; color: var(--muted); width: 16%; text-align: center; line-height: 1.2; }
 #register .rr-tick i { width: 17px; height: 17px; border-radius: 50%; background: white; border: 3px solid var(--border); transition: background .3s, border-color .3s; }
@@ -1100,15 +1141,21 @@ footer .f-inner a:hover { color: var(--gold); }
 #register .rr-event .row { display: flex; justify-content: flex-end; margin-top: .7rem; }
 #register .rr-final { display: grid; gap: .4rem; margin: .8rem 0; }
 #register .rr-final-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: .6rem; align-items: center; padding: .45rem .65rem; border-radius: 7px; background: var(--bg); font-size: .86rem; }
+#register .rr-risk .t, #register .rr-reg-title, #register .rr-row button, #register .rr-event h4, #register .rr-box button { scroll-margin-top: 90px; scroll-margin-bottom: 24px; }
+#register .rr-risk .t:focus, #register .rr-reg-title:focus, #register .rr-event h4:focus { outline: none; }
+#register .rr-risk .t:focus-visible, #register .rr-reg-title:focus-visible, #register .rr-event h4:focus-visible { outline: 2px solid var(--gold-dark); outline-offset: 3px; border-radius: 3px; }
 @media (prefers-reduced-motion: reduce) {
-  #register .rr-note, #register .rr-flip .in { transition: none; }
-  #register .rr-note.drop, #register .rr-note.pulse { animation: none; }
+  #register .rr-note, #register .rr-flip .in, #register .rr-budget .bar i { transition: none; }
+  #register .rr-note.drop, #register .rr-note.pulse, #register .rr-ghost { animation: none; }
 
 }
 @media (max-width: 900px) {
   #register .rr-layout { grid-template-columns: 1fr; }
-  #register .rr-aside { order: -1; position: sticky; top: 54px; z-index: 5; padding: .5rem .6rem; display: grid; grid-template-columns: 140px minmax(0, 1fr); gap: .7rem; align-items: center; box-shadow: 0 6px 14px rgba(0,0,0,.08); }
-  #register .rr-note { font-size: .42rem; }
+  #register .rr-aside { order: -1; position: sticky; top: 54px; z-index: 5; padding: .5rem .6rem; display: grid; grid-template-columns: 156px minmax(0, 1fr); gap: .7rem; align-items: center; box-shadow: 0 6px 14px rgba(0,0,0,.08); }
+  #register .rr-note, #register .rr-ghost { font-size: .5rem; padding: 1px; text-overflow: clip; }
+  #register .rr-note .lb { text-overflow: clip; }
+  #register .rr-note .own { display: none; }
+  #register .sub-title, #register .rr-risk .t, #register .rr-reg-title, #register .rr-row button, #register .rr-event h4, #register .rr-box button { scroll-margin-top: 280px; }
   #register .rr-aside h4 { font-size: .85rem; }
   #register .rr-aside .sub { display: none; }
   #register .rr-steps { grid-template-columns: 1fr; }
@@ -1551,7 +1598,7 @@ footer .f-inner a:hover { color: var(--gold); }
       </div>
 
       <h3 class="sub-title" id="rr-lijn"><span class="sub-step">Deel 2</span> Trek de lijn en vul het register</h3>
-      <p>Niet elk risico verdient een aanpak. Beslis hoeveel risico Vonk aanvaardt: sleep de grens. Wat <strong>boven de lijn</strong> valt, komt in het register met een eigenaar, een preventieve actie (vooraf, om de kans of impact te verkleinen) en een noodplan (als het toch gebeurt). Wat eronder valt, aanvaard je.</p>
+      <p>Niet elk risico verdient een aanpak. Beslis hoeveel risico Vonk aanvaardt: sleep de grens. Wat <strong>boven de lijn</strong> valt, komt in het register met een eigenaar, een preventieve actie (vooraf, om de kans of impact te verkleinen) en een noodplan (als het toch gebeurt). Wat eronder valt, aanvaard je. Maar aanpakken kost geld: Ellen heeft <strong>20.000 euro</strong> voor alle maatregelen samen.</p>
       <div class="rr-box" id="rr-line-box"></div>
       <div class="rr-reg" id="rr-reg"></div>
 
@@ -1565,21 +1612,28 @@ footer .f-inner a:hover { color: var(--gold); }
         <h4>Risicomatrix Vonk 2026</h4>
         <div class="sub">Elke post-it is een risico.</div>
         <div class="rr-mx">
-          <div class="rr-mx-y">Impact</div>
+          <div class="rr-mx-y">Impact (gevolg)</div>
           <div class="rr-plot" id="rr-plot">
             <div class="rr-cells" id="rr-cells"></div>
             <svg class="rr-line" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path id="rr-line-path" d="" fill="none" stroke="#030203" stroke-width="3" stroke-dasharray="6 4" vector-effect="non-scaling-stroke"/></svg>
-            <div class="rr-notes" id="rr-notes"></div>
+            <div class="rr-notes" id="rr-notes" aria-hidden="true"></div>
           </div>
           <div class="rr-mx-x">Kans</div>
         </div>
+        <ul class="sr-only" id="rr-mx-list"></ul>
       </div>
-      <div class="rr-aside-legend" id="rr-aside-legend">
-        <span><i style="background:#ffe066"></i>open risico</span>
-        <span><i style="background:repeating-linear-gradient(45deg,#ccc 0 3px,transparent 3px 6px)"></i>boven de lijn</span>
+      <div class="rr-aside-legend" id="rr-aside-legend" aria-hidden="true">
+        <span><i class="lg-open"></i>risico</span>
+        <span data-lg="reg" hidden><i class="lg-reg"></i>in het register, met eigenaar</span>
+        <span data-lg="ghost" hidden><i class="lg-ghost"></i>oorspronkelijke plaats</span>
+        <span data-lg="closed" hidden><i class="lg-closed"></i>gesloten</span>
+        <span data-lg="ok" hidden><i class="lg-ok"></i>opgetreden, opgevangen</span>
+        <span data-lg="bad" hidden><i class="lg-bad"></i>opgetreden, chaos</span>
+        <span data-lg="above" hidden><i class="lg-above"></i>boven de lijn</span>
       </div>
     </aside>
   </div>
+  <div class="sr-only" id="rr-live" aria-live="polite"></div>
 </section>
 
 </main>
@@ -4597,27 +4651,27 @@ function rrChip(s) { var z = rrZone(s); return '<span class="zone-chip" data-zon
 // prev / cont: opties voor de preventieve actie en het noodplan. kind: ok (juist), cont/prev (verkeerd type), weak (geen goed plan)
 var RR_RISKS = [
   { id: 'storm', short: 'Storm', title: 'Storm tijdens het festival', desc: 'Zware windstoten of onweer boven de festivalwei.',
-    team: { sara: [4, 5, 'Vorig jaar moesten we twee podia stilleggen, en het KMI voorspelt een onstabiele zomer.'], mehdi: [3, 4, 'Technisch houden onze podia windkracht 7 aan. Dat beperkt de schade.'], ellen: [4, 5, 'Als we moeten evacueren, is iedereen in gevaar.'] },
+    team: { sara: [4, 5, 'Vorig jaar moesten we twee podia stilleggen, en het KMI voorspelt een onstabiele zomer.'], mehdi: [3, 4, 'Technisch houden onze podia windkracht 7 aan. Dat beperkt de schade.'], ellen: [4, 5, 'Bij een evacuatie liggen alle bars stil en vragen bezoekers hun geld terug. Dat kost ons een fortuin.'] },
     consensus: [4, 5, 'Na overleg: kans 4, impact 5. Sara\'s ervaring van vorig jaar, de weersvoorspelling en de veiligheid van 40.000 bezoekers wegen door. Dit is het grootste risico van het festival.'],
-    owner: 'sara', relevance: 'Vanaf een week voor het festival (weersvoorspelling)',
+    owner: 'sara', cost: 8, relevance: 'Vanaf een week voor het festival (weersvoorspelling)',
     prev: [
       { t: 'Podia en tenten laten keuren op windbelasting', kind: 'ok', fx: { g: -1 }, why: 'Een preventieve actie: als de storm komt, is de schade kleiner. De impact daalt.' },
       { t: 'Bezoekers via de app en de schermen naar schuilplaatsen sturen', kind: 'cont', why: 'Dat doe je áls de storm er is. Het is een noodplan, geen preventieve actie.' },
-      { t: 'Extra reclame maken voor de zaterdag', kind: 'weak', why: 'Dat heeft niets met dit risico te maken.' }
+      { t: 'Een extra security-team inhuren voor het weekend', kind: 'weak', why: 'Nuttig voor de veiligheid in het algemeen, maar het maakt de schade van een storm niet kleiner. Hier zoek je iets dat de podia en tenten sterker maakt.' }
     ],
     cont: [
       { t: 'Evacuatieplan: podia stilleggen, bezoekers naar schuilplaatsen', kind: 'ok', why: 'Een noodplan: wat je doet als het risico toch optreedt.' },
       { t: 'Weerbestendige tenten huren', kind: 'prev', why: 'Dat doe je vooraf om de schade te verkleinen. Het is een preventieve actie, geen noodplan.' },
-      { t: 'Hopen dat het meevalt', kind: 'weak', why: 'Dat is geen plan. Bij impact 5 wil je een concreet draaiboek.' }
+      { t: 'Bezoekers achteraf een gratis dagticket geven', kind: 'weak', why: 'Een mooi gebaar achteraf, maar het zegt niet wat je doet als de storm er is. Bij impact 5 wil je een concreet draaiboek.' }
     ] },
   { id: 'headliner', short: 'Headliner', title: 'De headliner zegt last minute af', desc: 'De grootste naam op de affiche komt niet opdagen.',
-    team: { sara: [2, 3, 'Grote artiesten zeggen zelden af.'], mehdi: [1, 3, 'Ik heb nog nooit een headliner zien afzeggen.'], ellen: [2, 4, 'Dan willen bezoekers hun geld terug. Dat wordt duur.'] },
+    team: { sara: [2, 3, 'Een leeg podium op het drukste moment zorgt voor onrust in de massa. Dat moet ik kunnen opvangen.'], mehdi: [1, 3, 'Technisch maakt het weinig uit: een vervanger speelt op hetzelfde podium met dezelfde installatie.'], ellen: [2, 4, 'Dan willen bezoekers hun geld terug. Dat wordt duur.'] },
     consensus: [2, 4, 'Na overleg: kans 2, impact 4. Het gebeurt zelden, maar als het gebeurt, kost het veel geld en reputatie.'],
-    owner: 'ellen', relevance: 'Tot de headliner in België is aangekomen',
+    owner: 'ellen', cost: 5, relevance: 'Vanaf vier weken voor het festival (bevestiging van vlucht en hotel)',
     prev: [
       { t: 'Een contract met een stevige annuleringsclausule', kind: 'ok', fx: { k: -1 }, why: 'Een preventieve actie: de artiest heeft meer reden om te komen. De kans daalt.' },
       { t: 'Een back-up-act bellen zodra de headliner afzegt', kind: 'cont', why: 'Dat doe je áls het gebeurt. Het is een noodplan.' },
-      { t: 'De headliner een groter podium geven', kind: 'weak', why: 'Dat verandert niets aan de kans dat de artiest afzegt.' }
+      { t: 'Een annuleringsverzekering voor de headliner afsluiten', kind: 'weak', why: 'Die draagt de financiële schade over aan een verzekeraar, maar de kans dat de artiest afzegt, blijft even groot. Dat is verzekeren, geen preventieve actie.' }
     ],
     cont: [
       { t: 'Een back-up-act achter de hand houden en bezoekers meteen informeren', kind: 'ok', why: 'Een noodplan: je weet vooraf wat je doet als de headliner niet komt.' },
@@ -4627,11 +4681,11 @@ var RR_RISKS = [
   { id: 'cashless', short: 'Cashless', title: 'Het cashless betaalsysteem valt uit', desc: 'Niemand kan nog iets kopen aan de bars en de foodtrucks.',
     team: { sara: [2, 3, 'Vervelend, maar voor de veiligheid verandert er niets: niemand komt in gevaar.'], mehdi: [3, 4, 'Bij 40.000 mensen raakt het netwerk overbelast. Ik zie dat gebeuren.'], ellen: [3, 4, 'Elke minuut zonder betalingen kost omzet.'] },
     consensus: [3, 4, 'Na overleg: kans 3, impact 4. Mehdi kent het netwerk, Ellen ziet de omzet wegvloeien.'],
-    owner: 'mehdi', relevance: 'Tijdens het festival',
+    owner: 'mehdi', cost: 6, relevance: 'Vanaf de loadtest, drie weken voor het festival',
     prev: [
       { t: 'Een loadtest met 40.000 gesimuleerde gebruikers', kind: 'ok', fx: { k: -1 }, why: 'Een preventieve actie: je vindt de zwakke plekken vooraf. De kans daalt.' },
       { t: 'Papieren bonnetjes verkopen als het systeem plat ligt', kind: 'cont', why: 'Dat doe je áls het systeem uitvalt. Het is een noodplan.' },
-      { t: 'Nieuwe kassa\'s in de kleuren van het festival', kind: 'weak', why: 'Mooi, maar het verandert niets aan het risico.' }
+      { t: 'Een helpdesk aan de ingang voor vragen over de app', kind: 'weak', why: 'Handig voor bezoekers, maar de kans dat het betaalsysteem uitvalt, blijft dezelfde.' }
     ],
     cont: [
       { t: 'Papieren drankbonnetjes klaarleggen als back-up', kind: 'ok', why: 'Een noodplan: de bars kunnen blijven draaien als het systeem uitvalt.' },
@@ -4639,13 +4693,13 @@ var RR_RISKS = [
       { t: 'De bars sluiten tot het systeem weer werkt', kind: 'weak', why: 'Dat is wel een plan, maar een slecht plan: je verliest omzet en krijgt dorstige, boze bezoekers.' }
     ] },
   { id: 'vrijwilligers', short: 'Vrijwilligers', title: 'Te weinig vrijwilligers aan de bars', desc: 'Vrijwilligers die op het laatste moment afhaken.',
-    team: { sara: [3, 2, 'Voor de veiligheid is het geen ramp: het wordt vooral drukker aan de bar.'], mehdi: [4, 3, 'Te weinig mensen betekent ook minder toezicht.'], ellen: [4, 2, 'Elk jaar haken er op het laatste moment mensen af.'] },
+    team: { sara: [3, 2, 'Voor de veiligheid is het geen ramp: het wordt vooral drukker aan de bar.'], mehdi: [4, 3, 'Minder handen aan de bar betekent minder kassaterminals open, en dus langere rijen.'], ellen: [4, 2, 'Elk jaar haken er op het laatste moment mensen af.'] },
     consensus: [4, 2, 'Na overleg: kans 4, impact 2. Het gebeurt bijna elk jaar, maar de schade blijft beperkt.'],
-    owner: 'ellen', relevance: 'Vanaf twee weken voor het festival',
+    owner: 'ellen', cost: 4, relevance: 'Vanaf twee weken voor het festival',
     prev: [
       { t: 'Vrijwilligers een extra gratis dagticket geven', kind: 'ok', fx: { k: -1 }, why: 'Een preventieve actie: meer vrijwilligers blijven. De kans daalt.' },
       { t: 'Een uitzendbureau bellen als er mensen ontbreken', kind: 'cont', why: 'Dat doe je áls het gebeurt. Het is een noodplan.' },
-      { t: 'Een groter podium bouwen', kind: 'weak', why: 'Dat heeft niets met dit risico te maken.' }
+      { t: 'Vrijwilligers na het festival een bedankmail sturen', kind: 'weak', why: 'Sympathiek, maar het komt te laat: het verandert niets aan wie op het laatste moment afhaakt.' }
     ],
     cont: [
       { t: 'Een reservelijst met uitzendkrachten klaar hebben', kind: 'ok', why: 'Een noodplan: je kan meteen mensen inzetten als er te weinig zijn.' },
@@ -4653,13 +4707,13 @@ var RR_RISKS = [
       { t: 'Stilletjes minder bars openen', kind: 'weak', why: 'Bezoekers staan dan voor gesloten bars, zonder uitleg. Dat is geen goed plan.' }
     ] },
   { id: 'vergunning', short: 'Vergunning', title: 'De vergunning komt te laat', desc: 'Zonder vergunning van de stad geen festival.',
-    team: { sara: [1, 5, 'De stad keurt ons dossier elk jaar goed.'], mehdi: [2, 5, 'Zonder vergunning is er geen festival.'], ellen: [2, 5, 'De stad is dit jaar strenger geworden.'] },
+    team: { sara: [1, 5, 'Ons veiligheidsdossier is in orde. De stad keurt het elk jaar goed.'], mehdi: [2, 5, 'Zonder vergunning mogen we de podia niet opbouwen, en die opbouw start drie weken vooraf.'], ellen: [2, 5, 'De stad is dit jaar strenger geworden.'] },
     consensus: [2, 5, 'Na overleg: kans 2, impact 5. Zelden een probleem, maar zonder vergunning valt alles weg.'],
-    owner: 'sara', relevance: 'Tot de vergunning binnen is (deadline: vier weken voor het festival)',
+    owner: 'sara', cost: 2, relevance: 'Tot de vergunning binnen is (deadline: vier weken voor het festival)',
     prev: [
       { t: 'Het dossier vroeg indienen en wekelijks opvolgen bij de stad', kind: 'ok', fx: { k: -1 }, why: 'Een preventieve actie: je ziet problemen op tijd. De kans daalt.' },
       { t: 'Een kleiner evenement organiseren als de vergunning uitblijft', kind: 'cont', why: 'Dat doe je áls het misloopt. Het is een noodplan.' },
-      { t: 'Een mooiere affiche ontwerpen', kind: 'weak', why: 'Dat heeft niets met de vergunning te maken.' }
+      { t: 'Het festival vroeger aankondigen op sociale media', kind: 'weak', why: 'Goed voor de ticketverkoop, maar de stad behandelt het dossier daardoor niet sneller.' }
     ],
     cont: [
       { t: 'Een afgeslankt plan B dat binnen de bestaande vergunning past', kind: 'ok', why: 'Een noodplan: als de nieuwe vergunning er niet komt, kan er toch iets doorgaan.' },
@@ -4667,9 +4721,9 @@ var RR_RISKS = [
       { t: 'Toch doorgaan zonder vergunning', kind: 'weak', why: 'Dat is geen noodplan, maar een nieuw en nog groter risico.' }
     ] },
   { id: 'toiletten', short: 'Toiletten', title: 'Lange wachtrijen aan de toiletten', desc: 'Bezoekers staan een halfuur aan te schuiven.',
-    team: { sara: [4, 1, 'Dat is bijna elk jaar zo.'], mehdi: [4, 1, 'Vervelend, maar niemand gaat er naar huis voor.'], ellen: [5, 2, 'Het zorgt wel voor slechte recensies.'] },
+    team: { sara: [4, 1, 'Zolang de rijen de doorgangen en nooduitgangen niet blokkeren, is het geen veiligheidsprobleem.'], mehdi: [4, 1, 'Vervelend, maar met sensoren kan de app bezoekers naar de rustigste toiletten sturen.'], ellen: [5, 2, 'Het zorgt wel voor slechte recensies.'] },
     consensus: [4, 1, 'Na overleg: kans 4, impact 1. Het gebeurt vaak, maar het is vooral vervelend. Een typisch risico dat je kan aanvaarden.'],
-    owner: 'mehdi', relevance: 'Tijdens het festival',
+    owner: 'mehdi', cost: 5, relevance: 'Vanaf de bestelling van de toiletten, een maand voor het festival',
     prev: [
       { t: 'Extra toiletten bijplaatsen bij de grote podia', kind: 'ok', fx: { k: -1 }, why: 'Een preventieve actie: de kans op lange rijen daalt.' },
       { t: 'Bezoekers via de app naar rustigere toiletten sturen', kind: 'cont', why: 'Dat doe je áls de rijen er zijn. Het is een noodplan.' },
@@ -4681,22 +4735,43 @@ var RR_RISKS = [
       { t: 'Niets doen', kind: 'weak', why: 'Dan aanvaard je het risico. Maar het staat nu boven je lijn, dus je hebt beslist het aan te pakken.' }
     ] }
 ];
-var RR_HEAT = { id: 'hitte', short: 'Hittegolf', title: 'Hittegolf tijdens het festivalweekend', desc: 'Het KMI voorspelt meer dan 33 graden.', consensus: [4, 3], owner: 'sara', relevance: 'Tijdens het festival',
+var RR_HEAT = { id: 'hitte', short: 'Hittegolf', title: 'Hittegolf tijdens het festivalweekend', desc: 'Het KMI voorspelt meer dan 33 graden.', consensus: [4, 3], owner: 'sara', cost: 3, relevance: 'Vanaf de eerste hittevoorspelling, drie weken voor het festival',
   prev: [{ t: 'Gratis waterpunten en extra schaduw op het terrein', kind: 'ok', why: 'Een preventieve actie: bezoekers worden minder snel onwel. De impact daalt.' }],
   cont: [{ t: 'Een extra EHBO-post voor hitteslag', kind: 'ok', why: 'Het noodplan: bezoekers die toch onwel worden, worden meteen opgevangen.' }] };
 
 // ══ Toestand ══════════════════════════════════════════════════════════════════
+var RR_BUDGET = 20;   // duizend euro van Ellen voor alle maatregelen samen
 var rr = {
   poker: { i: 0, k: 0, g: 0, revealed: false },
   pos: {},        // id -> { k, g, state: 'open' | 'closed' | 'hit-ok' | 'hit-bad' }
+  orig: {},       // id -> { k, g }: waar het risico eerst op de matrix kwam
   line: 20, lineLocked: false, lineWarned: false,
-  reg: {},        // id -> { owner, prev, cont, prevWrong: [], contWrong: [], ownerFb }
-  mon: { i: -1, answered: false, choice: null }
+  reg: {},        // id -> { owner, prev, cont, prevWrong: [], contWrong: [], prevShown, contShown, late, heat }
+  mon: { i: -1, answered: false, asking: false }
 };
+// Vaste, maar per veld andere volgorde van de opties (het juiste antwoord stond vroeger altijd eerst).
+// Het voorvoegsel 'v38' is zo gekozen dat het juiste antwoord over de 13 vragen 4 à 5 keer op elke plaats staat.
+function rrOrder(key, n) {
+  key = 'v38' + key;
+  var seed = 0; for (var c = 0; c < key.length; c++) seed = (seed * 31 + key.charCodeAt(c)) >>> 0;
+  var rng = frogRng(seed), idx = []; for (var i = 0; i < n; i++) idx.push(i);
+  for (var j = n - 1; j > 0; j--) { var r = Math.floor(rng() * (j + 1)), t = idx[j]; idx[j] = idx[r]; idx[r] = t; }
+  return idx;
+}
 function risk(id) { return id === 'hitte' ? RR_HEAT : RR_RISKS.filter(function(r) { return r.id === id; })[0]; }
 function score(id) { var p = rr.pos[id]; return p.k * p.g; }
 function mate(id) { return RR_TEAM.filter(function(m) { return m.id === id; })[0]; }
-function ava(m, small) { return '<span class="rr-ava" style="background:' + m.color + '" aria-hidden="true">' + m.name[0] + '</span>'; }
+function ava(m) { return '<span class="rr-ava" style="background:' + m.color + '" aria-hidden="true">' + m.name[0] + '</span>'; }
+function num(n) { return n ? n + '.000' : '0'; }
+function eur(n) { return num(n) + ' euro'; }
+function rowCost(id) { return rr.reg[id].late ? 1 : risk(id).cost; }
+function regCost() { return Object.keys(rr.reg).reduce(function(s, id) { return s + rowCost(id); }, 0); }
+function plural(n) { return n === 1 ? 'het risico' : 'de ' + n + ' risico\'s'; }
+function rrSay(t) {
+  var el = document.getElementById('rr-live'); el.textContent = '';
+  setTimeout(function() { el.textContent = t.replace(/<[^>]+>/g, ''); }, 40);
+}
+function rrReduced() { return window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches; }
 
 // ══ De matrix ═════════════════════════════════════════════════════════════════
 (function buildCells() {
@@ -4707,19 +4782,37 @@ function ava(m, small) { return '<span class="rr-ava" style="background:' + m.co
   }
   document.getElementById('rr-cells').innerHTML = h;
 })();
+function moved(id) { var p = rr.pos[id], o = rr.orig[id]; return o && (o.k !== p.k || o.g !== p.g); }
 function rrRenderMatrix() {
-  var layer = document.getElementById('rr-notes'), byCell = {};
-  Object.keys(rr.pos).forEach(function(id) { var p = rr.pos[id], key = p.k + '-' + p.g; (byCell[key] = byCell[key] || []).push(id); });
-  Object.keys(rr.pos).forEach(function(id) {
-    var p = rr.pos[id], el = document.getElementById('rr-note-' + id);
+  var layer = document.getElementById('rr-notes'), byCell = {}, ids = Object.keys(rr.pos);
+  // eerst de post-its, dan de schimmen op hun oorspronkelijke plaats: zo stapelen ze netjes per vak
+  ids.forEach(function(id) { var p = rr.pos[id], key = p.k + '-' + p.g; (byCell[key] = byCell[key] || []).push('n' + id); });
+  ids.forEach(function(id) { if (moved(id)) { var o = rr.orig[id], key = o.k + '-' + o.g; (byCell[key] = byCell[key] || []).push('g' + id); } });
+  function place(el, k, g, item) {
+    var idx = byCell[k + '-' + g].indexOf(item);
+    el.style.left = ((k - 1) * 20 + 0.4) + '%';
+    el.style.top = ((5 - g) * 20 + 1.5 + idx * 6) + '%';
+  }
+  // post-its en schimmen van risico's die niet meer bestaan (na opnieuw beginnen) weghalen
+  layer.querySelectorAll('.rr-note, .rr-ghost').forEach(function(el) {
+    var id = el.id.replace(/^rr-(note|ghost)-/, '');
+    if (!rr.pos[id] || (el.classList.contains('rr-ghost') && !moved(id))) el.remove();
+  });
+  ids.forEach(function(id) {
+    var p = rr.pos[id], reg = rr.reg[id], el = document.getElementById('rr-note-' + id);
+    if (moved(id)) {
+      var gh = document.getElementById('rr-ghost-' + id);
+      if (!gh) { gh = document.createElement('div'); gh.className = 'rr-ghost'; gh.id = 'rr-ghost-' + id; gh.textContent = risk(id).short; layer.insertBefore(gh, layer.firstChild); }
+      place(gh, rr.orig[id].k, rr.orig[id].g, 'g' + id);
+    }
     if (!el) {
       el = document.createElement('div');
-      el.className = 'rr-note drop'; el.id = 'rr-note-' + id; el.textContent = risk(id).short; el.title = risk(id).title;
+      el.className = 'rr-note drop'; el.id = 'rr-note-' + id; el.title = risk(id).title;
       layer.appendChild(el);
     }
-    var list = byCell[p.k + '-' + p.g], idx = list.indexOf(id);
-    el.style.left = ((p.k - 1) * 20 + 0.75) + '%';
-    el.style.top = ((5 - p.g) * 20 + 1.5 + idx * 6) + '%';
+    el.innerHTML = '<span class="lb">' + risk(id).short + '</span>' + (reg && reg.owner ? '<i class="own" data-o="' + reg.owner + '">' + mate(reg.owner).name[0] + '</i>' : '');
+    place(el, p.k, p.g, 'n' + id);
+    el.classList.toggle('inreg', !!reg);
     el.classList.toggle('closed', p.state === 'closed');
     el.classList.toggle('hit-ok', p.state === 'hit-ok');
     el.classList.toggle('hit-bad', p.state === 'hit-bad');
@@ -4738,19 +4831,35 @@ function rrRenderMatrix() {
     }
   }
   document.getElementById('rr-line-path').setAttribute('d', d);
+  // legende: alleen wat er nu op de matrix te zien is
+  var has = {
+    reg: ids.some(function(id) { return rr.reg[id]; }), ghost: ids.some(moved), above: show,
+    closed: ids.some(function(id) { return rr.pos[id].state === 'closed'; }),
+    ok: ids.some(function(id) { return rr.pos[id].state === 'hit-ok'; }),
+    bad: ids.some(function(id) { return rr.pos[id].state === 'hit-bad'; })
+  };
+  document.querySelectorAll('#rr-aside-legend [data-lg]').forEach(function(s) { s.hidden = !has[s.getAttribute('data-lg')]; });
+  // dezelfde matrix als tekst, voor schermlezers
+  var STATE = { closed: 'gesloten', 'hit-ok': 'opgetreden en opgevangen', 'hit-bad': 'opgetreden, chaos' };
+  document.getElementById('rr-mx-list').innerHTML = ids.length ? ids.map(function(id) {
+    var p = rr.pos[id], reg = rr.reg[id], s = score(id);
+    return '<li>' + risk(id).short + ': kans ' + p.k + ', impact ' + p.g + ', score ' + s + ' (' + rrZone(s).label.toLowerCase() + ')' +
+      (moved(id) ? ', was ' + rr.orig[id].k * rr.orig[id].g : '') + (show ? (s > rr.line ? ', boven de lijn' : ', onder de lijn') : '') +
+      (reg ? ', in het register' + (reg.owner ? ' met eigenaar ' + mate(reg.owner).name : '') : '') + (STATE[p.state] ? ', ' + STATE[p.state] : '') + '</li>';
+  }).join('') : '<li>Nog geen risico\'s op de matrix.</li>';
 }
 function pulse(id) { var el = document.getElementById('rr-note-' + id); if (!el) return; el.classList.remove('pulse', 'drop'); void el.offsetWidth; el.classList.add('pulse'); }
 
 // ══ Deel 1: risico-poker ═════════════════════════════════════════════════════
 function rrPokerRender() {
   var box = document.getElementById('rr-poker-box'), P = rr.poker;
-  if (P.i >= RR_RISKS.length) { box.innerHTML = '<div class="rr-locked">✓ Alle risico\'s staan op de matrix. Ga verder met deel 2.</div>'; return; }
+  if (P.i >= RR_RISKS.length) { box.innerHTML = '<div class="rr-locked">✓ Alle risico\'s staan op de matrix. Ga verder met deel 2.</div>'; rrPokerProgress(); return; }
   var r = RR_RISKS[P.i];
-  var h = '<div class="rr-risk"><div class="k">Risico ' + (P.i + 1) + ' van ' + RR_RISKS.length + '</div><div class="t">' + r.title + '</div><p class="d">' + r.desc + '</p></div>';
+  var h = '<div class="rr-risk"><div class="k">Risico ' + (P.i + 1) + ' van ' + RR_RISKS.length + '</div><div class="t" id="rr-risk-t" tabindex="-1">' + r.title + '</div><p class="d">' + r.desc + '</p></div>';
   ['kans', 'impact'].forEach(function(which) {
     var v = which === 'kans' ? P.k : P.g;
-    h += '<div class="rr-pick-row"><div class="rr-pick-lbl ' + which + '" id="rr-lbl-' + which + '">Jouw kaart voor de ' + which + '</div><div class="rr-cards ' + which + '" role="radiogroup" aria-labelledby="rr-lbl-' + which + '">';
-    for (var n = 1; n <= 5; n++) h += '<button type="button" class="rr-card" role="radio" aria-checked="' + (v === n) + '" aria-pressed="' + (v === n) + '"' + (P.revealed ? ' disabled' : '') + ' data-w="' + which + '" data-n="' + n + '"><b>' + n + '</b><small>' + RR_K[n - 1] + '</small></button>';
+    h += '<div class="rr-pick-row"><div class="rr-pick-lbl ' + which + '" id="rr-lbl-' + which + '">Jouw kaart voor de ' + which + '</div><div class="rr-cards ' + which + '" role="group" aria-labelledby="rr-lbl-' + which + '">';
+    for (var n = 1; n <= 5; n++) h += '<button type="button" class="rr-card" aria-pressed="' + (v === n) + '"' + (P.revealed ? ' disabled' : '') + ' data-w="' + which + '" data-n="' + n + '"><b>' + n + '</b><small>' + RR_K[n - 1] + '</small></button>';
     h += '</div></div>';
   });
   if (!P.revealed) h += '<button type="button" class="btn-nav" id="rr-reveal"' + (P.k && P.g ? '' : ' disabled') + '>Draai alle kaarten om</button>';
@@ -4761,7 +4870,7 @@ function rrPokerRender() {
       '<div class="rr-mini">' + flip('kans', p.v[0], P.revealed) + flip('impact', p.v[1], P.revealed) + '</div>' +
       (P.revealed ? '<div class="rr-said">"' + p.v[2] + '"</div>' : '') + '</div>';
   }).join('') +
-    '<div class="rr-mate"><span class="rr-ava" style="background:#030203" aria-hidden="true">J</span><div class="nm">Jij</div><div class="rl">risicomanager</div><div class="rr-mini">' + flip('kans', P.k || '?', P.revealed) + flip('impact', P.g || '?', P.revealed) + '</div></div></div>';
+    '<div class="rr-mate"><span class="rr-ava me" aria-hidden="true">J</span><div class="nm">Jij</div><div class="rl">risicomanager</div><div class="rr-mini">' + flip('kans', P.k || '?', P.revealed) + flip('impact', P.g || '?', P.revealed) + '</div></div></div>';
   if (P.revealed) {
     var ks = people.map(function(p) { return p.v[0]; }).concat(P.k), gs = people.map(function(p) { return p.v[1]; }).concat(P.g);
     var c = r.consensus, dk = P.k - c[0], dg = P.g - c[1];
@@ -4782,19 +4891,23 @@ function rrPokerRender() {
     // eerst dicht tekenen, dan omdraaien zodat de animatie zichtbaar is
     box.querySelectorAll('.rr-flip').forEach(function(f, i) { f.classList.remove('open'); setTimeout(function() { f.classList.add('open'); }, 80 + i * 90); });
     var pl = document.getElementById('rr-place'); if (pl) pl.focus({ preventScroll: true });
+    rrSay('Het team: ' + people.map(function(p) { return p.m.name + ' kans ' + p.v[0] + ', impact ' + p.v[1]; }).join('; ') + '. Na overleg: kans ' + r.consensus[0] + ', impact ' + r.consensus[1] + '.');
   });
   var pl = document.getElementById('rr-place'); if (pl) pl.addEventListener('click', rrPlace);
   rrPokerProgress();
 }
 function flip(which, v, open) {
-  return '<div class="rr-flip ' + which + (open ? ' open' : '') + '" aria-label="' + which + ' ' + (open ? v : 'verborgen') + '"><div class="in"><div class="b"></div><div class="f">' + v + '<small>' + which + '</small></div></div></div>';
+  return '<div class="rr-flip ' + which + (open ? ' open' : '') + '" role="img" aria-label="' + which + ' ' + (open ? v : 'verborgen') + '"><div class="in"><div class="b"></div><div class="f">' + v + '<small>' + which + '</small></div></div></div>';
 }
 function rrPlace() {
-  var r = RR_RISKS[rr.poker.i];
-  rr.pos[r.id] = { k: r.consensus[0], g: r.consensus[1], state: 'open' };
+  var r = RR_RISKS[rr.poker.i], c = r.consensus;
+  rr.pos[r.id] = { k: c[0], g: c[1], state: 'open' }; rr.orig[r.id] = { k: c[0], g: c[1] };
   rr.poker = { i: rr.poker.i + 1, k: 0, g: 0, revealed: false };
   if (rr.poker.i >= RR_RISKS.length) { rr.pokerDone = true; document.getElementById('rr-poker-sum').classList.add('visible'); }
   rrRenderMatrix(); rrPokerRender(); rrLineRender();
+  var said = r.short + ' hangt op de matrix: kans ' + c[0] + ' maal impact ' + c[1] + ' is ' + c[0] * c[1] + ', ' + rrZone(c[0] * c[1]).label.toLowerCase() + '.';
+  if (rr.pokerDone) { rrSay(said + ' Alle risico\'s staan op de matrix. Verder met deel 2: trek de lijn.'); document.getElementById('rr-line-in').focus(); }
+  else { rrSay(said); document.getElementById('rr-risk-t').focus(); }
 }
 function rrPokerProgress() {
   var n = Object.keys(rr.pos).filter(function(id) { return id !== 'hitte'; }).length;
@@ -4804,35 +4917,66 @@ function rrPokerProgress() {
 
 // ══ Deel 2: de lijn en het register ══════════════════════════════════════════
 function aboveIds() { return RR_RISKS.map(function(r) { return r.id; }).filter(function(id) { return rr.pos[id] && score(id) > rr.line; }); }
+function costOf(ids) { return ids.reduce(function(s, id) { return s + risk(id).cost; }, 0); }
+// aanvaarde risico's waar je best twee keer over nadenkt: zone hoog of kritiek, of impact 5
+function riskyAccepted() { return RR_RISKS.map(function(r) { return r.id; }).filter(function(id) { return score(id) <= rr.line && (score(id) >= 10 || rr.pos[id].g >= 5); }); }
 function rrLineRender() {
   var box = document.getElementById('rr-line-box');
   if (!rr.pokerDone) { box.innerHTML = '<div class="rr-locked">Schat eerst alle risico\'s in (deel 1).</div>'; return; }
-  var ab = aboveIds(), acc = RR_RISKS.map(function(r) { return r.id; }).filter(function(id) { return ab.indexOf(id) < 0; });
-  var h = '<div class="rr-slider"><label for="rr-line-in">Vonk aanvaardt risico\'s met een score tot <output id="rr-line-out">' + rr.line + '</output></label>' +
+  box.innerHTML = '<div class="rr-slider"><label for="rr-line-in">Vonk aanvaardt risico\'s met een score tot <output id="rr-line-out" for="rr-line-in"></output></label>' +
     '<input type="range" id="rr-line-in" min="1" max="20" step="1" value="' + rr.line + '"' + (rr.lineLocked ? ' disabled' : '') + ' /></div>' +
-    '<div class="rr-split"><div class="act"><b>Aanpakken (' + ab.length + ')</b>' + (ab.map(function(id) { return risk(id).short; }).join(', ') || 'niets') + '</div>' +
-    '<div class="acc"><b>Aanvaarden (' + acc.length + ')</b>' + (acc.map(function(id) { return risk(id).short; }).join(', ') || 'niets') + '</div></div>';
-  if (!rr.lineLocked) {
-    var stormAcc = acc.indexOf('storm') >= 0, all = ab.length === RR_RISKS.length;
-    if (rr.lineWarned && stormAcc) h += '<div class="rr-warn">Je aanvaardt de storm, met impact 5, zonder eigenaar, preventieve actie of noodplan. Weet je dat zeker? Leg de lijn opnieuw vast om te bevestigen, of sleep ze lager.</div>';
-    else if (rr.lineWarned && all) h += '<div class="rr-warn">Je pakt alles aan, ook de wachtrijen aan de toiletten. Dat kan, maar het kost tijd en geld. Leg de lijn opnieuw vast om te bevestigen.</div>';
-    h += '<button type="button" class="btn-nav" id="rr-line-lock"' + (ab.length ? '' : ' disabled') + '>Leg de lijn vast</button>';
-    if (!ab.length) h += ' <span style="font-size:.85rem;color:var(--muted)">Sleep de lijn lager: nu valt er niets boven.</span>';
-  } else {
-    h += '<p style="margin:0;font-size:.9rem">De lijn ligt vast. Vul hieronder het register in voor de ' + ab.length + ' risico\'s boven de lijn.</p>';
-  }
-  box.innerHTML = h;
+    '<div class="rr-split"><div class="act"><b id="rr-act-h"></b><ul id="rr-act-l"></ul></div><div class="acc"><b id="rr-acc-h"></b><ul id="rr-acc-l"></ul></div></div>' +
+    '<div class="rr-budget" id="rr-budget"><div class="lbl"><span>Budget van Ellen voor maatregelen</span><strong id="rr-budget-v"></strong></div><div class="bar"><i id="rr-budget-fill"></i></div><div class="msg" id="rr-budget-msg"></div></div>' +
+    (rr.lineLocked ? '<p class="rr-msg">De lijn ligt vast. Vul hieronder het register in voor ' + plural(Object.keys(rr.reg).filter(function(id) { return !rr.reg[id].heat && !rr.reg[id].late; }).length) + ' boven de lijn.</p>' :
+      '<div class="rr-warn" id="rr-warn" hidden></div><div class="rr-lock-row"><button type="button" class="btn-nav" id="rr-line-lock">Leg de lijn vast</button><span class="rr-hint-inline" id="rr-lock-hint"></span></div>');
   var inp = document.getElementById('rr-line-in');
-  if (inp) inp.addEventListener('input', function() { rr.line = +inp.value; rr.lineWarned = false; rrRenderMatrix(); rrLineRender(); document.getElementById('rr-line-in').focus(); });
+  inp.addEventListener('input', function() { rr.line = +inp.value; rr.lineWarned = false; rrRenderMatrix(); rrLineUpdate(); });
   var lk = document.getElementById('rr-line-lock');
-  if (lk) lk.addEventListener('click', function() {
-    var ab2 = aboveIds(), risky = ab2.indexOf('storm') < 0 || ab2.length === RR_RISKS.length;
-    if (risky && !rr.lineWarned) { rr.lineWarned = true; rrLineRender(); return; }
-    rr.lineLocked = true;
-    ab2.forEach(function(id) { rr.reg[id] = { owner: null, prev: null, cont: null, prevWrong: [], contWrong: [] }; });
-    rr.order = ab2.slice().sort(function(a, b) { return score(b) - score(a); });
-    rrLineRender(); rrRegRender(); rrMonRender();
-  });
+  if (lk) lk.addEventListener('click', rrLock);
+  rrLineUpdate();
+}
+// alleen de delen die met de schuifregelaar veranderen; de regelaar zelf blijft staan (en dus ook de focus)
+function rrLineUpdate() {
+  var ab = rr.lineLocked ? RR_RISKS.map(function(r) { return r.id; }).filter(function(id) { return rr.reg[id] && !rr.reg[id].late; }) : aboveIds();
+  var acc = RR_RISKS.map(function(r) { return r.id; }).filter(function(id) { return ab.indexOf(id) < 0; });
+  var cost = rr.lineLocked ? regCost() : costOf(ab), over = cost > RR_BUDGET;
+  document.getElementById('rr-line-out').textContent = rr.line;
+  document.getElementById('rr-act-h').textContent = 'Aanpakken (' + ab.length + ')';
+  document.getElementById('rr-acc-h').textContent = 'Aanvaarden (' + acc.length + ')';
+  document.getElementById('rr-act-l').innerHTML = ab.map(function(id) { return '<li>' + risk(id).short + ' <span>' + eur(risk(id).cost) + '</span></li>'; }).join('') || '<li>niets</li>';
+  document.getElementById('rr-acc-l').innerHTML = acc.map(function(id) { return '<li>' + risk(id).short + ' <span>score ' + score(id) + '</span></li>'; }).join('') || '<li>niets</li>';
+  var bud = document.getElementById('rr-budget');
+  bud.classList.toggle('over', over);
+  document.getElementById('rr-budget-v').textContent = num(cost) + ' van ' + eur(RR_BUDGET);
+  document.getElementById('rr-budget-fill').style.width = Math.min(100, cost / RR_BUDGET * 100) + '%';
+  document.getElementById('rr-budget-msg').textContent = over ? 'Te duur: Ellen heeft maar ' + eur(RR_BUDGET) + '. Trek de lijn hoger, dan aanvaard je meer.' :
+    rr.lineLocked ? '' : 'Elke aanpak (preventieve actie en noodplan) kost geld. Wat je aanvaardt, kost niets, tot het misloopt.';
+  var inp = document.getElementById('rr-line-in');
+  inp.setAttribute('aria-valuetext', 'tot score ' + rr.line + ': ' + ab.length + ' aanpakken voor ' + eur(cost) + (over ? ', te duur' : '') + ', ' + acc.length + ' aanvaarden');
+  if (rr.lineLocked) return;
+  var lk = document.getElementById('rr-line-lock'), hint = document.getElementById('rr-lock-hint'), warn = document.getElementById('rr-warn');
+  lk.disabled = !ab.length || over;
+  lk.textContent = rr.lineWarned ? 'Ja, leg de lijn toch vast' : 'Leg de lijn vast';
+  hint.textContent = !ab.length ? 'Trek de lijn lager: nu valt er niets boven.' : over ? 'Eerst binnen het budget blijven.' : '';
+  var risky = riskyAccepted();
+  warn.hidden = !rr.lineWarned;
+  if (rr.lineWarned) warn.innerHTML = '<strong>Weet je het zeker?</strong> Je aanvaardt ' + risky.map(function(id) { return risk(id).short.toLowerCase() + ' (score ' + score(id) + ', impact ' + rr.pos[id].g + ')'; }).join(' en ') +
+    '. Als dat misloopt, heeft niemand een eigenaar, een preventieve actie of een noodplan. Bevestig, of trek de lijn lager.';
+}
+function rrLock() {
+  var ab = aboveIds();
+  if (!ab.length || costOf(ab) > RR_BUDGET) return;
+  if (riskyAccepted().length && !rr.lineWarned) {
+    rr.lineWarned = true; rrLineUpdate();
+    rrSay(document.getElementById('rr-warn').textContent);
+    return;
+  }
+  rr.lineLocked = true;
+  ab.forEach(function(id) { rr.reg[id] = { owner: null, prev: null, cont: null, prevWrong: [], contWrong: [] }; });
+  rr.order = ab.slice().sort(function(a, b) { return score(b) - score(a); });
+  rrRenderMatrix(); rrLineRender(); rrRegRender(); rrMonRender();
+  rrSay('De lijn ligt vast op ' + rr.line + '. ' + ab.length + (ab.length === 1 ? ' risico komt' : ' risico\'s komen') + ' in het register, voor ' + eur(costOf(ab)) + '. Kies per risico een eigenaar, een preventieve actie en een noodplan.');
+  document.getElementById('rr-reg-title').focus();
 }
 // De volgorde ligt vast vanaf het moment dat de lijn vastligt (hoogste score eerst).
 // Zo springt een rij niet weg als een preventieve actie de score verlaagt. Nieuwe risico's komen onderaan.
@@ -4841,55 +4985,77 @@ function regOrder() {
   return (rr.order || []).filter(function(id) { return keys.indexOf(id) >= 0; })
     .concat(keys.filter(function(id) { return (rr.order || []).indexOf(id) < 0; }));
 }
-function rowDone(id) { var r = rr.reg[id]; return r.owner && r.prev != null && r.cont != null; }
+function rowDone(id) { var r = rr.reg[id]; return !!r.owner && (r.prev != null || !!r.late) && r.cont != null; }
 function rrRegRender() {
   var el = document.getElementById('rr-reg');
   if (!rr.lineLocked) { el.innerHTML = ''; return; }
-  el.innerHTML = '<h4 style="font-family:Raleway,sans-serif;font-weight:900;font-size:1.05rem;margin-top:.5rem">Risicoregister Vonk 2026</h4>' + regOrder().map(function(id) { return rowHtml(id); }).join('');
+  el.innerHTML = '<h4 class="rr-reg-title" id="rr-reg-title" tabindex="-1">Risicoregister Vonk 2026 <span>Maatregelen: ' + num(regCost()) + ' van ' + eur(RR_BUDGET) + '</span></h4>' + regOrder().map(function(id) { return rowHtml(id); }).join('');
   el.querySelectorAll('[data-act]').forEach(function(b) { b.addEventListener('click', function() { regAct(b.getAttribute('data-id'), b.getAttribute('data-act'), b.getAttribute('data-v')); }); });
 }
-function statusChip(id) {
+function statusChip(id, final) {
   var p = rr.pos[id], reg = rr.reg[id];
   if (p.state === 'closed') return '<span class="rr-status closed">Gesloten</span>';
   if (p.state === 'hit-ok') return '<span class="rr-status hit-ok">Opgetreden, opgevangen</span>';
   if (p.state === 'hit-bad') return '<span class="rr-status hit-bad">Opgetreden, chaos</span>';
+  if (final) return '<span class="rr-status closed">Niet opgetreden</span>';
   if (reg && rowDone(id)) return '<span class="rr-status ready">Klaar, wordt bewaakt</span>';
   return '<span class="rr-status open">Open</span>';
 }
 function rowHtml(id) {
-  var r = risk(id), reg = rr.reg[id], p = rr.pos[id], locked = rr.mon.i >= 0;
+  var r = risk(id), reg = rr.reg[id], p = rr.pos[id], locked = rr.mon.i >= 0, o = rr.orig[id];
   var h = '<div class="rr-row' + (rowDone(id) ? ' done' : '') + '" id="rr-row-' + id + '"><div class="rr-row-head"><span class="nm">' + r.title + '</span><span class="ix">kans ' + p.k + ' × impact ' + p.g + ' =</span>' + rrChip(score(id)) + statusChip(id) + '</div>';
+  h += '<div class="rr-row-sub"><span class="rr-cost">' + eur(rowCost(id)) + '</span>' + (moved(id) ? '<span class="rr-rest">was ' + o.k * o.g + ', nu ' + score(id) + ': het <strong>restrisico</strong> na je maatregelen</span>' : '') + '</div>';
   // eigenaar
-  h += '<div class="rr-field"><div class="fl">Eigenaar<small>Wie volgt dit op?</small></div><div><div class="rr-opts">' + RR_TEAM.map(function(m) {
+  h += '<div class="rr-field"><div class="fl" id="rr-fl-' + id + '-owner">Eigenaar<small>Wie volgt dit op?</small></div><div><div class="rr-opts" role="group" aria-labelledby="rr-fl-' + id + '-owner">' + RR_TEAM.map(function(m) {
     return '<button type="button" class="rr-owner" aria-pressed="' + (reg.owner === m.id) + '"' + (locked ? ' disabled' : '') + ' data-act="owner" data-id="' + id + '" data-v="' + m.id + '">' + ava(m) + '<span class="who"><b>' + m.name + '</b><small>' + m.role + '</small></span></button>';
-  }).join('') + '</div>' + (reg.owner ? '<div class="rr-fb ' + (reg.owner === r.owner ? 'ok' : 'hint') + '">' + (reg.owner === r.owner ? 'Logisch: ' + mate(r.owner).name + ' (' + mate(r.owner).role + ') zit er het dichtst op.' : 'Kan, maar ' + mate(r.owner).name + ' (' + mate(r.owner).role + ') zit er dichter op.') + '</div>' : '') + '</div></div>';
-  h += '<div class="rr-field"><div class="fl">Datum van relevantie</div><div style="padding-top:.3rem">' + r.relevance + '</div></div>';
+  }).join('') + '</div>' + (reg.owner ? '<div class="rr-fb ' + (reg.owner === r.owner ? 'ok' : 'hint') + '">' + ownerFb(id) + '</div>' : '') + '</div></div>';
+  h += '<div class="rr-field"><div class="fl">Datum van relevantie</div><div class="rr-val">' + r.relevance + '</div></div>';
   h += optField(id, 'prev', 'Preventieve actie', 'Vooraf: verkleint kans of impact');
   h += optField(id, 'cont', 'Noodplan', 'Als het toch gebeurt: beperkt de impact');
   return h + '</div>';
 }
+function ownerFb(id) {
+  var r = risk(id), reg = rr.reg[id], best = mate(r.owner);
+  return reg.owner === r.owner ? 'Logisch: ' + best.name + ' (' + best.role + ') zit er het dichtst op.' : 'Kan, maar ' + best.name + ' (' + best.role + ') zit er dichter op. Als het misloopt, moet ' + mate(reg.owner).name + ' eerst ' + best.name + ' erbij halen.';
+}
 function optField(id, which, label, sub) {
   var r = risk(id), reg = rr.reg[id], opts = r[which], wrong = reg[which + 'Wrong'], chosen = reg[which], locked = rr.mon.i >= 0;
-  var h = '<div class="rr-field"><div class="fl">' + label + '<small>' + sub + '</small></div><div>';
+  var lid = 'rr-fl-' + id + '-' + which;
+  var h = '<div class="rr-field"><div class="fl" id="' + lid + '">' + label + '<small>' + sub + '</small></div><div>';
   if (reg.late && which === 'prev') {
-    h += '<div style="padding-top:.3rem;color:var(--muted)">Te laat voor een preventieve actie: het festival begint over een week.</div>';
+    h += '<div class="rr-val muted">Te laat voor een preventieve actie: het festival begint over een week.</div>';
   } else if (chosen == null && locked) {
-    h += '<div style="padding-top:.3rem;color:var(--muted)">Nog niet ingevuld.</div>';
+    h += '<div class="rr-val muted">Nog niet ingevuld.</div>';
   } else if (chosen != null) {
-    var o = opts[chosen];
-    h += '<div class="rr-chosen"><span class="ok" aria-hidden="true">✓</span><span>' + o.t + '</span></div><div class="rr-fb ok">' + o.why + (which === 'cont' ? ' <strong>De kans blijft gelijk, de impact daalt.</strong>' : '') + (wrong.length ? ' <em>(na ' + wrong.length + (wrong.length === 1 ? ' poging' : ' pogingen') + ')</em>' : '') + '</div>';
+    var o = opts[chosen], shown = reg[which + 'Shown'];
+    var extra = which === 'cont' ? ' <strong>De kans blijft gelijk, de impact daalt.</strong>' : '';
+    h += '<div class="rr-chosen"><span class="' + (shown ? 'mark' : 'ok') + '" aria-hidden="true">' + (shown ? '→' : '✓') + '</span><span>' + o.t + '</span></div>';
+    if (shown) h += '<div class="rr-fb hint">' + opts[wrong[wrong.length - 1]].why + ' <strong>Het juiste antwoord:</strong> ' + o.why + extra + '</div>';
+    else h += '<div class="rr-fb ok">' + o.why + extra + (wrong.length ? ' <em>(na 1 foute poging)</em>' : '') + '</div>';
   } else {
-    h += '<div class="rr-opts">' + opts.map(function(o, i) {
-      var w = wrong.indexOf(i) >= 0;
+    h += '<div class="rr-opts" role="group" aria-labelledby="' + lid + '">' + rrOrder(id + which, opts.length).map(function(i) {
+      var o = opts[i], w = wrong.indexOf(i) >= 0;
       return '<button type="button" class="rr-opt' + (w ? ' wrong' : '') + '"' + (w ? ' disabled' : '') + ' data-act="' + which + '" data-id="' + id + '" data-v="' + i + '">' + o.t + '</button>';
     }).join('') + '</div>';
-    if (wrong.length) h += '<div class="rr-fb hint">' + opts[wrong[wrong.length - 1]].why + '</div>';
+    if (wrong.length) h += '<div class="rr-fb hint">Niet juist: ' + opts[wrong[wrong.length - 1]].why + '</div>';
   }
   return h + '</div></div>';
 }
+// het eerstvolgende veld dat nog leeg is: eigenaar, preventieve actie, noodplan, dan de volgende rij
+function nextField(id) {
+  var ids = regOrder(), start = Math.max(0, ids.indexOf(id));
+  for (var n = 0; n < ids.length; n++) {
+    var x = ids[(start + n) % ids.length], g = rr.reg[x];
+    if (g.heat || g.late) continue;
+    if (!g.owner) return '#rr-row-' + x + ' .rr-owner';
+    if (g.prev == null) return '#rr-row-' + x + ' .rr-opt[data-act="prev"]:not(:disabled)';
+    if (g.cont == null) return '#rr-row-' + x + ' .rr-opt[data-act="cont"]:not(:disabled)';
+  }
+  return '#rr-mon-next';
+}
 function regAct(id, act, v) {
-  var reg = rr.reg[id], r = risk(id);
-  if (act === 'owner') reg.owner = v;
+  var reg = rr.reg[id], r = risk(id), said;
+  if (act === 'owner') { reg.owner = v; rrRenderMatrix(); said = 'Eigenaar: ' + mate(v).name + '. ' + ownerFb(id); }
   else {
     var i = +v, o = r[act][i];
     if (o.kind === 'ok') {
@@ -4899,54 +5065,67 @@ function regAct(id, act, v) {
         // de preventieve actie verkleint de kans of de impact
         if (o.fx.k) p.k = Math.max(1, p.k + o.fx.k);
         if (o.fx.g) p.g = Math.max(1, p.g + o.fx.g);
-        rrRenderMatrix(); pulse(id);
       }
-      if (act === 'cont') {
-        // een noodplan verandert de kans niet, maar beperkt de schade als het toch gebeurt
-        p.g = Math.max(1, p.g - 1);
-        rrRenderMatrix(); pulse(id);
-      }
+      // een noodplan verandert de kans niet, maar beperkt de schade als het toch gebeurt
+      if (act === 'cont') p.g = Math.max(1, p.g - 1);
+      rrRenderMatrix(); pulse(id);
+      var wr = reg[act + 'Wrong'];
+      said = (reg[act + 'Shown'] ? 'Niet juist. ' + r[act][wr[wr.length - 1]].why + ' Het juiste antwoord: ' : 'Juist: ') + o.t + '. ' + r.short + ' staat nu op kans ' + p.k + ' maal impact ' + p.g + ' is ' + score(id) + '.';
     } else {
       reg[act + 'Wrong'].push(i);
       if (reg[act + 'Wrong'].length >= 2) {
         // na twee foute pogingen: het juiste antwoord tonen en doorgaan
-        var okI = r[act].map(function(x) { return x.kind; }).indexOf('ok');
-        return regAct(id, act, okI);
+        reg[act + 'Shown'] = true;
+        return regAct(id, act, r[act].map(function(x) { return x.kind; }).indexOf('ok'));
       }
+      said = 'Niet juist. ' + o.why + ' Probeer nog eens.';
     }
   }
   rrRegRender(); rrMonRender();
-  var row = document.getElementById('rr-row-' + id); if (row) { var f = row.querySelector('.rr-opt:not(:disabled), .rr-owner'); if (f) f.focus({ preventScroll: true }); }
+  rrSay(said + (rowDone(id) && act !== 'owner' ? ' Deze rij is klaar.' : ''));
+  var f = document.querySelector(nextField(id)); if (f) f.focus();
 }
 
 // ══ Deel 3: monitoren ════════════════════════════════════════════════════════
 function inReg(id) { return !!rr.reg[id]; }
 function has(id, which) { return inReg(id) && rr.reg[id][which] != null; }
 function ownerName(id) { return inReg(id) && rr.reg[id].owner ? mate(rr.reg[id].owner).name : 'Niemand'; }
+// wie niet de logische eigenaar is, verliest tijd als het misloopt
+function delay(id) {
+  var reg = rr.reg[id], best = risk(id).owner;
+  return reg.owner === best ? '' : ' Wel moest ' + mate(reg.owner).name + ' eerst ' + mate(best).name + ' (' + mate(best).role + ') erbij halen: dat kostte tien kostbare minuten.';
+}
 var RR_MON = [
   { when: '6 weken voor', title: 'De stad behandelt de vergunningsaanvraag.', run: function() {
     rr.pos.vergunning.state = 'closed';
     if (has('vergunning', 'prev')) return ['good', 'Het dossier werd vroeg ingediend en ' + ownerName('vergunning') + ' volgde het elke week op. De stad keurt de vergunning goed. Dit risico is van de baan: gesloten.'];
     return ['bad', 'De stad vraagt extra documenten. Omdat dit risico niet in het register stond, voelde niemand zich verantwoordelijk, en het dossier bleef twee weken liggen. De vergunning komt er nét op tijd. Het liep goed af, maar dat was geluk.'];
   } },
-  { when: '4 weken voor', title: 'Datum van relevantie: de headliner bevestigt de vlucht en het hotel.', run: function() {
+  { when: '4 weken voor', title: 'De headliner bevestigt de vlucht en het hotel.', run: function() {
     var p = rr.pos.headliner; p.k = Math.max(1, p.k - 1); pulse('headliner');
-    return ['info', 'De kans dat de headliner afzegt, daalt. Het risico schuift omlaag op de matrix. ' + (inReg('headliner') ? ellenSays() : 'Het stond onder je lijn, maar het blijft goed om het op te volgen tot de artiest echt in België is.')];
+    return ['info', 'De kans dat de headliner afzegt, daalt. Het risico schuift omlaag op de matrix. ' + (inReg('headliner') ? ownerName('headliner') + ' zet de status op "bewaakt" tot de artiest op het podium staat.' : 'Het stond onder je lijn, maar het blijft goed om het op te volgen tot de artiest echt in België is.')];
   } },
   { when: '3 weken voor', title: 'Nieuw risico: het KMI voorspelt een hittegolf tijdens het festivalweekend.', ask: {
-      q: 'Dit nieuwe risico (kans 4, impact 3) komt in het register. Wat is je preventieve actie?',
+      q: 'Dit nieuwe risico (kans 4, impact 3, score 12) valt boven je lijn en komt in het register, met Sara als eigenaar. Wat is de preventieve actie?',
       opts: [
         { t: 'Gratis waterpunten en extra schaduw op het terrein', kind: 'ok', fx: { g: -1 }, why: 'Een preventieve actie: bezoekers worden minder snel onwel. De impact daalt.' },
         { t: 'Een extra EHBO-post voor hitteslag inrichten', kind: 'cont', why: 'Ook nodig, maar dat is een noodplan: je vangt bezoekers op áls het misloopt. Het hoort niet bij de preventieve actie, maar bij het noodplan.' },
         { t: 'Het festival verplaatsen naar het najaar', kind: 'weak', why: 'Dat vermijdt het risico wel, maar het kost veel meer dan het oplevert.' }
       ] },
-    pre: function() { rr.pos.hitte = { k: 4, g: 3, state: 'open' }; rr.reg.hitte = { owner: 'sara', prev: null, cont: null, prevWrong: [], contWrong: [], heat: true }; rrRenderMatrix(); },
+    // het nieuwe risico volgt dezelfde lijn: score 12 boven de lijn = in het register, anders aanvaard
+    pre: function() {
+      rr.pos.hitte = { k: 4, g: 3, state: 'open' }; rr.orig.hitte = { k: 4, g: 3 };
+      if (12 > rr.line) rr.reg.hitte = { owner: 'sara', prev: null, cont: null, prevWrong: [], contWrong: [], heat: true };
+      rrRenderMatrix();
+    },
+    askIf: function() { return inReg('hitte'); },
     run: function(ok, o) {
+      if (!inReg('hitte')) return ['info', 'Score 12 valt niet boven je lijn: je aanvaardt dit nieuwe risico, en het kost niets. Niemand regelt extra water of schaduw. Uiteindelijk wordt het 29 graden in plaats van 33. Dat liep goed af, maar je had het niet in de hand.'];
       var p = rr.pos.hitte;
       // preventie en noodplan verlagen elk de impact met 1
       rr.reg.hitte.prev = 0; rr.reg.hitte.cont = 0; p.g = Math.max(1, p.g - 2); pulse('hitte');
-      if (ok) return ['good', o.why + ' Sara zet er een EHBO-post voor hitteslag bij als noodplan, en dat beperkt de impact nog wat. Een register is nooit af: nieuwe risico\'s komen er gewoon bij.'];
-      return ['info', o.why + ' Het team kiest voor gratis waterpunten en extra schaduw als preventieve actie, met de EHBO-post als noodplan. De impact daalt.'];
+      if (ok) return ['good', o.why + ' Sara zet er een EHBO-post voor hitteslag bij als noodplan, en dat beperkt de impact nog wat. Samen kost het ' + eur(RR_HEAT.cost) + '. Een register is nooit af: nieuwe risico\'s komen er gewoon bij.'];
+      return ['info', o.why + ' Het team kiest voor gratis waterpunten en extra schaduw als preventieve actie, met de EHBO-post als noodplan (samen ' + eur(RR_HEAT.cost) + '). De impact daalt.'];
     } },
   { when: '1 week voor', title: 'Slechts 70% van de vrijwilligers heeft bevestigd.', run: function() {
     if (has('vrijwilligers', 'prev')) return ['good', 'Dankzij het extra dagticket bevestigen de meeste vrijwilligers alsnog: 95%. Je preventieve actie werkt, het risico blijft klein.'];
@@ -4955,39 +5134,38 @@ var RR_MON = [
     if (crosses) {
       rr.reg.vrijwilligers = { owner: 'ellen', prev: null, cont: 0, prevWrong: [], contWrong: [], late: true };
       p.g = Math.max(1, p.g - 1);
-      return ['info', 'De kans stijgt: het risico schuift naar kans ' + p.k + ' en komt <strong>boven je lijn</strong>. Ellen zet het alsnog in het register, met een reservelijst van uitzendkrachten als noodplan. Dat beperkt de impact, maar voor een preventieve actie is het nu te laat. Daarom bekijk je het register elke week opnieuw.'];
+      return ['info', 'De kans stijgt: het risico schuift naar kans ' + p.k + ' en komt <strong>boven je lijn</strong>. Ellen zet het alsnog in het register, met een reservelijst van uitzendkrachten als noodplan (' + eur(1) + '). Dat beperkt de impact, maar voor een preventieve actie is het nu te laat. Daarom bekijk je het register elke week opnieuw.'];
     }
-    if (inReg('vrijwilligers')) return ['info', 'De kans stijgt, maar het noodplan ligt klaar: Ellen belt de reservelijst met uitzendkrachten.'];
+    if (inReg('vrijwilligers')) return ['info', 'De kans stijgt, maar het noodplan ligt klaar: ' + ownerName('vrijwilligers') + ' belt de reservelijst met uitzendkrachten.'];
     return ['info', 'De kans stijgt naar ' + p.k + ', maar het risico blijft onder je lijn. Je aanvaardt het: het wordt druk aan de bars.'];
   } },
   { when: 'Zaterdag 21:00', title: 'Windstoten van 90 km/u boven de festivalwei.', run: function() {
     var ok = has('storm', 'cont');
     rr.pos.storm.state = ok ? 'hit-ok' : 'hit-bad'; pulse('storm');
-    if (ok) return ['good', ownerName('storm') + ' zet het evacuatieplan in gang: de podia gaan stil, de app en de schermen sturen 40.000 bezoekers naar de schuilplaatsen. Na 45 minuten gaat het feest verder.' + (has('storm', 'prev') ? ' De gekeurde podia en tenten doorstaan de storm zonder schade.' : '')];
+    if (ok) return ['good', ownerName('storm') + ' zet het evacuatieplan in gang: de podia gaan stil, de app en de schermen sturen 40.000 bezoekers naar de schuilplaatsen.' + delay('storm') + ' Na 45 minuten gaat het feest verder.' + (has('storm', 'prev') ? ' De gekeurde podia en tenten doorstaan de storm zonder schade.' : '')];
     return ['bad', 'Niemand weet wie wat moet doen. Bezoekers rennen alle kanten op en een tent waait om. Het festival wordt voor de rest van de avond stilgelegd, en de kranten spreken van chaos. De storm stond onder je lijn: je had dit risico aanvaard.'];
   } },
   { when: 'Zondag 14:00', title: 'Het cashless betaalsysteem valt uit.', run: function() {
     var ok = has('cashless', 'cont');
     rr.pos.cashless.state = ok ? 'hit-ok' : 'hit-bad'; pulse('cashless');
-    if (ok) return ['good', ownerName('cashless') + ' laat de papieren drankbonnetjes verdelen. Na tien minuten draaien de bars weer.' + (has('cashless', 'prev') ? ' Dankzij de loadtest blijft het bij een korte storing.' : '')];
+    if (ok) return ['good', ownerName('cashless') + ' laat de papieren drankbonnetjes verdelen.' + delay('cashless') + ' Na ' + (rr.reg.cashless.owner === 'mehdi' ? 'tien' : 'twintig') + ' minuten draaien de bars weer.' + (has('cashless', 'prev') ? ' Dankzij de loadtest blijft het bij een korte storing.' : '')];
     return ['bad', 'Er is geen plan B. Twee uur lang kan niemand iets kopen: lange rijen, boze bezoekers en een flinke hap uit de omzet. Je had dit risico aanvaard.'];
   } }
 ];
-function ellenSays() { return ownerName('headliner') + ' zet de status op "bewaakt" tot de artiest op het podium staat.'; }
 function rrMonRender() {
   var box = document.getElementById('rr-mon-box');
   var ready = rr.lineLocked && Object.keys(rr.reg).filter(function(id) { return !rr.reg[id].heat && !rr.reg[id].late; }).every(rowDone);
   if (!ready) { box.innerHTML = '<div class="rr-locked">Vul eerst het register volledig in (deel 2).</div>'; return; }
-  var M = rr.mon, h = '<div class="rr-timeline">' + RR_MON.map(function(e, i) {
-    return '<div class="rr-tick' + (i < M.i ? ' done' : i === M.i ? ' cur' : '') + '"><i></i>' + e.when + '</div>';
-  }).join('') + '</div>';
+  var M = rr.mon, h = '<ol class="rr-timeline">' + RR_MON.map(function(e, i) {
+    return '<li class="rr-tick' + (i < M.i ? ' done' : i === M.i ? ' cur' : '') + '"' + (i === M.i ? ' aria-current="step"' : '') + '><i></i>' + e.when + '</li>';
+  }).join('') + '</ol>';
   if (M.i < 0) {
-    h += '<p style="font-size:.9rem;margin:0 0 .7rem">Het register is klaar. Zes weken voor het festival begint de opvolging.</p><button type="button" class="btn-nav" id="rr-mon-next">Start de opvolging</button>';
+    h += '<p class="rr-msg">Het register is klaar. Zes weken voor het festival begint de opvolging.</p><button type="button" class="btn-nav" id="rr-mon-next">Start de opvolging</button>';
   } else if (M.i < RR_MON.length) {
     var e = RR_MON[M.i];
     h += '<div class="rr-event"><div class="when">' + e.when + (M.i < 4 ? ' het festival' : '') + '</div><h4>' + e.title + '</h4>';
-    if (e.ask && !M.answered) {
-      h += '<p style="font-size:.9rem;margin-bottom:.5rem">' + e.ask.q + '</p><div class="rr-opts">' + e.ask.opts.map(function(o, i) { return '<button type="button" class="rr-opt" data-mon="' + i + '">' + o.t + '</button>'; }).join('') + '</div>';
+    if (M.asking && !M.answered) {
+      h += '<p class="rr-msg" id="rr-mon-q">' + e.ask.q + '</p><div class="rr-opts" role="group" aria-labelledby="rr-mon-q">' + rrOrder('mon' + M.i, e.ask.opts.length).map(function(i) { return '<button type="button" class="rr-opt" data-mon="' + i + '">' + e.ask.opts[i].t + '</button>'; }).join('') + '</div>';
     } else {
       h += '<div class="out ' + M.out[0] + '">' + M.out[1] + '</div><div class="row"><button type="button" class="btn-nav" id="rr-mon-next">' + (M.i < RR_MON.length - 1 ? 'Volgende →' : 'Naar de evaluatie') + '</button></div>';
     }
@@ -4997,51 +5175,66 @@ function rrMonRender() {
   }
   box.innerHTML = h;
   var nx = document.getElementById('rr-mon-next'); if (nx) nx.addEventListener('click', rrMonNext);
+  var ag = document.getElementById('rr-again'); if (ag) ag.addEventListener('click', rrRestartFromLine);
   box.querySelectorAll('[data-mon]').forEach(function(b) { b.addEventListener('click', function() {
     var e = RR_MON[M.i], o = e.ask.opts[+b.getAttribute('data-mon')];
     M.answered = true; M.out = e.run(o.kind === 'ok', o);
     rrRenderMatrix(); rrRegRender(); rrMonRender();
+    rrSay(M.out[1]);
+    document.getElementById('rr-mon-next').focus();
   }); });
 }
 function rrMonNext() {
   var M = rr.mon;
-  M.i++; M.answered = false; M.out = null;
+  M.i++; M.answered = false; M.out = null; M.asking = false;
   if (M.i < RR_MON.length) {
     var e = RR_MON[M.i];
     if (e.pre) e.pre();
-    if (!e.ask) M.out = e.run();
+    M.asking = !!e.ask && (!e.askIf || e.askIf());
+    if (!M.asking) M.out = e.run();
   }
   rrRenderMatrix(); rrRegRender(); rrMonRender();
-  var b = document.getElementById('rr-mon-box'); var f = b.querySelector('.rr-opt, #rr-mon-next'); if (f) f.focus({ preventScroll: true });
+  var b = document.getElementById('rr-mon-box');
+  if (M.i < RR_MON.length) {
+    var ev = RR_MON[M.i];
+    rrSay(ev.when + (M.i < 4 ? ' het festival' : '') + '. ' + ev.title + ' ' + (M.asking ? ev.ask.q : M.out[1]));
+    var f = b.querySelector('.rr-opt, #rr-mon-next'); if (f) f.focus();
+  } else {
+    var t = document.getElementById('rr-final-title'); rrSay(t.textContent); t.focus();
+  }
 }
 function rrFinal() {
   var incidents = ['storm', 'cashless'], okN = incidents.filter(function(id) { return rr.pos[id].state === 'hit-ok'; }).length;
-  var h = '<div class="rr-event"><div class="when">Na het festival</div><h4>Evaluatie: je was voorbereid op ' + okN + ' van de 2 incidenten.</h4>';
+  var h = '<div class="rr-event"><div class="when">Na het festival</div><h4 id="rr-final-title" tabindex="-1">Evaluatie: je was voorbereid op ' + okN + ' van de 2 incidenten.</h4>';
   h += '<div class="rr-final">' + Object.keys(rr.pos).map(function(id) {
-    return '<div class="rr-final-row"><span><strong>' + risk(id).title + '</strong>' + (inReg(id) ? '' : ' <span style="color:var(--muted)">(aanvaard, niet in het register)</span>') + '</span>' + statusChip(id) + '</div>';
+    return '<div class="rr-final-row"><span><strong>' + risk(id).title + '</strong>' + (inReg(id) ? '' : ' <span class="rr-muted">(aanvaard, niet in het register)</span>') + '</span>' + statusChip(id, true) + '</div>';
   }).join('') + '</div>';
-  h += '<p style="font-size:.9rem">' + (okN === 2 ? 'Beide incidenten hadden een eigenaar en een noodplan. Daardoor wist iedereen wat te doen, en bleef de schade beperkt.' :
+  var txt = okN === 2 ? 'Beide incidenten hadden een eigenaar en een noodplan. Daardoor wist iedereen wat te doen, en bleef de schade beperkt.' :
     okN === 1 ? 'Eén incident liep goed af dankzij het noodplan, het andere niet. Het verschil? Het ene risico stond boven je lijn, het andere had je aanvaard.' :
-    'Geen van beide incidenten had een noodplan. Je lijn lag te hoog: je aanvaardde risico\'s met een grote impact.') + '</p>';
+    'Geen van beide incidenten had een noodplan. Je lijn lag te hoog: je aanvaardde risico\'s met een grote impact.';
+  if (!inReg('vergunning')) txt += ' En de vergunning kwam er alleen door geluk: een risico met impact 5 aanvaard je beter niet.';
+  txt += ' Je gebruikte ' + num(regCost()) + ' van de ' + eur(RR_BUDGET) + ' van Ellen.';
+  if (okN === 2 && inReg('vergunning')) txt += ' Je lijn lag zo laag als het budget toeliet: precies goed.';
+  h += '<p class="rr-msg">' + txt + '</p>';
   h += '<div class="callout"><p>Een risicoregister is geen document voor de lade. Risico\'s groeien, krimpen, verdwijnen of komen erbij. Door het elke week op te volgen, zie je het op tijd, en weet iedereen wat te doen als het toch misloopt.</p></div>';
   h += '<div class="row"><button type="button" class="btn-nav outline" id="rr-again">Opnieuw, met een andere lijn</button></div></div>';
-  setTimeout(function() { var a = document.getElementById('rr-again'); if (a) a.addEventListener('click', rrRestartFromLine); }, 0);
   return h;
 }
 // opnieuw vanaf deel 2: de inschattingen blijven, de lijn en het register niet
 function rrRestartFromLine() {
   RR_RISKS.forEach(function(r) { rr.pos[r.id] = { k: r.consensus[0], g: r.consensus[1], state: 'open' }; });
-  delete rr.pos.hitte;
-  var n = document.getElementById('rr-note-hitte'); if (n) n.remove();
-  rr.reg = {}; rr.order = []; rr.lineLocked = false; rr.lineWarned = false; rr.mon = { i: -1, answered: false, choice: null };
+  delete rr.pos.hitte; delete rr.orig.hitte;
+  rr.reg = {}; rr.order = []; rr.lineLocked = false; rr.lineWarned = false; rr.mon = { i: -1, answered: false, asking: false };
   rrRenderMatrix(); rrLineRender(); rrRegRender(); rrMonRender();
-  document.getElementById('rr-lijn').scrollIntoView({ behavior: 'smooth' });
+  document.getElementById('rr-lijn').scrollIntoView({ behavior: rrReduced() ? 'auto' : 'smooth' });
+  document.getElementById('rr-line-in').focus({ preventScroll: true });
+  rrSay('Opnieuw: de inschattingen blijven, trek de lijn opnieuw.');
 }
 
 rrRenderMatrix(); rrPokerRender(); rrLineRender(); rrRegRender(); rrMonRender();
 
 // om te testen
-window.RR = { state: rr, risks: RR_RISKS, mon: RR_MON, regAct: regAct, score: score, risk: risk, zone: rrZone, restart: rrRestartFromLine };
+window.RR = { state: rr, risks: RR_RISKS, mon: RR_MON, regAct: regAct, score: score, risk: risk, zone: rrZone, restart: rrRestartFromLine, lock: rrLock, next: rrMonNext, budget: RR_BUDGET };
 })();
 
 // ══ Nico aan de stoeprand (intro) ════════════════════════════════════════════
