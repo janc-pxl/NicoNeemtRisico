@@ -90,6 +90,24 @@ body { font-family: Arial, system-ui, sans-serif; background: var(--bg); color: 
 .nav-dropdown a:last-child { border-bottom: none; }
 .nav-dropdown a:hover { color: var(--gold); background: rgba(255,255,255,.04); }
 .nav-dropdown a.spy-active { color: var(--gold); border-left: 3px solid var(--gold); padding-left: calc(1.5rem - 3px); background: rgba(174,154,100,.1); }
+.nav-dropdown a { display: flex; justify-content: space-between; align-items: baseline; gap: 1.25rem; }
+.nav-prog { font-size: .75rem; letter-spacing: 0; color: #8a8a8a; font-variant-numeric: tabular-nums; }
+.nav-prog.done { color: var(--gold); }
+
+/* Welkom terug: verschijnt alleen als er bewaarde voortgang is */
+.resume {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .75rem 1.5rem;
+  margin-top: 1.5rem; padding: .9rem 1.2rem; background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+}
+.resume[hidden] { display: none; }
+.resume p { margin: 0; }
+.resume-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem; }
+a.btn-nav { display: inline-flex; align-items: center; text-decoration: none; }
+.pr-reset { display: inline-flex; flex-wrap: wrap; align-items: center; gap: .6rem; }
+.pr-reset .pr-q { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .9rem; color: var(--primary); }
+.pr-reset .pr-yes { background: var(--z-kritiek-ink); border-color: var(--z-kritiek-ink); }
+.pr-reset .pr-yes:hover { background: #7d141d; }
+.btn-nav:focus-visible { outline: 2px solid var(--gold-dark); outline-offset: 2px; }
 
 /* LAYOUT */
 main { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem 5rem; }
@@ -1194,6 +1212,11 @@ footer .f-inner a:hover { color: var(--gold); }
   color: var(--gold-dark); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px;
 }
 #meenemen .mm-back:hover { color: var(--primary); }
+#meenemen .mm-status { font-size: .88rem; color: var(--muted); margin-bottom: .5rem; }
+#meenemen .mm-status .ok { font-family: 'Raleway', sans-serif; font-weight: 800; color: var(--z-laag-ink); }
+#meenemen .mm-status a { color: var(--primary); text-underline-offset: 3px; }
+#meenemen .mm-reset { margin-top: 2rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .75rem 1.5rem; }
+#meenemen .mm-reset p { margin: 0; max-width: 68ch; color: var(--muted); font-size: .92rem; }
 #meenemen .mm-back:focus-visible { outline: 2px solid var(--gold-dark); outline-offset: 3px; border-radius: 2px; }
 
 /* Het slot spiegelt de zwarte Risico-kaart uit het begin van de pagina */
@@ -1283,6 +1306,10 @@ footer .f-inner a:hover { color: var(--gold); }
 
 <main>
 <h1 class="sr-only">Nico neemt risico: risicomanagement</h1>
+<div class="resume" id="resume" role="region" aria-label="Je voortgang" hidden>
+  <p><strong>Welkom terug.</strong> <span id="resume-txt"></span></p>
+  <div class="resume-actions"><a class="btn-nav" id="resume-go" href="#kans-gevolg"></a><span class="pr-reset" data-label="Begin opnieuw"></span></div>
+</div>
 
 <section id="kans-gevolg">
   <div class="badge">Risicoanalyse</div>
@@ -1700,6 +1727,7 @@ footer .f-inner a:hover { color: var(--gold); }
       <div class="mm-key"><span class="k">Kans</span> <span class="op x" aria-hidden="true">×</span><span class="sr-only">maal</span> <span class="g">Gevolg</span></div>
       <div class="mm-body">
         <p>Schat een risico in op twee vragen: hoe waarschijnlijk loopt het mis, en hoe erg is het dan? Het product maakt risico's vergelijkbaar. Kijk ook naar de twee getallen apart: de markt en de overweg scoren allebei 5, maar vragen een heel andere aanpak.</p>
+        <p class="mm-status" data-sec="kans-gevolg"></p>
         <a class="mm-back" href="#kans-gevolg">Terug naar Risico = Kans × Gevolg</a>
       </div>
     </li>
@@ -1707,6 +1735,7 @@ footer .f-inner a:hover { color: var(--gold); }
       <div class="mm-key"><span class="neg">Bedreiging</span> <span class="op">of</span> <span class="pos">kans</span></div>
       <div class="mm-body">
         <p>Niet elk risico is slecht nieuws. Een bedreiging vermijd, verminder, verzeker of draag je over. Een kans exploiteer, verbeter of deel je. Kies op basis van de verwachte waarde: een maatregel die meer kost dan hij opbrengt, blijft een slechte keuze, ook als je die ene keer geluk had.</p>
+        <p class="mm-status" data-sec="positief-negatief"></p>
         <a class="mm-back" href="#positief-negatief">Terug naar positieve en negatieve risico's</a>
       </div>
     </li>
@@ -1714,6 +1743,7 @@ footer .f-inner a:hover { color: var(--gold); }
       <div class="mm-key"><span class="pd">Product</span> <span class="op">of</span> <span class="pj">project</span></div>
       <div class="mm-body">
         <p>Kijk waar het gevolg landt. Bij de gebruiker? Dan is het een productrisico, en helpt testen. In tijd, budget of scope? Dan is het een projectrisico, en helpen planning en buffers. Wie op het project bespaart door minder te testen, schuift het risico door naar het product.</p>
+        <p class="mm-status" data-sec="product-project"></p>
         <a class="mm-back" href="#product-project">Terug naar product- en projectrisico's</a>
       </div>
     </li>
@@ -1721,6 +1751,7 @@ footer .f-inner a:hover { color: var(--gold); }
       <div class="mm-key"><span class="rg">Risicoregister</span></div>
       <div class="mm-body">
         <p>Schat samen in, want iedereen ziet iets anders. Trek een grens: wat erboven valt, krijgt een eigenaar, een preventieve actie en een noodplan. Wat eronder valt, aanvaard je bewust. En blijf opvolgen, want risico's groeien, krimpen en gebeuren soms echt.</p>
+        <p class="mm-status" data-sec="register"></p>
         <a class="mm-back" href="#register">Terug naar de risicomatrix en het register</a>
       </div>
     </li>
@@ -1738,6 +1769,11 @@ footer .f-inner a:hover { color: var(--gold); }
       <li>Wanneer kijk je opnieuw?</li>
     </ol>
   </div>
+
+  <div class="mm-reset">
+    <p>Je voortgang wordt bewaard in deze browser, ook als je de pagina sluit. Werk je op een gedeelde computer? Wis dan je voortgang als je klaar bent.</p>
+    <span class="pr-reset" data-label="Wis mijn voortgang"></span>
+  </div>
 </section>
 
 </main>
@@ -1750,6 +1786,51 @@ footer .f-inner a:hover { color: var(--gold); }
 </footer>
 
 <script>
+// ══ Voortgang: bewaard in deze browser, zodat herladen niets wist ═════════════
+// Elk onderdeel bewaart zijn eigen toestand (gewone gegevens) onder een sleutel en tekent zich bij het laden opnieuw.
+// Tijdens dat herstel staat Progress.restoring aan: dan wordt er niets bewaard en springt de focus nergens heen.
+// Progress.done(anker) onthoudt welke delen afgewerkt zijn (voor de navigatie, het welkom en het slot); dat blijft staan.
+// Bij het laden tekenen de onderdelen zich al eens (en bewaren dat); pas na een klik of toets telt het als echte
+// voortgang (touched). Alleen dan verschijnt de volgende keer "Welkom terug".
+var Progress = {
+  KEY: 'nico-risico-progress-v1',
+  data: {}, restoring: false, active: false, off: false,
+  init: function() {
+    try { var d = JSON.parse(localStorage.getItem(this.KEY) || '{}'); if (d && typeof d === 'object') this.data = d; } catch (e) { this.data = {}; }
+    this.returning = !!this.data.touched;
+    var self = this, on = function() { self.active = true; };
+    document.addEventListener('pointerdown', on, true); document.addEventListener('keydown', on, true);
+  },
+  get: function(part) { return this.data[part]; },
+  write: function() {
+    if (this.off) return;
+    if (this.active) this.data.touched = true;
+    try { localStorage.setItem(this.KEY, JSON.stringify(this.data)); } catch (e) {}
+  },
+  set: function(part, value) {
+    if (this.restoring) return;
+    this.data[part] = JSON.parse(JSON.stringify(value));
+    this.write();
+  },
+  // lukt het herstel niet (oude of kapotte gegevens), dan begint dat onderdeel gewoon opnieuw
+  restore: function(part, fn) {
+    var d = this.data[part]; if (d == null) return;
+    this.restoring = true;
+    try { fn(d); } catch (e) { delete this.data[part]; }
+    this.restoring = false;
+  },
+  done: function(anchor) {
+    var all = this.data.done = this.data.done || {};
+    if (all[anchor]) return;
+    all[anchor] = true; this.write(); this.changed();
+  },
+  isDone: function(anchor) { return !!(this.data.done && this.data.done[anchor]); },
+  // na wissen wordt er niets meer bewaard tot de pagina opnieuw geladen is
+  clear: function() { this.off = true; try { localStorage.removeItem(this.KEY); } catch (e) {} this.data = {}; },
+  changed: function() {} // ingevuld door de navigatie onderaan
+};
+Progress.init();
+
 // ══ Gedeeld: schalen en zones ════════════════════════════════════════════════
 
 var RISK_K = [
@@ -3253,17 +3334,20 @@ var frogMain = new FrogGame(document.getElementById('frog-main'), {
     frogState.results[frogState.level] = res;
     frogRenderAnalysis();
     frogRenderTabs();
+    frogSave();
   },
   onAction: function(act) {
     if (act === 'analysis') document.getElementById('frog-analysis').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 });
 
+function frogSave() { Progress.set('frog', frogState); }
 function frogSelectLevel(i) {
   frogState.level = i;
   frogMain.setLevel(frogLevelCfg(i));
   frogRenderTabs();
   frogRenderAnalysis();
+  frogSave();
 }
 function frogRenderTabs() {
   document.getElementById('frog-tabs').innerHTML = FROG_LEVELS.map(function(L, i) {
@@ -3333,6 +3417,7 @@ function frogEstimate(which, v) {
   if (est.revealed) return;
   if (which === 'kans') est.k = v; else est.g = v;
   frogRenderAnalysis();
+  frogSave();
   var btn = document.querySelector('.frog-scale.' + which + ' [aria-checked="true"]');
   if (btn) btn.focus();
 }
@@ -3350,6 +3435,7 @@ function frogCheck() {
   }
   frogRenderAnalysis();
   frogRenderTabs();
+  frogSave();
 }
 function frogNext() {
   frogSelectLevel(frogState.level + 1);
@@ -3372,11 +3458,17 @@ function frogRenderProgress() {
   document.getElementById('frog-progress-label').textContent = done + ' / ' + FROG_LEVELS.length + ' oversteken geanalyseerd';
   var sum = document.getElementById('frog-summary');
   var all = done === FROG_LEVELS.length;
-  if (all) document.getElementById('frog-summary-matrix').innerHTML = riskMatrixHtml('De vier oversteken', frogMarks(null), null);
+  if (all) { document.getElementById('frog-summary-matrix').innerHTML = riskMatrixHtml('De vier oversteken', frogMarks(null), null); Progress.done('frog-levels'); }
   sum.classList.toggle('visible', all);
 }
 
-frogSelectLevel(0);
+var frogStart = 0;
+Progress.restore('frog', function(d) {
+  if (d.results.length !== FROG_LEVELS.length || d.est.length !== FROG_LEVELS.length) throw new Error('levels');
+  frogState.results = d.results; frogState.est = d.est;
+  frogStart = d.level >= 0 && d.level < FROG_LEVELS.length ? d.level : 0;
+});
+frogSelectLevel(frogStart);
 
 // ══ Deel 2: wat als? ═════════════════════════════════════════════════════════
 
@@ -3483,7 +3575,8 @@ function sbReflect(res) {
 document.getElementById('frog-sb').addEventListener('click', function(e) {
   if (e.target.closest('[data-act]')) document.getElementById('sb-reflect').hidden = true;
 });
-var sbK = 2, sbG = 4, sbRuns = 0, sbHistory = [];
+var sbK = 2, sbG = 4, sbRuns = 0, sbHistory = [], sbLast = null;
+function sbSave() { Progress.set('sb', { k: sbK, g: sbG, runs: sbRuns, history: sbHistory, last: sbLast }); }
 document.getElementById('sb-g-ticks').innerHTML = SB_KINDS.map(function(kind, i) { return '<span>' + (i + 1) + '<em>' + kind.who + '</em></span>'; }).join('');
 
 function sbUpdate(rebuild) {
@@ -3508,36 +3601,57 @@ function sbUpdate(rebuild) {
     var v = parseInt(input.value, 10);
     if (id === 'k') sbK = v; else sbG = v;
     sbUpdate(true);
+    sbSave();
   });
 });
 
-document.getElementById('sim-run').addEventListener('click', function() {
-  var res = frogSimulate(frogSimCfg(sbK, sbG), 100, 5000 + (sbRuns++) * 7919 + sbK * 31 + sbG);
-  var hits = res.reduce(function(s, v) { return s + v; }, 0), p = hits / 100, avg = p * sbG;
+function simNf(x) { return x.toLocaleString('nl-BE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+// Eén simulatie tonen; met dezelfde seed geeft ze altijd dezelfde 100 bolletjes (zo kan ze na herladen terugkomen)
+function simShow(k, g, seed) {
+  var res = frogSimulate(frogSimCfg(k, g), 100, seed);
+  var hits = res.reduce(function(s, v) { return s + v; }, 0), p = hits / 100, avg = p * g;
   document.getElementById('sim-out').hidden = false;
   document.getElementById('sim-dots').innerHTML = res.map(function(v, i) {
     return '<span class="sim-dot ' + (v ? 'hit' : 'ok') + '" style="animation-delay:' + (i * 12) + 'ms"></span>';
   }).join('');
-  var nf = function(x) { return x.toLocaleString('nl-BE', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); };
-  var heartsTxt = sbG + (sbG === 1 ? ' hartje' : ' hartjes');
+  var heartsTxt = g + (g === 1 ? ' hartje' : ' hartjes');
   document.getElementById('sim-text').innerHTML =
-    '<div class="sim-calc"><span class="fk">' + nf(p) + '</span> <span class="op" aria-hidden="true">×</span><span class="sr-only">maal</span> <span class="fg">' + sbG + ' <span aria-hidden="true">♥</span></span> <span aria-hidden="true">=</span><span class="sr-only">is</span> ' + nf(avg) + ' hartjes per oversteek</div>' +
-    '<p>Nico werd <strong>' + hits + ' van de 100 keer</strong> geraakt: een gemeten kans van ' + nf(p) + '. Elke botsing met ' + SB_KINDS[sbG - 1].one + ' kost <strong>' + heartsTxt + '</strong>. ' +
-    'Gemiddeld verliest Nico dus <strong>' + nf(avg) + ' hartjes per oversteek</strong>.</p>' +
+    '<div class="sim-calc"><span class="fk">' + simNf(p) + '</span> <span class="op" aria-hidden="true">×</span><span class="sr-only">maal</span> <span class="fg">' + g + ' <span aria-hidden="true">♥</span></span> <span aria-hidden="true">=</span><span class="sr-only">is</span> ' + simNf(avg) + ' hartjes per oversteek</div>' +
+    '<p>Nico werd <strong>' + hits + ' van de 100 keer</strong> geraakt: een gemeten kans van ' + simNf(p) + '. Elke botsing met ' + SB_KINDS[g - 1].one + ' kost <strong>' + heartsTxt + '</strong>. ' +
+    'Gemiddeld verliest Nico dus <strong>' + simNf(avg) + ' hartjes per oversteek</strong>.</p>' +
     '<p>Dat bedoelt de formule: <strong>risico is de schade die je gemiddeld mag verwachten</strong>. Een hoge kans met een klein gevolg kan even zwaar wegen als een kleine kans met een groot gevolg. Probeer maar eens kans 5 × gevolg 1 en daarna kans 1 × gevolg 5.</p>';
-  // Schermlezers krijgen één korte zin in plaats van de hele uitleg bij elke run
-  document.getElementById('sim-live').textContent = 'Nico werd ' + hits + ' van de 100 keer geraakt. Gemiddeld ' + nf(avg) + ' hartjes per oversteek.';
-  this.textContent = 'Nog eens 100 keer';
-  sbHistory.unshift({ k: sbK, g: sbG, hits: hits, avg: avg });
-  sbHistory = sbHistory.slice(0, 6);
+  document.getElementById('sim-run').textContent = 'Nog eens 100 keer';
+  return { hits: hits, avg: avg };
+}
+function simHistoryRender() {
   document.getElementById('sim-history-wrap').innerHTML = sbHistory.length < 2 ? '' :
     '<table class="sim-history"><caption>Jouw simulaties</caption><thead><tr><th>Kans</th><th>Gevolg</th><th>Risico</th><th>Geraakt</th><th>Hartjes per oversteek</th></tr></thead><tbody>' +
     sbHistory.map(function(r) {
-      return '<tr><td class="num">' + r.k + '</td><td class="num">' + r.g + ' <span class="sim-who">(' + SB_KINDS[r.g - 1].who + ')</span></td><td>' + (r.k * r.g) + ' ' + zoneChip(r.k * r.g) + '</td><td class="num">' + r.hits + ' / 100</td><td class="num">' + nf(r.avg) + '</td></tr>';
+      return '<tr><td class="num">' + r.k + '</td><td class="num">' + r.g + ' <span class="sim-who">(' + SB_KINDS[r.g - 1].who + ')</span></td><td>' + (r.k * r.g) + ' ' + zoneChip(r.k * r.g) + '</td><td class="num">' + r.hits + ' / 100</td><td class="num">' + simNf(r.avg) + '</td></tr>';
     }).join('') + '</tbody></table>';
+}
+document.getElementById('sim-run').addEventListener('click', function() {
+  sbLast = { k: sbK, g: sbG, seed: 5000 + (sbRuns++) * 7919 + sbK * 31 + sbG };
+  var r = simShow(sbK, sbG, sbLast.seed);
+  // Schermlezers krijgen één korte zin in plaats van de hele uitleg bij elke run
+  document.getElementById('sim-live').textContent = 'Nico werd ' + r.hits + ' van de 100 keer geraakt. Gemiddeld ' + simNf(r.avg) + ' hartjes per oversteek.';
+  sbHistory.unshift({ k: sbK, g: sbG, hits: r.hits, avg: r.avg });
+  sbHistory = sbHistory.slice(0, 6);
+  simHistoryRender();
+  sbSave();
+  Progress.done('frog-wat-als');
 });
 
+Progress.restore('sb', function(d) {
+  var ok = function(v) { return v >= 1 && v <= 5; };
+  if (!ok(d.k) || !ok(d.g)) throw new Error('sb');
+  sbK = d.k; sbG = d.g; sbRuns = d.runs || 0;
+  sbHistory = (d.history || []).filter(function(r) { return ok(r.k) && ok(r.g); }).slice(0, 6);
+  sbLast = d.last && ok(d.last.k) && ok(d.last.g) ? d.last : null;
+  document.getElementById('sb-k').value = sbK; document.getElementById('sb-g').value = sbG;
+});
 sbUpdate(true);
+if (sbLast) { simShow(sbLast.k, sbLast.g, sbLast.seed); simHistoryRender(); }
 
 
 // ══ Deel 1 (positieve en negatieve risico's): twee kanten van dezelfde munt ═══
@@ -3613,6 +3727,7 @@ function coinProgress() {
   document.getElementById('coin-fill').style.width = (done / COIN_CARDS.length * 100) + '%';
   document.getElementById('coin-progress-label').textContent = done + ' / ' + COIN_CARDS.length + ' omgedraaid' + (done ? ', ' + ok + ' juist' : '');
   document.getElementById('coin-summary').classList.toggle('visible', done === COIN_CARDS.length);
+  if (done === COIN_CARDS.length) Progress.done('pn-munt');
 }
 function coinRender() {
   document.getElementById('coin-grid').innerHTML = COIN_CARDS.map(function(c, i) { return coinCardHtml(i); }).join('');
@@ -3623,6 +3738,7 @@ function coinAnswer(i, pick) {
   FrogAudio.init();
   var ok = pick === coinCorrect(COIN_CARDS[i]);
   coinState[i] = { ok: ok, pick: pick };
+  Progress.set('coin', coinState);
   FrogAudio.play(ok ? 'cross' : 'meh');
   // Alleen deze kaart bijwerken: nieuwe achterkant, voorkant uit, dan .flipped op de bestaande kaart,
   // zodat de CSS-overgang echt draait (het hele raster opnieuw opbouwen sloeg de draai over)
@@ -3636,6 +3752,10 @@ function coinAnswer(i, pick) {
   coinProgress();
   document.getElementById('coin-v-' + i).focus({ preventScroll: true });
 }
+Progress.restore('coin', function(d) {
+  if (d.length !== COIN_CARDS.length) throw new Error('coin');
+  coinState = d.map(function(x, i) { return x && ['pos', 'neg', 'both'].indexOf(x.pick) >= 0 ? { ok: x.pick === coinCorrect(COIN_CARDS[i]), pick: x.pick } : null; });
+});
 coinRender();
 
 // ══ Deel 2 (positieve en negatieve risico's): het Rad van Risico ═══════════════
@@ -3809,7 +3929,14 @@ function loadScenario(i) {
   document.getElementById('rad-mirror').open = !Object.keys(st.done).length;
   renderAll();
 }
-function renderAll() { renderTabs(); renderHud(); renderLegend(); renderMeasures(); renderMeter(); renderLog(); }
+function renderAll() { renderTabs(); renderHud(); renderLegend(); renderMeasures(); renderMeter(); renderLog(); radSave(); }
+// Bewaard wordt alles behalve een lopende draai (dan blijft de vorige stand staan) en een open vraag
+var RAD_KEEP = ['sc', 'chosen', 'spin', 'budget', 'ghost', 'rolls', 'log', 'phase', 'rot', 'done', 'vals', 'premPaid', 'answered', 'notes'];
+function radSave() {
+  if (st.phase === 'spinning') return;
+  var d = {}; RAD_KEEP.forEach(function(k) { d[k] = st[k]; });
+  Progress.set('rad', d);
+}
 
 function renderTabs() {
   document.getElementById('rad-sc-tabs').innerHTML = SCENARIOS.map(function(s, i) {
@@ -4056,21 +4183,23 @@ function goResult() {
   h.focus({ preventScroll: true });
   el.scrollIntoView({ behavior: reduceMotion.matches ? 'auto' : 'smooth', block: 'start' });
 }
-function finish() {
+// quiet: het resultaat terugzetten na herladen, zonder geluid, dans of melding
+function finish(quiet) {
   FrogAudio.stopMusic(radOwner);
   var s = sc(), e = evEnd(s, st.chosen), e0 = evEnd(s, []), good = e > e0 + 0.5;
   st.done[s.id] = true;
-  setHost('jan', good ? 'dance' : 'fall'); setHost('lowie', good ? 'dance' : 'fall');
+  radSave(); Progress.done('pn-rad');
+  if (!quiet) { setHost('jan', good ? 'dance' : 'fall'); setHost('lowie', good ? 'dance' : 'fall'); }
   var luck = st.budget - e, vsGhost = st.budget - st.ghost;
   var gains = st.chosen.map(function(id) { return evEnd(s, st.chosen) - evEnd(s, st.chosen.filter(function(x) { return x !== id; })); });
   var losers = gains.filter(function(g) { return g < -0.5; }).length, best = bestPlan(s);
   if (good) {
-    FrogAudio.play('win');
+    if (!quiet) FrogAudio.play('win');
     if (losers) { say('jan', 'GOED GEDAAN!'); say('lowie', 'MAAR NIET ALLES LOONDE.'); }
     else if (luck < -8) { say('jan', 'PECH GEHAD...'); say('lowie', 'MAAR GOEDE KEUZES!'); }
     else { say('jan', 'GOEDE KEUZES!'); say('lowie', 'DAT VERDIENT EEN DANSJE.'); }
   } else {
-    FrogAudio.play('over');
+    if (!quiet) FrogAudio.play('over');
     if (!st.chosen.length) { say('jan', 'NIETS GEDAAN?'); say('lowie', 'ALLES GEACCEPTEERD, OOK DE KANSEN.'); }
     else if (luck > 8) { say('jan', 'GELUK GEHAD...'); say('lowie', 'MAAR TE DUUR BETAALD.'); }
     else { say('jan', 'OEI...'); say('lowie', 'JE MAATREGELEN KOSTEN MEER DAN ZE OPBRENGEN.'); }
@@ -4119,6 +4248,7 @@ function finish() {
     '<button class="btn-nav outline" onclick="Rad.loadScenario(' + st.sc + ')">Opnieuw met andere keuzes</button></div>';
   el.hidden = false;
   renderTabs();
+  if (quiet) return;
   announce('Klaar. ' + choiceTxt + luckHead + ' Verwacht eindbudget ' + fmt(e) + ', jouw eindbudget ' + fmt(st.budget) + '.');
   if (st.spinFocus) goResult();
 }
@@ -4285,7 +4415,22 @@ new IntersectionObserver(function(entries) {
   radOwner.visible = entries[0].isIntersecting;
   radOwner.kick();
 }).observe(document.getElementById('rad-app'));
-loadScenario(0);
+// eerst herstellen (dat bewaart niets), anders zou loadScenario(0) de bewaarde stand overschrijven
+var radRestored = false;
+Progress.restore('rad', function(d) {
+  if (!SCENARIOS[d.sc] || d.phase === 'spinning' || !Array.isArray(d.chosen) || d.rolls.length !== SPINS) throw new Error('rad');
+  if (d.chosen.some(function(id) { return !measureById(SCENARIOS[d.sc], id); })) throw new Error('rad');
+  st.done = d.done || {};
+  loadScenario(d.sc);
+  RAD_KEEP.forEach(function(k) { if (d[k] !== undefined) st[k] = d[k]; });
+  view.target = buildWheel(sc(), st.chosen);
+  view.segs = view.target.map(function(s) { return Object.assign({}, s); });
+  if (st.spin) { say('jan', st.phase === 'done' ? '' : 'WELKOM TERUG!'); say('lowie', st.phase === 'done' ? '' : 'NOG ' + (SPINS - st.spin) + ' DRAAIEN.'); }
+  renderAll();
+  if (st.phase === 'done') finish(true);
+  radRestored = true;
+});
+if (!radRestored) loadScenario(0);
 drawWheel(0);
 
 // voor de knoppen in de kaarten (inline onclick) en om te testen
@@ -4406,9 +4551,12 @@ function wwMeterText(k) { var n = ww.meters[k]; return n === 0 ? 'in orde' : n +
 function wwRenderMeters(bumpKey) { ['tijd', 'budget', 'scope'].forEach(function(k) { ppSetMeter('ww-m-' + k, ww.meters[k] / 4, wwMeterText(k), k === bumpKey); }); wwStrip(); }
 // statusbalk voor kleine schermen: app-kwaliteit en de drie projectmeters in één regel
 function wwStrip() {
+  wwSave();
   var m = ww.meters;
   document.getElementById('ww-strip').innerHTML = '<span class="p">App <b>' + Math.max(0, ww.quality) + '%</b></span><span class="j">Tijd <b>' + m.tijd + '</b></span><span class="j">Budget <b>' + m.budget + '</b></span><span class="j">Scope <b>' + m.scope + '</b></span>';
 }
+// een beantwoorde kaart telt al mee: na herladen komt meteen de volgende
+function wwSave() { Progress.set('ww', { i: Math.min(WW_CARDS.length, ww.i + (ww.answered ? 1 : 0)), score: ww.score, quality: ww.quality, meters: ww.meters }); }
 function wwShowCard() {
   var belt = document.getElementById('ww-belt'), done = ww.i >= WW_CARDS.length;
   document.getElementById('ww-count').textContent = done ? '' : 'Risico ' + (ww.i + 1) + ' van ' + WW_CARDS.length;
@@ -4428,6 +4576,7 @@ function wwAnswer(side) {
   var c = WW_CARDS[ww.i], ok = c.side === side || c.side === 'both', card = document.getElementById('ww-card');
   ww.answered = true;
   if (ok) ww.score++;
+  wwSave();
   ['ww-to-product', 'ww-to-project'].forEach(function(id) { document.getElementById(id).disabled = true; });
   var target = c.side === 'both' ? 'project' : c.side;
   var fb = document.getElementById('ww-fb');
@@ -4439,7 +4588,7 @@ function wwAnswer(side) {
   if (ok) { go(); }
   else { card.classList.add('shake'); setTimeout(go, 500); }
   // de kaart vliegt weg: herhaal het risico zelf boven de uitleg
-  fb.innerHTML = '<div class="ww-fb ' + (ok ? 'ok' : 'no') + '"><span class="ww-fb-risk">' + c.t + '</span><strong>' + (c.side === 'both' ? '' : ok ? 'Juist. ' : 'Niet juist:dit is een ' + (c.side === 'product' ? 'productrisico' : 'projectrisico') + '. ') + '</strong>' + c.why +
+  fb.innerHTML = '<div class="ww-fb ' + (ok ? 'ok' : 'no') + '"><span class="ww-fb-risk">' + c.t + '</span><strong>' + (c.side === 'both' ? '' : ok ? 'Juist. ' : 'Niet juist: dit is een ' + (c.side === 'product' ? 'productrisico' : 'projectrisico') + '. ') + '</strong>' + c.why +
     '<div class="row"><button type="button" class="btn-nav" id="ww-next">' + (ww.i < WW_CARDS.length - 1 ? 'Volgend risico →' : 'Afronden') + '</button></div></div>';
   document.getElementById('ww-next').addEventListener('click', wwNext);
   document.getElementById('ww-next').focus({ preventScroll: true });
@@ -4469,7 +4618,9 @@ function wwNext() {
   ww.i++;
   document.getElementById('ww-fb').innerHTML = '';
   wwShowCard();
+  wwSave();
   if (ww.i >= WW_CARDS.length) {
+    Progress.done('pp-waar');
     document.getElementById('ww-summary').classList.add('visible');
     document.getElementById('ww-summary-h').focus({ preventScroll: true });
     ppAnnounce('Alle risico\'s gesorteerd: ' + ww.score + ' van ' + WW_CARDS.length + ' juist.');
@@ -4487,7 +4638,12 @@ function wwProgress(n) {
 }
 document.getElementById('ww-to-product').addEventListener('click', function() { wwAnswer('product'); });
 document.getElementById('ww-to-project').addEventListener('click', function() { wwAnswer('project'); });
-wwPhone.setQuality(100); wwRenderMeters(); wwProgress(0); wwShowCard();
+Progress.restore('ww', function(d) {
+  if (!(d.i >= 0 && d.i <= WW_CARDS.length) || !d.meters) throw new Error('ww');
+  ww.i = d.i; ww.score = d.score || 0; ww.quality = d.quality; ww.meters = d.meters;
+});
+wwPhone.setQuality(ww.quality); wwRenderMeters(); wwProgress(ww.i); wwShowCard();
+if (ww.i >= WW_CARDS.length) { document.getElementById('ww-summary').classList.add('visible'); Progress.done('pp-waar'); }
 
 // ══ Deel 2: Lanceerdag ═══════════════════════════════════════════════════════
 // Geplande lancering na 4 weken, het festival opent na 6 weken: 2 weken buffer.
@@ -4537,13 +4693,19 @@ var ldPhone = new PPPhone(document.getElementById('ld-phone'), ['lineup', 'timet
 function ldReset() {
   ld = { w: 0, picked: null, delay: 0, budget: 0, quality: LD_Q0, features: ['lineup', 'timetable', 'kaart', 'cashless', 'push'], trail: [],
     tasks: LD_TASKS0.map(function(t) { return Object.assign({}, t); }), launch: LD_PLAN, span: LD_SPAN };
-  PP_FEATURES.forEach(function(f) { var t = ldPhone.el.querySelector('[data-f="' + f.id + '"]'); var on = ld.features.indexOf(f.id) >= 0; t.hidden = !on; t.classList.toggle('gone', !on); t.classList.remove('new'); });
-  ldPhone.setQuality(ld.quality, LD_QMIN);
-  ldBuildGantt(); ldBuildGauge(); ldRenderBoard();
+  ldDraw();
   document.getElementById('ld-launch').classList.remove('visible');
   document.getElementById('ld-launch').innerHTML = '';
-  ldRenderWeeks(); ldRenderEvent();
+  ldRenderEvent();
 }
+// alles tekenen vanuit ld (ook na herladen)
+function ldDraw() {
+  PP_FEATURES.forEach(function(f) { var t = ldPhone.el.querySelector('[data-f="' + f.id + '"]'); var on = ld.features.indexOf(f.id) >= 0; t.hidden = !on; t.classList.toggle('gone', !on); t.classList.remove('new'); });
+  ldPhone.setQuality(ld.quality, LD_QMIN);
+  ldBuildGantt(); ldBuildGauge(); ldRenderBoard(); ldRenderWeeks();
+  ldSave();
+}
+function ldSave() { Progress.set('ld', ld); }
 // De as is minstens LD_SPAN weken en groeit mee met de lancering (ld.span), zodat late balken nooit buiten de planning lopen
 function ldX(w) { return (w / ld.span * 100) + '%'; }
 function ldBuildGantt() {
@@ -4626,7 +4788,7 @@ function ldRenderEvent() {
   el.innerHTML = h + '</div>';
   el.querySelectorAll('.ld-opt').forEach(function(b) { b.addEventListener('click', function() { ldPick(+b.getAttribute('data-i')); }); });
   var nx = document.getElementById('ld-next');
-  if (nx) { nx.addEventListener('click', ldNext); nx.focus({ preventScroll: true }); }
+  if (nx) { nx.addEventListener('click', ldNext); if (!Progress.restoring) nx.focus({ preventScroll: true }); }
 }
 function ldPick(i) {
   if (ld.picked != null) return;
@@ -4657,11 +4819,11 @@ function ldPick(i) {
   if (fx.remove) { ld.features = ld.features.filter(function(f) { return f !== fx.remove; }); ldPhone.setFeature(fx.remove, false); }
   if (fx.add) { ld.features.push(fx.add); ldPhone.setFeature(fx.add, true); }
   ld.trail.push({ w: ld.w, type: ev.type, title: ev.title, label: label, tag: o.tag, over: delay > 0 && ld.delay > LD_BUFFER });
-  ldRenderBoard(); ldRenderEvent();
+  ldRenderBoard(); ldRenderEvent(); ldSave();
   ppAnnounce(ld.result + ' ' + ldStatus());
 }
 function ldNext() {
-  ld.w++; ld.picked = null; ldRenderWeeks(); ldRenderBoard(); ldRenderEvent();
+  ld.w++; ld.picked = null; ldRenderWeeks(); ldRenderBoard(); ldRenderEvent(); ldSave();
   if (ld.w < LD_EVENTS.length) { document.getElementById('ld-title').focus({ preventScroll: true }); ppAnnounce('Probleem ' + (ld.w + 1) + ': ' + LD_EVENTS[ld.w].title); }
   else { document.getElementById('ld-go').focus({ preventScroll: true }); ppAnnounce('Zes weken zijn voorbij. Lanceer de app.'); }
 }
@@ -4688,9 +4850,11 @@ function ldReviews(onTime, inBudget, q) {
   if (q >= LD_QMIN) r.push([5, 'Meldingen kwamen meteen binnen toen het optreden verplaatst werd.']);
   return r.slice(0, 5);
 }
-function ldLaunch() {
+// quiet: de uitslag terugzetten na herladen, zonder melding, schudden of scrollen
+function ldLaunch(quiet) {
+  quiet = quiet === true;
   var onTime = ld.delay <= LD_BUFFER, inBudget = ld.budget <= LD_RESERVE, projOk = onTime && inBudget, prodOk = ld.quality >= LD_QMIN;
-  ld.w = LD_EVENTS.length + 1; ldRenderWeeks();
+  ld.w = LD_EVENTS.length + 1; ldRenderWeeks(); ldSave(); Progress.done('pp-lancering');
   document.getElementById('ld-today').style.left = ldX(ld.launch);
   document.getElementById('ld-event').innerHTML = '<div class="ld-event"><span class="chip product" style="background:linear-gradient(135deg,#c2410c,#a3154d);color:#fff">Lanceerdag</span><h4>' + (onTime ? 'De app staat klaar als de poorten opengaan.' : 'De poorten gaan open, maar de app is er nog niet.') + '</h4><button type="button" class="btn-nav outline" id="ld-again">Opnieuw spelen</button></div>';
   document.getElementById('ld-again').addEventListener('click', function() { ldReset(); document.getElementById('pp-lancering').scrollIntoView({ behavior: 'smooth' }); var first = document.querySelector('#ld-event .ld-opt'); if (first) first.focus({ preventScroll: true }); });
@@ -4727,12 +4891,21 @@ function ldLaunch() {
     '<div class="callout"><p>Projectrisico\'s kan je opvangen met tijd, geld of scope. Wie ze "oplost" door minder te testen of minder zorg te besteden, verplaatst ze naar het product. Daarom bekijk je product- en projectrisico\'s altijd samen.</p></div>';
   var box = document.getElementById('ld-launch');
   box.innerHTML = h.replace(/(<div class="cell [^"]* me">)([^<]*)/, '$1$2<span class="sr-only"> (jouw uitkomst)</span>'); box.classList.add('visible');
+  if (quiet) { box.querySelectorAll('.ld-review').forEach(function(r) { r.classList.add('in'); }); return; }
   ppAnnounce('Lanceerdag: ' + verdict[0] + '. ' + (onTime ? 'Op tijd' : 'Te laat') + ', ' + (inBudget ? 'binnen budget' : 'over budget') + ', ' + (prodOk ? 'de app werkt.' : 'de app zit vol bugs.'));
   if (!prodOk) { ldPhone.glitch(); setTimeout(function() { ldPhone.glitch(); }, 700); }
   box.querySelectorAll('.ld-review').forEach(function(r, i) { setTimeout(function() { r.classList.add('in'); }, 400 + i * 350); });
   setTimeout(function() { box.scrollIntoView({ behavior: 'smooth', block: 'start' }); document.getElementById('ld-verdict').focus({ preventScroll: true }); }, 200);
 }
-ldReset();
+var ldRestored = false;
+Progress.restore('ld', function(d) {
+  if (!(d.w >= 0 && d.w <= LD_EVENTS.length + 1) || !d.tasks || d.tasks.length !== LD_TASKS0.length || !Array.isArray(d.features) || !Array.isArray(d.trail)) throw new Error('ld');
+  ld = d;
+  ldDraw();
+  if (ld.w > LD_EVENTS.length) ldLaunch(true); else ldRenderEvent();
+  ldRestored = true;
+});
+if (!ldRestored) ldReset();
 
 // om te testen
 window.PP = { wwAnswer: wwAnswer, wwNext: wwNext, ww: function() { return ww; }, ldPick: ldPick, ldNext: ldNext, ldLaunch: ldLaunch, ldReset: ldReset, ld: function() { return ld; }, events: LD_EVENTS };
@@ -4876,6 +5049,7 @@ function rrSay(t) {
   setTimeout(function() { el.textContent = t.replace(/<[^>]+>/g, ''); }, 40);
 }
 function rrReduced() { return window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches; }
+function rrSave() { Progress.set('rr', rr); }
 
 // ══ De matrix ═════════════════════════════════════════════════════════════════
 (function buildCells() {
@@ -4999,6 +5173,7 @@ function rrPokerRender() {
   });
   var pl = document.getElementById('rr-place'); if (pl) pl.addEventListener('click', rrPlace);
   rrPokerProgress();
+  rrSave();
 }
 function flip(which, v, open) {
   return '<div class="rr-flip ' + which + (open ? ' open' : '') + '" role="img" aria-label="' + which + ' ' + (open ? v : 'verborgen') + '"><div class="in"><div class="b"></div><div class="f">' + v + '<small>' + which + '</small></div></div></div>';
@@ -5017,6 +5192,7 @@ function rrPokerProgress() {
   var n = Object.keys(rr.pos).filter(function(id) { return id !== 'hitte'; }).length;
   document.getElementById('rr-poker-fill').style.width = (n / RR_RISKS.length * 100) + '%';
   document.getElementById('rr-poker-label').textContent = n + ' / ' + RR_RISKS.length + ' op de matrix';
+  if (rr.pokerDone) Progress.done('rr-poker');
 }
 
 // ══ Deel 2: de lijn en het register ══════════════════════════════════════════
@@ -5044,6 +5220,7 @@ function rrLineUpdate() {
   var ab = rr.lineLocked ? RR_RISKS.map(function(r) { return r.id; }).filter(function(id) { return rr.reg[id] && !rr.reg[id].late; }) : aboveIds();
   var acc = RR_RISKS.map(function(r) { return r.id; }).filter(function(id) { return ab.indexOf(id) < 0; });
   var cost = rr.lineLocked ? regCost() : costOf(ab), over = cost > RR_BUDGET;
+  rrSave();
   document.getElementById('rr-line-out').textContent = rr.line;
   document.getElementById('rr-act-h').textContent = 'Aanpakken (' + ab.length + ')';
   document.getElementById('rr-acc-h').textContent = 'Aanvaarden (' + acc.length + ')';
@@ -5259,7 +5436,10 @@ var RR_MON = [
 function rrMonRender() {
   var box = document.getElementById('rr-mon-box');
   var ready = rr.lineLocked && Object.keys(rr.reg).filter(function(id) { return !rr.reg[id].heat && !rr.reg[id].late; }).every(rowDone);
+  rrSave();
   if (!ready) { box.innerHTML = '<div class="rr-locked">Vul eerst het register volledig in (deel 2).</div>'; return; }
+  Progress.done('rr-lijn');
+  if (rr.mon.i >= RR_MON.length) Progress.done('rr-monitor');
   var M = rr.mon, h = '<ol class="rr-timeline">' + RR_MON.map(function(e, i) {
     return '<li class="rr-tick' + (i < M.i ? ' done' : i === M.i ? ' cur' : '') + '"' + (i === M.i ? ' aria-current="step"' : '') + '><i></i>' + e.when + '</li>';
   }).join('') + '</ol>';
@@ -5335,6 +5515,11 @@ function rrRestartFromLine() {
   rrSay('Opnieuw: de inschattingen blijven, trek de lijn opnieuw.');
 }
 
+Progress.restore('rr', function(d) {
+  if (!d.poker || !d.pos || !d.orig || !d.reg || !d.mon || Object.keys(d.pos).some(function(id) { return !risk(id); })) throw new Error('rr');
+  Object.keys(d).forEach(function(k) { rr[k] = d[k]; });
+  if (rr.pokerDone) document.getElementById('rr-poker-sum').classList.add('visible');
+});
 rrRenderMatrix(); rrPokerRender(); rrLineRender(); rrRegRender(); rrMonRender();
 
 // om te testen
@@ -5442,6 +5627,60 @@ document.addEventListener('click', function(e) {
 });
 document.addEventListener('keydown', function(e) { if (e.key === 'Escape') navClose(); });
 
+// ── Voortgang tonen: in de navigatie, in het welkom bovenaan en in het slot ─────
+var PROGRESS_SECTIONS = [
+  { id: 'kans-gevolg', parts: ['frog-levels', 'frog-wat-als'] },
+  { id: 'positief-negatief', parts: ['pn-munt', 'pn-rad'] },
+  { id: 'product-project', parts: ['pp-waar', 'pp-lancering'] },
+  { id: 'register', parts: ['rr-poker', 'rr-lijn', 'rr-monitor'] }
+];
+// de titel van een deel, zonder "Deel 1"
+function partName(id) {
+  var h = document.getElementById(id), step = h.querySelector('.sub-step');
+  return h.textContent.replace(step ? step.textContent : '', '').trim();
+}
+function progressRender() {
+  var total = 0, left = [];
+  PROGRESS_SECTIONS.forEach(function(s) {
+    var todo = s.parts.filter(function(p) { return !Progress.isDone(p); }), n = s.parts.length - todo.length;
+    total += s.parts.length; left = left.concat(todo);
+    var a = document.querySelector('.nav-dropdown a[href="#' + s.id + '"]'), tag = a.querySelector('.nav-prog');
+    if (!tag) { tag = document.createElement('span'); a.appendChild(tag); }
+    tag.className = 'nav-prog' + (todo.length ? '' : ' done');
+    tag.innerHTML = !todo.length ? '<span aria-hidden="true">✓</span><span class="sr-only">, afgewerkt</span>' :
+      n ? n + '/' + s.parts.length + '<span class="sr-only"> delen afgewerkt</span>' : '';
+    document.querySelector('.mm-status[data-sec="' + s.id + '"]').innerHTML = !todo.length ? '<span class="ok">✓ Afgewerkt</span>' :
+      'Nog te doen: ' + todo.map(function(p) { return '<a href="#' + p + '">' + partName(p) + '</a>'; }).join(', ');
+  });
+  var done = total - left.length, go = document.getElementById('resume-go');
+  document.getElementById('resume-txt').textContent = 'Je voortgang van vorige keer is bewaard' + (done ? ': je werkte ' + done + ' van de ' + total + ' delen af.' : '.');
+  go.href = '#' + (left[0] || 'meenemen');
+  go.textContent = left.length ? 'Ga verder: ' + partName(left[0]) : 'Naar Wat neem je mee?';
+}
+Progress.changed = progressRender;
+document.getElementById('resume').hidden = !Progress.returning;
+
+// Wissen vraagt eerst een bevestiging; de focus gaat naar Nee, zodat een tweede Enter niets wist
+document.querySelectorAll('.pr-reset').forEach(function(box) {
+  function show(ask) {
+    box.innerHTML = ask ?
+      '<span class="pr-q">Alles wissen? Je antwoorden en scores zijn dan weg.</span><button type="button" class="btn-nav outline" data-r="no">Nee</button><button type="button" class="btn-nav pr-yes" data-r="yes">Ja, wis alles</button>' :
+      '<button type="button" class="btn-nav outline" data-r="ask">' + box.getAttribute('data-label') + '</button>';
+    box.querySelector('[data-r="' + (ask ? 'no' : 'ask') + '"]').focus({ preventScroll: true });
+  }
+  box.addEventListener('click', function(e) {
+    var r = e.target.closest('[data-r]'); if (!r) return;
+    var act = r.getAttribute('data-r');
+    if (act === 'yes') {
+      Progress.clear();
+      if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+      location.replace(location.pathname + location.search);
+    } else show(act === 'ask');
+  });
+  box.addEventListener('keydown', function(e) { if (e.key === 'Escape' && box.querySelector('[data-r="no"]')) show(false); });
+  box.innerHTML = '<button type="button" class="btn-nav outline" data-r="ask">' + box.getAttribute('data-label') + '</button>';
+});
+
 /* SCROLL SPY */
 (function() {
   var NAV_HEIGHT = 54;
@@ -5454,7 +5693,9 @@ document.addEventListener('keydown', function(e) { if (e.key === 'Escape') navCl
 
   function setActive(id) {
     spyLinks.forEach(function(a) {
-      a.classList.toggle('spy-active', a.getAttribute('href') === '#' + id);
+      var on = a.getAttribute('href') === '#' + id;
+      a.classList.toggle('spy-active', on);
+      if (on) a.setAttribute('aria-current', 'location'); else a.removeAttribute('aria-current');
     });
   }
 
@@ -5471,6 +5712,7 @@ document.addEventListener('keydown', function(e) { if (e.key === 'Escape') navCl
   });
 
   spySections.forEach(function(s) { observer.observe(s); });
+  progressRender();
 
   spyLinks.forEach(function(a) {
     a.addEventListener('click', function() {
