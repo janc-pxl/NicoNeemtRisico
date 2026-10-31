@@ -586,6 +586,31 @@ footer .f-inner a:hover { color: var(--gold); }
 #rad-app .rad-meter b { display: block; font-weight: 400; font-size: 1rem; color: #fff; }
 #rad-app .rad-meter b.up { color: #7ee0b5; }
 #rad-app .rad-meter b.down { color: #ff5c69; }
+/* Meelopende balk onder de navigatie, alleen zichtbaar als het rad zelf uit beeld is */
+#rad-app .rad-dock {
+  position: fixed; top: 66px; left: 50%; z-index: 90; width: min(1052px, calc(100% - 32px));
+  display: grid; grid-template-columns: auto auto minmax(0, 1fr) auto; align-items: center; gap: 1.25rem;
+  background: #0b0b0f; border: 3px solid var(--gold); border-radius: 14px; padding: 8px 14px; box-shadow: 0 10px 26px rgba(0,0,0,.28);
+  opacity: 0; transform: translate(-50%, -10px); pointer-events: none; visibility: hidden;
+  transition: opacity .2s ease-out, transform .3s cubic-bezier(.16, 1, .3, 1), visibility 0s linear .3s;
+}
+#rad-app .rad-dock.show { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; visibility: visible; transition-delay: 0s; }
+#rad-app .rad-dock canvas { width: 80px; height: 80px; display: block; }
+#rad-app .dock-meter { display: grid; grid-template-columns: repeat(4, auto); gap: .3rem 1.4rem; justify-content: start; }
+#rad-app .dock-meter span { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .7rem; letter-spacing: .04em; text-transform: uppercase; color: #cfc6a6; line-height: 1.3; white-space: nowrap; }
+#rad-app .dock-meter b { display: block; font-family: var(--arcade); font-weight: 400; font-size: .85rem; color: #fff; margin-top: .3rem; letter-spacing: 0; }
+#rad-app .dock-meter b.up { color: #7ee0b5; }
+#rad-app .dock-meter b.down { color: #ff5c69; }
+#rad-app .dock-say { font-family: var(--arcade); font-size: .6rem; line-height: 1.7; color: #ffd60a; }
+@media (prefers-reduced-motion: reduce) { #rad-app .rad-dock { transition: none; } }
+@media (max-width: 760px) {
+  #rad-app .rad-dock { top: 58px; grid-template-columns: auto minmax(0, 1fr) auto; gap: .75rem; padding: 6px 10px; }
+  #rad-app .rad-dock canvas { width: 64px; height: 64px; }
+  #rad-app .dock-meter { grid-template-columns: repeat(2, minmax(0, auto)); gap: .2rem .9rem; }
+  #rad-app .dock-meter span { font-size: .62rem; }
+  #rad-app .dock-meter b { font-size: .7rem; margin-top: .15rem; }
+  #rad-app .dock-say { display: none; }
+}
 #rad-app .rad-controls { display: flex; justify-content: center; gap: .75rem; margin-top: 14px; flex-wrap: wrap; }
 #rad-app .arc-btn {
   font-family: var(--arcade); font-size: .8rem; padding: .95rem 1.6rem; min-height: 48px; cursor: pointer;
@@ -637,7 +662,9 @@ footer .f-inner a:hover { color: var(--gold); }
 #rad-app .log-item.pos { background: var(--c-pos-bg); }
 #rad-app .log-item.neg { background: var(--c-neg-bg); }
 
-#rad-app .result h3 { font-size: 1.15rem; }
+#rad-app .result h3 { font-size: 1.15rem; margin-bottom: .35rem; }
+#rad-app .res-sub { font-size: .95rem; margin: 0 0 .3rem; }
+#rad-app .res-sub + table, #rad-app .res-sub + .res-table { margin-top: .9rem; }
 #rad-app .res-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: .6rem; margin: .8rem 0 1rem; }
 #rad-app .res-stat { background: var(--bg); border-radius: 8px; padding: .6rem .8rem; }
 #rad-app .res-stat .v { font-family: 'Raleway', sans-serif; font-weight: 900; font-size: 1.35rem; }
@@ -1343,6 +1370,19 @@ footer .f-inner a:hover { color: var(--gold); }
     </div>
   </div>
 
+  <!-- Meelopende balk: zodra het rad uit beeld is, zie je bij de maatregelen toch wat ze met het rad doen -->
+  <div class="rad-dock" id="rad-dock" aria-hidden="true">
+    <canvas id="rad-dock-wheel" width="240" height="240"></canvas>
+    <div class="dock-meter">
+      <span>Budget<b id="rad-dock-budget">0</b></span>
+      <span>Verwacht per draai<b id="rad-dock-ev">0</b></span>
+      <span>Zonder maatregelen<b id="rad-dock-ev0">0</b></span>
+      <span>Verwacht eindbudget<b id="rad-dock-end">0</b></span>
+    </div>
+    <div class="dock-say" id="rad-dock-say"></div>
+    <button type="button" class="arc-btn" id="rad-dock-spin" tabindex="-1">DRAAI!</button>
+  </div>
+
   <div class="panel panel-grid">
     <div>
       <h3>Wat staat er op het rad?</h3>
@@ -1353,9 +1393,9 @@ footer .f-inner a:hover { color: var(--gold); }
       <table class="mirror" aria-label="Strategieën per type risico">
         <thead><tr><th class="neg">Bedreiging (rood vak)</th><th aria-hidden="true"></th><th class="pos">Kans (goud vak)</th></tr></thead>
         <tbody>
-          <tr><td><b>Vermijden</b> vak verdwijnt</td><td class="mid" aria-hidden="true">↔</td><td><b>Exploiteren</b> zelf investeren: vak (bijna) zeker</td></tr>
+          <tr><td><b>Vermijden</b> vak verdwijnt</td><td class="mid" aria-hidden="true">↔</td><td><b>Exploiteren</b> zelf investeren: vak groter, alle winst voor jou</td></tr>
           <tr><td><b>Verminderen</b> vak kleiner (oorzaak) of minder schade (effect)</td><td class="mid" aria-hidden="true">↔</td><td><b>Verbeteren</b> vak groter (oorzaak) of meer winst (effect)</td></tr>
-          <tr><td><b>Verzekeren</b> premie per draai, verzekeraar betaalt<br><b>Overdragen</b> een ander neemt het risico over</td><td class="mid" aria-hidden="true">↔</td><td><b>Delen</b> samen investeren, samen de winst</td></tr>
+          <tr><td><b>Verzekeren</b> premie per draai, verzekeraar betaalt<br><b>Overdragen</b> een ander neemt het risico over</td><td class="mid" aria-hidden="true">↔</td><td><b>Delen</b> samen met een partner die het beter kan: vak nog groter, winst gedeeld</td></tr>
           <tr><td><b>Accepteren</b> niets doen</td><td class="mid" aria-hidden="true">↔</td><td><b>Accepteren</b> niets doen</td></tr>
         </tbody>
       </table>
@@ -3413,7 +3453,7 @@ var SCENARIOS = [
       { id: 'cyber', label: 'Cyberverzekering afsluiten', target: 'lek', premium: 4, strat: 'Verzekeren', how: 'de verzekeraar betaalt, jij draagt nog 10', fx: { shield: 10 } },
       { id: 'koerier', label: 'Tweede koerier achter de hand', target: 'laat', cost: 10, strat: 'Verminderen', how: 'oorzaak: de kans halveert', fx: { p: 0.5 } },
       { id: 'betaal', label: 'Zelf een influencer betalen voor een post', target: 'influencer', cost: 25, strat: 'Exploiteren', how: 'je investeert alles zelf en houdt alle winst', fx: { pTo: 0.30 }, excludes: 'partner' },
-      { id: 'partner', label: 'Samen met een partnershop een influencer betalen', target: 'influencer', cost: 12, strat: 'Delen', how: 'jullie investeren samen en delen de winst', fx: { pTo: 0.35, v: 0.5 }, excludes: 'betaal' },
+      { id: 'partner', label: 'Samen met een partnershop een influencer betalen', target: 'influencer', cost: 12, strat: 'Delen', how: 'samen met een partner die het beter kan: het vak wordt groter, maar jullie delen de winst', fx: { pTo: 0.45, v: 0.5 }, excludes: 'betaal' },
       { id: 'voorraad', label: 'Extra voorraad en promo klaarzetten', target: 'concurrent', cost: 10, strat: 'Verbeteren', how: 'effect: als het gebeurt, verdien je dubbel', fx: { v: 2 } },
       { id: 'meteoor', label: 'Verzekering tegen een meteorietinslag op het magazijn', target: null, cost: 10, strat: 'Verzekeren', how: 'je betaalt zodat een verzekeraar de schade draagt', fx: {} }
     ]
@@ -3435,8 +3475,8 @@ var SCENARIOS = [
       { id: 'annul', label: 'Annuleringsverzekering voor de headliner', target: 'headliner', premium: 3, strat: 'Verzekeren', how: 'de verzekeraar betaalt, jij draagt nog 10', fx: { shield: 10 } },
       { id: 'backup', label: 'Een back-up-dj onder contract', target: 'headliner', cost: 15, strat: 'Verminderen', how: 'effect: het publiek blijft, de schade daalt', fx: { v: 0.35 } },
       { id: 'brouwerij', label: 'De drankcatering uitbesteden aan een brouwerij', target: 'drank', cost: 10, strat: 'Overdragen', how: 'de brouwerij draagt het risico', fx: { vTo: 0 } },
-      { id: 'crew', label: 'Zelf een professionele aftermovie-crew inhuren', target: 'viraal', cost: 20, strat: 'Exploiteren', how: 'je investeert alles zelf en houdt alle winst', fx: { pTo: 0.30 }, excludes: 'radio' },
-      { id: 'radio', label: 'Samen met een radiozender een aftermovie-crew betalen', target: 'viraal', cost: 10, strat: 'Delen', how: 'jullie investeren samen en delen de winst', fx: { pTo: 0.35, v: 0.5 }, excludes: 'crew' },
+      { id: 'crew', label: 'Zelf een professionele aftermovie-crew inhuren', target: 'viraal', cost: 25, strat: 'Exploiteren', how: 'je investeert alles zelf en houdt alle winst', fx: { pTo: 0.30 }, excludes: 'radio' },
+      { id: 'radio', label: 'Samen met een radiozender een aftermovie-crew betalen', target: 'viraal', cost: 10, strat: 'Delen', how: 'samen met een partner die het beter kan: het vak wordt groter, maar jullie delen de winst', fx: { pTo: 0.55, v: 0.5 }, excludes: 'crew' },
       { id: 'podium', label: 'De sponsor een eigen podium aanbieden', target: 'sponsor', cost: 10, strat: 'Verbeteren', how: 'effect: de sponsordeal wordt dubbel zo groot', fx: { v: 2 } },
       { id: 'aliens', label: 'Verzekering tegen een bestorming door aliens', target: null, cost: 5, strat: 'Verzekeren', how: 'je betaalt zodat een verzekeraar de schade draagt', fx: {} }
     ]
@@ -3458,7 +3498,7 @@ var SCENARIOS = [
       { id: 'aansprakelijk', label: 'Productaansprakelijkheidsverzekering', target: 'heet', premium: 4, strat: 'Verzekeren', how: 'de verzekeraar betaalt, jij draagt nog 15', fx: { shield: 15 } },
       { id: 'security', label: 'Beveiliging uitbesteden aan een gespecialiseerde firma', target: 'hack', cost: 20, strat: 'Overdragen', how: 'de firma draagt de schade', fx: { vTo: 0 } },
       { id: 'engineers', label: 'Zelf extra engineers op de AI-chip zetten', target: 'ai', cost: 20, strat: 'Exploiteren', how: 'je investeert alles zelf en houdt alle winst', fx: { pTo: 0.30 }, excludes: 'chipmaker' },
-      { id: 'chipmaker', label: 'Samen met een chipfabrikant extra engineers inzetten', target: 'ai', cost: 10, strat: 'Delen', how: 'jullie investeren samen en delen de winst', fx: { pTo: 0.35, v: 0.5 }, excludes: 'engineers' },
+      { id: 'chipmaker', label: 'Samen met een chipfabrikant extra engineers inzetten', target: 'ai', cost: 10, strat: 'Delen', how: 'samen met een partner die het beter kan: het vak wordt groter, maar jullie delen de winst', fx: { pTo: 0.50, v: 0.5 }, excludes: 'engineers' },
       { id: 'devkit', label: 'Gamestudio\'s gratis een ontwikkelkit geven', target: 'exclusief', cost: 15, strat: 'Verbeteren', how: 'oorzaak: de kans verdubbelt', fx: { p: 2 } },
       { id: 'bliksem', label: 'Verzekering tegen blikseminslag op het hoofdkantoor', target: null, cost: 8, strat: 'Verzekeren', how: 'je betaalt zodat een verzekeraar de schade draagt', fx: {} }
     ]
@@ -3567,11 +3607,14 @@ function renderTabs() {
 function renderHud() {
   document.getElementById('rad-hud-title').textContent = sc().title;
   var shown = st.phase === 'plan' ? sc().budget - oneOff(sc(), st.chosen) : st.budget;
-  document.getElementById('rad-hud-budget').textContent = fmt(shown);
+  document.getElementById('rad-hud-budget').textContent = arc(fmt(shown));
+  document.getElementById('rad-dock-budget').textContent = arc(fmt(shown));
   document.getElementById('rad-hud-spin').textContent = st.spin + '/' + SPINS;
-  var sp = document.getElementById('rad-spin');
-  sp.disabled = st.phase === 'spinning' || st.phase === 'done';
-  sp.textContent = st.spin === 0 ? 'DRAAI!' : st.spin < SPINS ? 'DRAAI ' + (st.spin + 1) + '/' + SPINS : 'KLAAR';
+  ['rad-spin', 'rad-dock-spin'].forEach(function(id) {
+    var sp = document.getElementById(id);
+    sp.disabled = st.phase === 'spinning' || st.phase === 'done';
+    sp.textContent = st.spin === 0 ? 'DRAAI!' : st.spin < SPINS ? 'DRAAI ' + (st.spin + 1) + '/' + SPINS : 'KLAAR';
+  });
 }
 function segColor(s, i) {
   if (s.kind === 'neutral') return s.id === 'neutral' ? NEUTRAL_COLOR : NEUTRAL_COLOR2;
@@ -3602,9 +3645,9 @@ var STRAT_HINT = {
   Verminderen: 'Het risico blijft bestaan en je draagt het nog zelf, maar het wordt kleiner: minder kans of minder schade.',
   Verzekeren: 'Je betaalt elke draai een premie, en als het misgaat, betaalt iemand anders het grootste deel van de schade.',
   Overdragen: 'Een andere partij neemt het werk én het risico van je over. Je betaalt geen premie per draai.',
-  Exploiteren: 'Je investeert alles zelf om de kans (bijna) zeker te laten gebeuren, en je houdt ook alle winst.',
+  Exploiteren: 'Je investeert alles zelf om de kans zo groot mogelijk te maken, en je houdt ook alle winst.',
   Verbeteren: 'De kans blijft van jou, maar je maakt ze groter, of ze levert meer op als ze gebeurt.',
-  Delen: 'Je werkt samen met een partner: jullie investeren samen en delen ook de winst.'
+  Delen: 'Je werkt samen met een partner die het beter kan: jullie investeren samen en delen ook de winst.'
 };
 function ceOf(m) { return m.fx.p != null || m.fx.pTo != null ? 'oorzaak' : 'effect'; }
 function ceText(m) {
@@ -3652,12 +3695,13 @@ function renderMeasures() {
   }).join('');
   document.getElementById('rad-m-hint').hidden = locked;
 }
+// Het arcadelettertype heeft geen minteken: in de meter, de balk en de ballonnen een gewoon streepje
+function arc(t) { return String(t).replace(/−/g, '-'); }
 function renderMeter() {
-  var e = evPerSpin(sc(), st.chosen), e0 = evPerSpin(sc(), []);
-  var el = document.getElementById('rad-ev');
-  el.textContent = fmt(e, true); el.className = e > e0 + 0.05 ? 'up' : e < e0 - 0.05 ? 'down' : '';
-  document.getElementById('rad-ev0').textContent = fmt(e0, true);
-  document.getElementById('rad-ev-end').textContent = fmt(evEnd(sc(), st.chosen));
+  var e = evPerSpin(sc(), st.chosen), e0 = evPerSpin(sc(), []), cls = e > e0 + 0.05 ? 'up' : e < e0 - 0.05 ? 'down' : '';
+  [['rad-ev', 'rad-dock-ev', fmt(e, true)], ['rad-ev0', 'rad-dock-ev0', fmt(e0, true)], ['rad-ev-end', 'rad-dock-end', fmt(evEnd(sc(), st.chosen))]].forEach(function(r, i) {
+    [r[0], r[1]].forEach(function(id) { var el = document.getElementById(id); el.textContent = arc(r[2]); if (i === 0) el.className = cls; });
+  });
 }
 function renderLog() {
   document.getElementById('rad-log-panel').hidden = !st.log.length;
@@ -3782,8 +3826,8 @@ function finish() {
   var losers = gains.filter(function(g) { return g < -0.5; }).length, best = bestPlan(s);
   if (good) {
     FrogAudio.play('win');
-    if (luck < -8) { say('jan', 'PECH GEHAD...'); say('lowie', 'MAAR GOEDE KEUZES!'); }
-    else if (losers) { say('jan', 'GOED GEDAAN!'); say('lowie', 'MAAR NIET ALLES LOONDE.'); }
+    if (losers) { say('jan', 'GOED GEDAAN!'); say('lowie', 'MAAR NIET ALLES LOONDE.'); }
+    else if (luck < -8) { say('jan', 'PECH GEHAD...'); say('lowie', 'MAAR GOEDE KEUZES!'); }
     else { say('jan', 'GOEDE KEUZES!'); say('lowie', 'DAT VERDIENT EEN DANSJE.'); }
   } else {
     FrogAudio.play('over');
@@ -3808,9 +3852,14 @@ function finish() {
     '<tr><td>Opbrengst van het rad <span style="color:var(--muted)">(' + st.vals.map(function(v) { return fmt(v, true); }).join(', ') + ')</span></td><td class="num ' + (wheelSum >= 0 ? 'good' : 'bad') + '">' + fmt(wheelSum, true) + '</td></tr>' +
     '<tr><td><strong>Eindbudget</strong></td><td class="num"><strong>' + fmt(st.budget) + '</strong></td></tr>' +
     '</tbody></table>';
-  var verdict = good ? (luck < -8 ? 'Pech gehad, maar goede keuzes!' : losers ? 'Goed, maar het kan beter: ' + losers + (losers === 1 ? ' maatregel kost' : ' maatregelen kosten') + ' meer dan ' + (losers === 1 ? 'ze opbrengt.' : 'ze opbrengen.') : 'Goede keuzes!') :
-    (!st.chosen.length ? 'Je nam geen enkele maatregel.' : luck > 8 ? 'Geluk gehad, maar te duur betaald.' : 'Je maatregelen kosten meer dan ze opbrengen.');
-  el.innerHTML = '<h3>' + verdict + '</h3>' + breakdown +
+  // Het oordeel bestaat uit twee losse delen: je keuzes (verwachte waarde) en je geluk met het rad.
+  // Zo krijgt een maatregel die meer kost dan ze opbrengt nooit lof, ook niet bij pech.
+  var choiceTxt = !st.chosen.length ? 'Je nam geen enkele maatregel.' : !good ? 'Je maatregelen kosten meer dan ze opbrengen.' : losers ? 'Goed, maar het kan beter.' : 'Goede keuzes!';
+  var luckHead = luck < -8 ? ' Het rad zat tegen.' : luck > 8 ? ' Het rad zat mee.' : '';
+  var loserNames = st.chosen.filter(function(id, k) { return gains[k] < -0.5; }).map(function(id) { return measureById(s, id).label; });
+  var sub = (loserNames.length ? '<p class="res-sub">Kost meer dan ' + (loserNames.length === 1 ? 'het' : 'ze') + ' opbreng' + (loserNames.length === 1 ? 't' : 'en') + ': <strong>' + loserNames.join('</strong>, <strong>') + '</strong>.</p>' : '') +
+    '<p class="res-sub">Verwacht eindbudget: <strong>' + fmt(e) + '</strong> met jouw keuzes, ' + fmt(e0) + ' zonder maatregelen, ' + fmt(best.e) + ' haalbaar.</p>';
+  el.innerHTML = '<h3>' + choiceTxt + luckHead + '</h3>' + sub + breakdown +
     '<div class="res-grid">' +
     '<div class="res-stat"><div class="v">' + fmt(st.budget) + '</div><div class="l">jouw eindbudget</div></div>' +
     '<div class="res-stat"><div class="v">' + fmt(st.ghost) + '</div><div class="l">zonder maatregelen, met dezelfde draaien</div></div>' +
@@ -3837,7 +3886,10 @@ function setHost(who, mode, dur) { hosts[who].mode = mode; hosts[who].t = 0; hos
 var bubbleTimers = {};
 function say(who, text) {
   var b = document.getElementById('rad-bub-' + who);
+  text = arc(text);
   b.textContent = text; b.classList.toggle('show', !!text);
+  // de balk toont de laatste reactie
+  if (text) document.getElementById('rad-dock-say').textContent = (who === 'jan' ? 'JAN: ' : 'LOWIE: ') + text;
 }
 function drawHost(who, dt) {
   var h = hosts[who], cv = h.cv, ctx = cv.getContext('2d');
@@ -3944,11 +3996,24 @@ function loop(now) {
   // roffel zolang het rad draait
   if (FrogAudio.owner === radOwner) FrogAudio.tension = !!spinAnim;
   drawWheel(now / 1000);
+  if (dockOn) { dctx.clearRect(0, 0, dockCv.width, dockCv.height); dctx.drawImage(wheelCv, 0, 0, dockCv.width, dockCv.height); }
   drawHost('jan', dt); drawHost('lowie', dt);
   raf = radOwner.visible && !document.hidden ? requestAnimationFrame(loop) : 0;
 }
 
 document.getElementById('rad-spin').addEventListener('click', spin);
+document.getElementById('rad-dock-spin').addEventListener('click', spin);
+// De balk verschijnt als het rad grotendeels boven het scherm verdwenen is en je nog in het rad-deel zit
+var dock = document.getElementById('rad-dock'), dockCv = document.getElementById('rad-dock-wheel'), dctx = dockCv.getContext('2d'), dockOn = false;
+function dockUpdate() {
+  var w = wheelCv.getBoundingClientRect(), app = document.getElementById('rad-app').getBoundingClientRect();
+  var on = w.bottom < 70 + w.height * 0.35 && app.bottom > 320;
+  if (on === dockOn) return;
+  dockOn = on;
+  dock.classList.toggle('show', on);
+}
+window.addEventListener('scroll', dockUpdate, { passive: true });
+window.addEventListener('resize', dockUpdate);
 document.getElementById('rad-reset').addEventListener('click', function() { loadScenario(st.sc); });
 document.querySelectorAll('#rad-app [data-snd]').forEach(function(btn) {
   btn.setAttribute('aria-pressed', String(!!FrogAudio[btn.getAttribute('data-snd')]));
