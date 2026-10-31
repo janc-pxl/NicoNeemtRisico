@@ -121,6 +121,9 @@ p { color: var(--text); margin-bottom: 1rem; }
   padding: .9rem 1.2rem; margin: 1.5rem 0; border-radius: 0 4px 4px 0;
 }
 .callout p { margin: 0; font-style: italic; color: var(--primary); }
+/* Een vraag die naar het volgende deel leidt; .bridge sluit een sectie af */
+.teaser { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: 1.05rem; color: var(--primary); margin: 1.75rem 0 0; max-width: 75ch; text-wrap: pretty; }
+.teaser.bridge { margin-top: 3rem; }
 
 /* Gedeelde knoppen */
 .btn-nav {
@@ -216,7 +219,6 @@ footer .f-inner a:hover { color: var(--gold); }
 .score-k { color: var(--c-kans); }
 .score-g { color: var(--c-gevolg); }
 .score-text p:last-child { margin-bottom: 0; }
-.score-teaser { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: 1.05rem; color: var(--primary); margin: 1.75rem 0 0; }
 .score-aside .zone-legend { justify-content: center; margin: .9rem 0 0; }
 
 .zone-legend { display: flex; flex-wrap: wrap; gap: .5rem; margin: .5rem 0 1rem; }
@@ -1169,6 +1171,54 @@ footer .f-inner a:hover { color: var(--gold); }
 
 }
 
+/* ══ Wat neem je mee? ══ */
+#meenemen .mm-list { list-style: none; margin: 2rem 0 0; border-bottom: 1px solid var(--border); }
+#meenemen .mm-row {
+  display: grid; grid-template-columns: 290px minmax(0, 1fr); gap: 2.5rem;
+  padding: 1.6rem 0; border-top: 1px solid var(--border);
+}
+#meenemen .mm-key { font-family: 'Raleway', sans-serif; font-weight: 900; font-size: 1.6rem; line-height: 1.15; color: var(--primary); }
+#meenemen .mm-key .op { font-weight: 800; font-size: .7em; color: var(--gold-dark); }
+#meenemen .mm-key .op.x { font-size: 1em; }
+#meenemen .mm-key .k { color: var(--c-kans); }
+#meenemen .mm-key .g { color: var(--c-gevolg); }
+#meenemen .mm-key .neg { color: var(--c-neg); }
+#meenemen .mm-key .pos { color: var(--c-pos-ink); }
+#meenemen .mm-key .pd { color: var(--c-product); }
+#meenemen .mm-key .pj { color: var(--c-project); }
+#meenemen .mm-key .rg { color: var(--c-risico); }
+#meenemen .mm-body { max-width: 68ch; }
+#meenemen .mm-body p { margin-bottom: .6rem; text-wrap: pretty; }
+#meenemen .mm-back {
+  font-family: 'Raleway', sans-serif; font-weight: 700; font-size: .88rem;
+  color: var(--gold-dark); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px;
+}
+#meenemen .mm-back:hover { color: var(--primary); }
+#meenemen .mm-back:focus-visible { outline: 2px solid var(--gold-dark); outline-offset: 3px; border-radius: 2px; }
+
+/* Het slot spiegelt de zwarte Risico-kaart uit het begin van de pagina */
+#meenemen .mm-ask {
+  margin-top: 3rem; padding: 2rem 2.25rem 2.1rem;
+  background: var(--primary); color: #fff; border-radius: 10px;
+}
+#meenemen .mm-ask h3 { font-family: 'Raleway', sans-serif; font-weight: 900; font-size: 1.6rem; color: var(--gold); margin-bottom: .4rem; }
+#meenemen .mm-ask > p { color: #ccc; margin-bottom: 1.4rem; }
+#meenemen .mm-ask ol { list-style: none; counter-reset: mm; columns: 2; column-gap: 2.5rem; }
+#meenemen .mm-ask li {
+  counter-increment: mm; break-inside: avoid;
+  display: grid; grid-template-columns: 2rem minmax(0, 1fr); align-items: baseline;
+  padding: .55rem 0; border-top: 1px solid rgba(255,255,255,.14); color: #fff;
+}
+#meenemen .mm-ask li::before { content: counter(mm); font-family: 'Raleway', sans-serif; font-weight: 900; font-size: 1.1rem; color: var(--gold); }
+
+@media (max-width: 760px) {
+  #meenemen .mm-row { grid-template-columns: 1fr; gap: .6rem; padding: 1.3rem 0; }
+  #meenemen .mm-key { font-size: 1.35rem; }
+  #meenemen .mm-ask { padding: 1.5rem 1.25rem; }
+  #meenemen .mm-ask h3 { font-size: 1.35rem; }
+  #meenemen .mm-ask ol { columns: 1; }
+}
+
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -1227,6 +1277,7 @@ footer .f-inner a:hover { color: var(--gold); }
     <a href="#positief-negatief" onclick="navClose()">Positieve &amp; negatieve risico's</a>
     <a href="#product-project" onclick="navClose()">Product- &amp; projectrisico's</a>
     <a href="#register" onclick="navClose()">Risicomatrix &amp; -register</a>
+    <a href="#meenemen" onclick="navClose()">Wat neem je mee?</a>
   </div>
 </nav>
 
@@ -1284,7 +1335,7 @@ footer .f-inner a:hover { color: var(--gold); }
       <div class="zone-legend" id="zone-legend"></div>
     </div>
   </div>
-  <p class="score-teaser">Een drukke markt of een rustige spoorweg: welk risico is groter? Ontdek het in Deel 1.</p>
+  <p class="teaser">Een drukke markt of een rustige spoorweg: welk risico is groter? Ontdek het in Deel 1.</p>
 
   <!-- Deel 1: De vier oversteken -->
   <h3 class="sub-title" id="frog-levels"><span class="sub-step">Deel 1</span> Nico steekt over</h3>
@@ -1401,6 +1452,7 @@ footer .f-inner a:hover { color: var(--gold); }
     <div class="sr-only" id="sim-live" aria-live="polite"></div>
     <div id="sim-history-wrap"></div>
   </div>
+  <p class="teaser bridge">Tot nu toe was elk risico slecht nieuws: een botsing kost altijd hartjes. Maar kan een risico ook goed nieuws zijn?</p>
 </section>
 
 <section id="positief-negatief">
@@ -1502,6 +1554,7 @@ footer .f-inner a:hover { color: var(--gold); }
   <div class="panel result" id="rad-result" hidden></div>
   <div class="sr-only" id="rad-live" aria-live="polite"></div>
   </div>
+  <p class="teaser bridge">Je weet nu hoe je op een risico reageert. Maar waar slaat het toe: in het product, of in het project dat het product maakt?</p>
 </section>
 
 <section id="product-project">
@@ -1573,6 +1626,7 @@ footer .f-inner a:hover { color: var(--gold); }
     <div class="ld-launch" id="ld-launch"></div>
   </div>
   <div class="sr-only" id="pp-live" aria-live="polite"></div>
+  <p class="teaser bridge">Op Lanceerdag loste je elk probleem op toen het zich aandiende. Een goede projectmanager ziet ze aankomen. Hoe zet je alle risico's van een project op een rij, nog voor er iets misloopt?</p>
 </section>
 
 <section id="register">
@@ -1634,6 +1688,56 @@ footer .f-inner a:hover { color: var(--gold); }
     </aside>
   </div>
   <div class="sr-only" id="rr-live" aria-live="polite"></div>
+</section>
+
+<section id="meenemen">
+  <div class="badge">Samenvatting</div>
+  <h2>Wat neem je mee?</h2>
+  <p class="lead">Vier delen, één werkwijze. Of het nu gaat om een oversteek, een festival of je eigen project: zo pak je risico's aan.</p>
+
+  <ol class="mm-list">
+    <li class="mm-row">
+      <div class="mm-key"><span class="k">Kans</span> <span class="op x" aria-hidden="true">×</span><span class="sr-only">maal</span> <span class="g">Gevolg</span></div>
+      <div class="mm-body">
+        <p>Schat een risico in op twee vragen: hoe waarschijnlijk loopt het mis, en hoe erg is het dan? Het product maakt risico's vergelijkbaar. Kijk ook naar de twee getallen apart: de markt en de overweg scoren allebei 5, maar vragen een heel andere aanpak.</p>
+        <a class="mm-back" href="#kans-gevolg">Terug naar Risico = Kans × Gevolg</a>
+      </div>
+    </li>
+    <li class="mm-row">
+      <div class="mm-key"><span class="neg">Bedreiging</span> <span class="op">of</span> <span class="pos">kans</span></div>
+      <div class="mm-body">
+        <p>Niet elk risico is slecht nieuws. Een bedreiging vermijd, verminder, verzeker of draag je over. Een kans exploiteer, verbeter of deel je. Kies op basis van de verwachte waarde: een maatregel die meer kost dan hij opbrengt, blijft een slechte keuze, ook als je die ene keer geluk had.</p>
+        <a class="mm-back" href="#positief-negatief">Terug naar positieve en negatieve risico's</a>
+      </div>
+    </li>
+    <li class="mm-row">
+      <div class="mm-key"><span class="pd">Product</span> <span class="op">of</span> <span class="pj">project</span></div>
+      <div class="mm-body">
+        <p>Kijk waar het gevolg landt. Bij de gebruiker? Dan is het een productrisico, en helpt testen. In tijd, budget of scope? Dan is het een projectrisico, en helpen planning en buffers. Wie op het project bespaart door minder te testen, schuift het risico door naar het product.</p>
+        <a class="mm-back" href="#product-project">Terug naar product- en projectrisico's</a>
+      </div>
+    </li>
+    <li class="mm-row">
+      <div class="mm-key"><span class="rg">Risicoregister</span></div>
+      <div class="mm-body">
+        <p>Schat samen in, want iedereen ziet iets anders. Trek een grens: wat erboven valt, krijgt een eigenaar, een preventieve actie en een noodplan. Wat eronder valt, aanvaard je bewust. En blijf opvolgen, want risico's groeien, krimpen en gebeuren soms echt.</p>
+        <a class="mm-back" href="#register">Terug naar de risicomatrix en het register</a>
+      </div>
+    </li>
+  </ol>
+
+  <div class="mm-ask">
+    <h3>Neem ik dit risico?</h3>
+    <p>Met die vraag begon deze pagina. In je volgende project beantwoord je ze in zes stappen:</p>
+    <ol>
+      <li>Wat kan er mislopen, en wat kan er meevallen?</li>
+      <li>Hoe groot is de kans, en hoe groot het gevolg?</li>
+      <li>Landt het gevolg bij de gebruiker, of in tijd, budget en scope?</li>
+      <li>Welke risico's pak je aan, en welke aanvaard je?</li>
+      <li>Wie is eigenaar? Wat doe je vooraf, en wat als het toch gebeurt?</li>
+      <li>Wanneer kijk je opnieuw?</li>
+    </ol>
+  </div>
 </section>
 
 </main>
