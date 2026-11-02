@@ -132,7 +132,9 @@ h3.sub-title .sub-step {
   display: inline-block; font-size: .7rem; letter-spacing: .1em; text-transform: uppercase;
   color: var(--gold-dark); margin-right: .2rem;
 }
-p { color: var(--text); margin-bottom: 1rem; }
+p { color: var(--text); margin-bottom: 1rem; text-wrap: pretty; }
+/* geen koppen met één los woord op de laatste regel */
+h2, h3, h4 { text-wrap: balance; }
 .lead { font-size: 1.08rem; color: var(--muted); margin-bottom: 1.25rem; }
 .callout {
   border-left: 4px solid var(--gold); background: var(--gold-bg);
@@ -440,7 +442,7 @@ footer .f-inner a:hover { color: var(--gold); }
   background: var(--zbg); border: 1.5px solid transparent;
   display: flex; flex-wrap: wrap; align-content: center; justify-content: center; gap: 2px; padding: 2px;
 }
-.frog-mx-cell .mx-score { position: absolute; top: 2px; left: 4px; font-size: .62rem; font-weight: 700; color: var(--zink); }
+.frog-mx-cell .mx-score { position: absolute; top: 2px; left: 4px; font-size: .75rem; font-weight: 700; color: var(--zink); }
 .frog-mx-cell.cur { border-color: var(--primary); box-shadow: 0 0 0 2px var(--primary); z-index: 1; }
 .frog-mx-num { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .72rem; color: var(--muted); display: flex; align-items: center; justify-content: center; }
 .frog-mx-axis { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .72rem; letter-spacing: .06em; text-transform: uppercase; display: flex; align-items: center; justify-content: center; }
@@ -465,8 +467,8 @@ footer .f-inner a:hover { color: var(--gold); }
 .sb-panel #sb-matrix { grid-area: matrix; }
 #sb-matrix .frog-matrix-title { font-size: .7rem; margin-bottom: .25rem; }
 #sb-matrix .frog-matrix { grid-template-columns: 1.1rem .9rem repeat(5, minmax(0, 1fr)); grid-template-rows: repeat(5, auto) 1rem 1.1rem; gap: 2px; }
-#sb-matrix .frog-mx-cell .mx-score { top: 1px; left: 3px; font-size: .6rem; }
-#sb-matrix .frog-mx-axis { font-size: .62rem; }
+#sb-matrix .frog-mx-cell .mx-score { top: 1px; left: 3px; font-size: .72rem; }
+#sb-matrix .frog-mx-axis { font-size: .7rem; }
 #frog-sb { margin-top: 1rem; }
 .sb-slider label { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .92rem; margin-bottom: .2rem; }
 .sb-slider.kans label { color: var(--c-kans); }
@@ -704,7 +706,7 @@ footer .f-inner a:hover { color: var(--gold); }
 
 /* spiekbriefje: de strategieën spiegelen elkaar */
 #rad-app .mirror { width: 100%; border-collapse: separate; border-spacing: 0 4px; font-size: .78rem; margin: .2rem 0 .7rem; }
-#rad-app .mirror th { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .72rem; text-align: left; padding: 0 .5rem .1rem; }
+#rad-app .mirror th { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .8rem; text-align: left; padding: 0 .5rem .1rem; }
 #rad-app .mirror th.neg { color: var(--c-neg-ink); }
 #rad-app .mirror th.pos { color: var(--c-pos-ink); }
 #rad-app .mirror td { padding: .35rem .5rem; line-height: 1.35; vertical-align: top; }
@@ -893,14 +895,14 @@ footer .f-inner a:hover { color: var(--gold); }
 #product-project .gantt-bar.late { background: var(--accent); }
 #product-project .gantt-ms { position: absolute; top: -1px; width: 16px; height: 16px; margin-left: -8px; transform: rotate(45deg); background: #c2185b; border-radius: 2px; transition: left .8s cubic-bezier(.3,.8,.3,1); }
 #product-project .gantt-axis { position: absolute; left: 78px; right: 0; top: 0; bottom: 0; pointer-events: none; }
-#product-project .gantt-wk { position: absolute; top: 0; font-size: .66rem; color: var(--muted); transform: translateX(-50%); }
+#product-project .gantt-wk { position: absolute; top: 0; font-size: .75rem; color: var(--muted); transform: translateX(-50%); }
 #product-project .gantt-line { position: absolute; top: 14px; bottom: 0; width: 0; border-left: 1px dashed #ddd; }
 #product-project .gantt-deadline { position: absolute; top: 12px; bottom: -4px; width: 3px; margin-left: -1px; background: #c2185b; }
-#product-project .gantt-deadline span { position: absolute; bottom: -18px; left: 50%; transform: translateX(-50%); font-size: .62rem; font-weight: 800; color: #c2185b; white-space: nowrap; }
+#product-project .gantt-deadline span { position: absolute; bottom: -18px; left: 50%; transform: translateX(-50%); font-size: .75rem; font-weight: 800; color: #c2185b; white-space: nowrap; }
 #product-project .gantt-today { position: absolute; top: 12px; bottom: -4px; width: 2px; background: var(--primary); transition: left .8s; }
-#product-project .gantt-today span { position: absolute; bottom: -18px; left: 50%; transform: translateX(-50%); font-size: .62rem; font-weight: 800; white-space: nowrap; }
+#product-project .gantt-today span { position: absolute; bottom: -18px; left: 50%; transform: translateX(-50%); font-size: .75rem; font-weight: 800; white-space: nowrap; }
 #product-project .gantt-buffer { position: absolute; top: 14px; bottom: 0; background: repeating-linear-gradient(45deg, rgba(42,157,143,.10) 0 6px, rgba(42,157,143,.04) 6px 12px); }
-#product-project .gantt-buffer span { position: absolute; top: 3px; left: 50%; transform: translateX(-50%); font-size: .66rem; font-weight: 800; color: var(--c-project-ink); background: rgba(255,255,255,.85); padding: 0 .25rem; border-radius: 3px; white-space: nowrap; }
+#product-project .gantt-buffer span { position: absolute; top: 3px; left: 50%; transform: translateX(-50%); font-size: .75rem; font-weight: 800; color: var(--c-project-ink); background: rgba(255,255,255,.85); padding: 0 .25rem; border-radius: 3px; white-space: nowrap; }
 #product-project .gauge { display: block; width: 100%; height: auto; }
 #product-project .gauge .needle { transition: transform 1s cubic-bezier(.16,1,.3,1); transform-origin: 100px 100px; }
 #product-project .gauge-lbl { text-align: center; font-size: .8rem; font-weight: 700; margin-top: -4px; }
@@ -988,7 +990,7 @@ footer .f-inner a:hover { color: var(--gold); }
 #register .rr-plot { position: relative; aspect-ratio: 1; }
 #register .rr-cells { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(5, 1fr); gap: 3px; }
 #register .rr-cell { position: relative; border-radius: 4px; background: var(--zbg); transition: box-shadow .3s; }
-#register .rr-cell .sc { position: absolute; left: 4px; bottom: 2px; font-size: .58rem; font-weight: 700; color: var(--zink); }
+#register .rr-cell .sc { position: absolute; left: 4px; bottom: 2px; font-size: .72rem; font-weight: 700; color: var(--zink); }
 #register .rr-cell.above::after { content: ''; position: absolute; inset: 0; border-radius: 4px; background: repeating-linear-gradient(45deg, rgba(3,2,3,.07) 0 4px, transparent 4px 9px); }
 #register .rr-line { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
 #register .rr-line path { transition: d .5s ease; }
@@ -1001,9 +1003,9 @@ footer .f-inner a:hover { color: var(--gold); }
 }
 #register .rr-note .lb { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 #register .rr-note .own { position: absolute; top: -7px; right: -6px; width: 14px; height: 14px; border-radius: 50%; font-style: normal; font-size: .5rem; line-height: 14px; letter-spacing: 0; color: white; box-shadow: 0 0 0 1.5px white; }
-#register .own[data-o="sara"] { background: #e07a2e; }
+#register .own[data-o="sara"] { background: #b4530b; }
 #register .own[data-o="mehdi"] { background: #3b74c4; }
-#register .own[data-o="ellen"] { background: #2a9d8f; }
+#register .own[data-o="ellen"] { background: #1d7a70; }
 #register .rr-note.inreg { box-shadow: 0 0 0 1.5px #030203, 0 2px 4px rgba(0,0,0,.18); }
 #register .rr-ghost {
   position: absolute; width: 19.2%; padding: 1px 2px; font-size: .6rem; letter-spacing: -.015em; line-height: 1.15; font-weight: 700; color: var(--muted); text-align: center;
@@ -1053,7 +1055,7 @@ footer .f-inner a:hover { color: var(--gold); }
   transition: transform .15s, border-color .15s, box-shadow .15s;
 }
 #register .rr-card b { font-family: 'Raleway', sans-serif; font-weight: 900; font-size: 1.35rem; line-height: 1; }
-#register .rr-card small { font-size: .55rem; color: var(--muted); line-height: 1.1; text-align: center; }
+#register .rr-card small { font-size: .72rem; color: var(--muted); line-height: 1.1; text-align: center; }
 #register .rr-card:hover:not(:disabled) { transform: translateY(-3px); }
 #register .rr-card[aria-pressed="true"] { transform: translateY(-6px); box-shadow: 0 6px 12px rgba(0,0,0,.12); }
 #register .rr-cards.kans .rr-card[aria-pressed="true"] { border-color: var(--c-kans); background: rgba(59,116,196,.08); }
@@ -1064,7 +1066,7 @@ footer .f-inner a:hover { color: var(--gold); }
 #register .rr-ava.me { background: #030203; }
 #register .rr-ava { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-family: 'Raleway', sans-serif; font-weight: 900; font-size: 1rem; }
 #register .rr-mate .nm { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .82rem; line-height: 1.1; }
-#register .rr-mate .rl { font-size: .68rem; color: var(--muted); line-height: 1.2; }
+#register .rr-mate .rl { font-size: .78rem; color: var(--muted); line-height: 1.2; }
 #register .rr-mini { display: flex; gap: .3rem; }
 #register .rr-flip { width: 34px; height: 46px; perspective: 400px; }
 #register .rr-flip .in { position: relative; width: 100%; height: 100%; transition: transform .6s; transform-style: preserve-3d; }
@@ -1266,6 +1268,8 @@ footer .f-inner a:hover { color: var(--gold); }
   .sb-panel { grid-template-columns: minmax(0, 1fr) 132px; grid-template-areas: "sliders sliders" "result matrix"; gap: .9rem 1rem; }
   .sb-sliders { grid-template-columns: 1fr; gap: .8rem; }
   .sb-panel .frog-formula { font-size: 1rem; padding: .6rem .7rem; gap: .4rem .35rem; }
+  /* de matrix "Jouw keuze" is hier 132 px: vakjes van 18 px, daar past enkel klein cijferwerk in */
+  #sb-matrix .frog-mx-cell .mx-score { top: 0; left: 2px; font-size: .55rem; }
   .sim-who { display: none; }
   .frog-game { padding: 6px 6px 10px; border-radius: 10px; }
   .frog-hud { font-size: .5rem; }
@@ -1558,6 +1562,7 @@ footer .f-inner a:hover { color: var(--gold); }
     <div>
       <h3>Wat staat er op het rad?</h3>
       <table class="legend" id="rad-legend"></table>
+      <p class="hint">Op het rad staat de kans als percentage: de grootte van het vak. Een vak van 20% valt gemiddeld 1 keer op 5 draaien. Dat is preciezer dan de schaal van 1 tot 5, en zo kan je de verwachte winst in munten uitrekenen.</p>
     </div>
     <div>
       <h3>Kies je maatregelen</h3>
@@ -3619,6 +3624,8 @@ function simShow(k, g, seed) {
     '<div class="sim-calc"><span class="fk">' + simNf(p) + '</span> <span class="op" aria-hidden="true">×</span><span class="sr-only">maal</span> <span class="fg">' + g + ' <span aria-hidden="true">♥</span></span> <span aria-hidden="true">=</span><span class="sr-only">is</span> ' + simNf(avg) + ' hartjes per oversteek</div>' +
     '<p>Nico werd <strong>' + hits + ' van de 100 keer</strong> geraakt: een gemeten kans van ' + simNf(p) + '. Elke botsing met ' + SB_KINDS[g - 1].one + ' kost <strong>' + heartsTxt + '</strong>. ' +
     'Gemiddeld verliest Nico dus <strong>' + simNf(avg) + ' hartjes per oversteek</strong>.</p>' +
+    // de brug tussen de schaal van 1 tot 5 en de kans als getal
+    '<p>Kans ' + k + ' op de schaal van 1 tot 5 (' + RISK_K[k - 1].label.toLowerCase() + ') is een inschatting in woorden. De simulatie meet dezelfde kans als getal tussen 0 en 1, hier ' + simNf(p) + ', en met dat getal kan je rekenen.</p>' +
     '<p>Dat bedoelt de formule: <strong>risico is de schade die je gemiddeld mag verwachten</strong>. Een hoge kans met een klein gevolg kan even zwaar wegen als een kleine kans met een groot gevolg. Probeer maar eens kans 5 × gevolg 1 en daarna kans 1 × gevolg 5.</p>';
   document.getElementById('sim-run').textContent = 'Nog eens 100 keer';
   return { hits: hits, avg: avg };
@@ -4919,11 +4926,12 @@ window.PP = { wwAnswer: wwAnswer, wwNext: wwNext, ww: function() { return ww; },
 (function() {
 // ══ Gegevens ══════════════════════════════════════════════════════════════════
 var RR_TEAM = [
-  { id: 'sara', name: 'Sara', role: 'veiligheid', color: '#e07a2e' },
+  { id: 'sara', name: 'Sara', role: 'veiligheid', color: '#b4530b' },
   { id: 'mehdi', name: 'Mehdi', role: 'techniek', color: '#3b74c4' },
-  { id: 'ellen', name: 'Ellen', role: 'programmatie, personeel en financiën', color: '#2a9d8f' }
+  { id: 'ellen', name: 'Ellen', role: 'programmatie, personeel en financiën', color: '#1d7a70' }
 ];
-var RR_K = ['zeer klein', 'klein', 'gemiddeld', 'groot', 'zeer groot'];
+// zacht afbreekstreepje: op een gsm is een kaart 46 px breed en past "gemiddeld" niet op één regel
+var RR_K = ['zeer klein', 'klein', 'gemid­deld', 'groot', 'zeer groot'];
 var RR_ZONES = [{ id: 'laag', label: 'Laag', max: 4 }, { id: 'middel', label: 'Middel', max: 9 }, { id: 'hoog', label: 'Hoog', max: 16 }, { id: 'kritiek', label: 'Kritiek', max: 25 }];
 function rrZone(s) { for (var i = 0; i < RR_ZONES.length; i++) if (s <= RR_ZONES[i].max) return RR_ZONES[i]; return RR_ZONES[3]; }
 function rrChip(s) { var z = rrZone(s); return '<span class="zone-chip" data-zone="' + z.id + '">' + s + ' · ' + z.label + '</span>'; }
