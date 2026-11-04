@@ -109,6 +109,29 @@ a.btn-nav { display: inline-flex; align-items: center; text-decoration: none; }
 .pr-reset .pr-yes:hover { background: #7d141d; }
 .btn-nav:focus-visible { outline: 2px solid var(--gold-dark); outline-offset: 2px; }
 
+/* Melding onderaan het scherm (welkom terug, of: ook open in een ander tabblad) */
+.pr-toast {
+  position: fixed; bottom: 16px; left: 50%; z-index: 150; width: min(720px, calc(100% - 32px));
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "txt x" "act act"; gap: .6rem 1rem; align-items: start;
+  padding: .95rem 1rem .95rem 1.2rem; background: var(--primary); color: #fff;
+  border: 2px solid var(--gold); border-radius: 10px; box-shadow: 0 10px 28px rgba(0,0,0,.3);
+  transform: translateX(-50%); animation: prToastIn .35s cubic-bezier(.16, 1, .3, 1);
+}
+.pr-toast[hidden] { display: none; }
+.pr-toast p { grid-area: txt; margin: 0; color: #fff; font-size: .95rem; }
+.pr-toast p strong { color: var(--gold); }
+.pr-toast-actions { grid-area: act; display: flex; flex-wrap: wrap; gap: .6rem; }
+.pr-toast-actions:empty { display: none; }
+.pr-toast .btn-nav { background: var(--gold); border-color: var(--gold); color: var(--primary); }
+.pr-toast .btn-nav:hover { background: #c4b07a; }
+.pr-toast .btn-nav:focus-visible { outline-color: #fff; }
+.pr-toast-x { grid-area: x; width: 36px; height: 36px; margin: -.35rem -.3rem 0 0; display: inline-flex; align-items: center; justify-content: center; background: none; border: 0; border-radius: 6px; color: #bbb; cursor: pointer; }
+.pr-toast-x:hover { color: #fff; background: rgba(255,255,255,.08); }
+.pr-toast-x:focus-visible { outline: 2px solid var(--gold); outline-offset: 1px; }
+.pr-toast-x svg { width: 16px; height: 16px; }
+@keyframes prToastIn { from { opacity: 0; transform: translate(-50%, 12px); } to { opacity: 1; transform: translate(-50%, 0); } }
+@media (prefers-reduced-motion: reduce) { .pr-toast { animation: none; } }
+
 /* LAYOUT */
 main { max-width: 1100px; margin: 0 auto; padding: 0 1.5rem 5rem; }
 section { padding: 4rem 0; }
@@ -1307,6 +1330,12 @@ footer .f-inner a:hover { color: var(--gold); }
     <a href="#meenemen" onclick="navClose()">Wat neem je mee?</a>
   </div>
 </nav>
+<!-- Melding onderaan: welkom terug (als het welkom bovenaan uit beeld is) of "ook open in een ander tabblad" -->
+<div class="pr-toast" id="pr-toast" role="status" hidden>
+  <p id="pr-toast-txt"></p>
+  <div class="pr-toast-actions" id="pr-toast-actions"></div>
+  <button type="button" class="pr-toast-x" id="pr-toast-x" aria-label="Melding sluiten"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg></button>
+</div>
 
 <main>
 <h1 class="sr-only">Nico neemt risico: risicomanagement</h1>
@@ -1797,25 +1826,50 @@ footer .f-inner a:hover { color: var(--gold); }
 // Progress.done(anker) onthoudt welke delen afgewerkt zijn (voor de navigatie, het welkom en het slot); dat blijft staan.
 // Bij het laden tekenen de onderdelen zich al eens (en bewaren dat); pas na een klik of toets telt het als echte
 // voortgang (touched). Alleen dan verschijnt de volgende keer "Welkom terug".
+// Twee tabbladen: elk schrijft enkel zijn eigen onderdeel bij in wat er nu bewaard is (nooit zijn hele, mogelijk
+// verouderde kopie), en een ongewijzigde stand wordt niet opnieuw geschreven. Bewaart een ander tabblad iets nieuws,
+// dan stopt dit tabblad met bewaren (off) en vraagt het om te herladen (onStale), zodat het niets overschrijft.
+function progressStable(o) {
+  if (Array.isArray(o)) return '[' + o.map(progressStable).join(',') + ']';
+  if (o && typeof o === 'object') return '{' + Object.keys(o).sort().map(function(k) { return JSON.stringify(k) + ':' + progressStable(o[k]); }).join(',') + '}';
+  return JSON.stringify(o);
+}
 var Progress = {
   KEY: 'nico-risico-progress-v1',
   data: {}, restoring: false, active: false, off: false,
   init: function() {
-    try { var d = JSON.parse(localStorage.getItem(this.KEY) || '{}'); if (d && typeof d === 'object') this.data = d; } catch (e) { this.data = {}; }
+    this.data = this.read();
     this.returning = !!this.data.touched;
     var self = this, on = function() { self.active = true; };
     document.addEventListener('pointerdown', on, true); document.addEventListener('keydown', on, true);
+    window.addEventListener('storage', function(e) {
+      if (self.off || (e.key !== null && e.key !== self.KEY)) return;
+      var d = null; try { d = JSON.parse(e.newValue); } catch (x) {}
+      var cleared = !d || typeof d !== 'object';
+      var newer = cleared || Object.keys(d).some(function(k) { return k !== 'touched' && k !== 'done' && progressStable(d[k]) !== progressStable(self.data[k]); });
+      if (newer) { self.off = true; self.onStale(cleared); }
+    });
+  },
+  read: function() {
+    try { var d = JSON.parse(localStorage.getItem(this.KEY) || '{}'); if (d && typeof d === 'object') return d; } catch (e) {}
+    return {};
   },
   get: function(part) { return this.data[part]; },
-  write: function() {
+  write: function(part) {
     if (this.off) return;
-    if (this.active) this.data.touched = true;
-    try { localStorage.setItem(this.KEY, JSON.stringify(this.data)); } catch (e) {}
+    var cur = this.read();
+    if (part) cur[part] = this.data[part];
+    cur.done = Object.assign({}, cur.done, this.data.done);
+    if (this.active || this.data.touched) cur.touched = true;
+    this.data.done = cur.done; if (cur.touched) this.data.touched = true;
+    try { localStorage.setItem(this.KEY, JSON.stringify(cur)); } catch (e) {}
   },
   set: function(part, value) {
     if (this.restoring) return;
-    this.data[part] = JSON.parse(JSON.stringify(value));
-    this.write();
+    var v = JSON.parse(JSON.stringify(value));
+    if (progressStable(v) === progressStable(this.data[part])) return;
+    this.data[part] = v;
+    this.write(part);
   },
   // lukt het herstel niet (oude of kapotte gegevens), dan begint dat onderdeel gewoon opnieuw
   restore: function(part, fn) {
@@ -1832,7 +1886,8 @@ var Progress = {
   isDone: function(anchor) { return !!(this.data.done && this.data.done[anchor]); },
   // na wissen wordt er niets meer bewaard tot de pagina opnieuw geladen is
   clear: function() { this.off = true; try { localStorage.removeItem(this.KEY); } catch (e) {} this.data = {}; },
-  changed: function() {} // ingevuld door de navigatie onderaan
+  changed: function() {}, // ingevuld door de navigatie onderaan
+  onStale: function() {}  // idem: de melding "ook open in een ander tabblad"
 };
 Progress.init();
 
@@ -5671,6 +5726,46 @@ function progressRender() {
 }
 Progress.changed = progressRender;
 document.getElementById('resume').hidden = !Progress.returning;
+
+// ── De melding onderaan ────────────────────────────────────────────────────────
+var prToast = document.getElementById('pr-toast'), prToastKind = '';
+function toastShow(kind, html, actions) {
+  prToastKind = kind;
+  document.getElementById('pr-toast-txt').innerHTML = html;
+  document.getElementById('pr-toast-actions').innerHTML = actions || '';
+  prToast.hidden = false;
+}
+function toastHide() { prToast.hidden = true; prToastKind = ''; }
+document.getElementById('pr-toast-x').addEventListener('click', toastHide);
+prToast.addEventListener('keydown', function(e) { if (e.key === 'Escape') toastHide(); });
+prToast.addEventListener('click', function(e) {
+  if (e.target.closest('[data-t="go"]')) toastHide();
+  if (e.target.closest('[data-t="reload"]')) location.reload();
+});
+// Bij herladen zet de browser je terug waar je was, en dan staat het welkom bovenaan uit beeld:
+// toon het dan onderaan, tot je het sluit, verder gaat of het welkom bovenaan zelf in beeld komt.
+if (Progress.returning) {
+  var resumeBox = document.getElementById('resume'), resumeSeen = false;
+  new IntersectionObserver(function(entries) {
+    resumeSeen = entries[0].isIntersecting;
+    if (resumeSeen && prToastKind === 'resume') toastHide();
+  }).observe(resumeBox);
+  window.addEventListener('load', function() {
+    setTimeout(function() {
+      if (resumeSeen || prToastKind) return;
+      var go = document.getElementById('resume-go');
+      toastShow('resume', '<strong>Welkom terug.</strong> ' + document.getElementById('resume-txt').textContent,
+        '<a class="btn-nav" data-t="go" href="' + go.getAttribute('href') + '">' + go.textContent + '</a>');
+    }, 500);
+  });
+}
+// Een ander tabblad bewaarde iets nieuws: hier niets meer bewaren, en vragen om te herladen
+Progress.onStale = function(cleared) {
+  toastShow('stale', cleared ?
+    '<strong>Je voortgang is gewist in een ander tabblad.</strong> Herlaad deze pagina om opnieuw te beginnen. Wat je hier nog doet, wordt niet bewaard.' :
+    '<strong>Deze pagina is ook open in een ander tabblad.</strong> Daar werkte je verder, dus hier wordt niets meer bewaard. Herlaad om verder te gaan met je laatste stand.',
+    '<button type="button" class="btn-nav" data-t="reload">Herlaad deze pagina</button>');
+};
 
 // Wissen vraagt eerst een bevestiging; de focus gaat naar Nee, zodat een tweede Enter niets wist
 document.querySelectorAll('.pr-reset').forEach(function(box) {
