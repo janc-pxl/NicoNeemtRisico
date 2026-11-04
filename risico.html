@@ -428,6 +428,15 @@ footer .f-inner a:hover { color: var(--gold); }
 .frog-an-empty { display: flex; align-items: center; gap: 1rem; color: var(--muted); font-size: .95rem; }
 .frog-an-empty p { margin: 0; color: var(--muted); }
 .frog-an-empty .frog-an-icon { font-family: var(--arcade); font-size: 1.1rem; color: var(--gold); }
+.frog-an-empty .frog-an-alt { margin-top: .45rem; font-size: .9rem; }
+.frog-an-link {
+  background: none; border: 0; padding: 0; font: inherit; font-weight: 700; color: var(--primary); cursor: pointer;
+  text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px;
+}
+.frog-an-link:hover { color: var(--gold-dark); }
+.frog-an-link:focus-visible { outline: 2px solid var(--gold-dark); outline-offset: 3px; border-radius: 2px; }
+#frog-fb:focus { outline: none; }
+#frog-an-h:focus { outline: none; }
 .frog-an-grid { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 2rem; align-items: start; }
 
 .frog-stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: .5rem; margin-bottom: 1.4rem; }
@@ -1445,7 +1454,7 @@ footer .f-inner a:hover { color: var(--gold); }
   </div>
   <div class="sr-only" aria-live="polite" id="frog-live"></div>
 
-  <div class="frog-analysis" id="frog-analysis" aria-live="polite"></div>
+  <div class="frog-analysis" id="frog-analysis"></div>
 
   <div class="progress">
     <div class="progress-track"><div class="progress-fill" id="frog-fill"></div></div>
@@ -3415,6 +3424,7 @@ var frogMain = new FrogGame(document.getElementById('frog-main'), {
     frogRenderAnalysis();
     frogRenderTabs();
     frogSave();
+    frogSay((res.win ? 'Level gehaald.' : 'Game over.') + ' Onder het spel schat je nu de kans en het gevolg in.');
   },
   onAction: function(act) {
     if (act === 'analysis') document.getElementById('frog-analysis').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -3422,6 +3432,23 @@ var frogMain = new FrogGame(document.getElementById('frog-main'), {
 });
 
 function frogSave() { Progress.set('frog', frogState); }
+// Het analysepaneel is geen live region (dat las bij elke klik alles opnieuw voor): één korte zin via #frog-live
+function frogSay(t) { var el = document.getElementById('frog-live'); el.textContent = ''; setTimeout(function() { el.textContent = t; }, 60); }
+// Wie het spel niet kan of wil spelen (schermlezer, motoriek), schat het risico in met de cijfers van een voorbeeldspeler.
+// Een typische ronde per level: park nooit geraakt, markt vaak maar licht, overweg nooit (de lichten waarschuwen),
+// steenweg bij de tweede poging geraakt en meteen game over.
+var FROG_SAMPLE = [
+  { win: true, attempts: 3, hits: 0, damage: 0, time: 38, tunnel: 0, crossings: 3 },
+  { win: true, attempts: 7, hits: 4, damage: 4, time: 71, tunnel: 0, crossings: 3 },
+  { win: true, attempts: 3, hits: 0, damage: 0, time: 64, tunnel: 0, crossings: 3 },
+  { win: false, attempts: 2, hits: 1, damage: 5, time: 29, tunnel: 0, crossings: 1 }
+];
+function frogSample() {
+  var i = frogState.level;
+  frogState.results[i] = Object.assign({ sample: true }, FROG_SAMPLE[i]);
+  frogRenderAnalysis(); frogRenderTabs(); frogSave();
+  var h = document.getElementById('frog-an-h'); if (h) h.focus();
+}
 function frogSelectLevel(i) {
   frogState.level = i;
   frogMain.setLevel(frogLevelCfg(i));
@@ -3444,12 +3471,13 @@ function frogRenderAnalysis() {
   var el = document.getElementById('frog-analysis');
   var marks = frogMarks(i);
   if (!res) {
-    el.innerHTML = '<div class="frog-an-empty"><span class="frog-an-icon" aria-hidden="true">?</span><p>Speel eerst <strong>level ' + (i + 1) + ': ' + L.name + '</strong>. Haal je het of is het game over? In beide gevallen schat je daarna het risico in.</p></div>';
+    el.innerHTML = '<div class="frog-an-empty"><span class="frog-an-icon" aria-hidden="true">?</span><div><p>Speel eerst <strong>level ' + (i + 1) + ': ' + L.name + '</strong>. Haal je het of is het game over? In beide gevallen schat je daarna het risico in.</p>' +
+      '<p class="frog-an-alt">Kan of wil je het spel niet spelen? <button type="button" class="frog-an-link" onclick="frogSample()">Toon de resultaten van een voorbeeldspeler</button></p></div></div>';
     frogRenderProgress();
     return;
   }
   var h = '<div class="frog-an-grid"><div>';
-  h += '<h4>Wat gebeurde er bij ' + L.name.toLowerCase() + '?</h4><div class="frog-stats">' +
+  h += '<h4 id="frog-an-h" tabindex="-1">' + (res.sample ? 'Wat gebeurde er bij de voorbeeldspeler in level ' + (i + 1) + ' (' + L.name.toLowerCase() + ')?' : 'Wat gebeurde er bij ' + L.name.toLowerCase() + '?') + '</h4><div class="frog-stats">' +
     frogStat(res.attempts, 'pogingen om over te steken') +
     frogStat(res.hits, res.hits === 1 ? 'keer geraakt' : 'keer geraakt') +
     frogStat(frogPct(res.hits, res.attempts), 'van de pogingen liep mis', 'kans') +
@@ -3462,11 +3490,11 @@ function frogRenderAnalysis() {
   h += frogScale('gevolg', 'Gevolg', 'Hoe erg is het als het misloopt?', RISK_G, est.g, est.revealed ? L.g : 0, est.revealed);
   if (!est.revealed) {
     h += '<div class="frog-an-actions"><button type="button" class="btn-nav" onclick="frogCheck()"' + (est.k && est.g ? '' : ' disabled') + '>Bereken het risico</button></div>';
-    if (est.tries && est.hint) h += '<div class="feedback hint">' + est.hint + '</div>';
+    if (est.tries && est.hint) h += '<div class="feedback hint" id="frog-fb" tabindex="-1">' + est.hint + '</div>';
   } else {
     var score = L.k * L.g;
     h += '<div class="frog-reveal">';
-    h += '<div class="feedback ' + (est.ok ? 'success' : 'hint') + '"><p>' + (est.ok ? '<strong>Goed ingeschat!</strong> ' : '<strong>Vergelijk met onze inschatting.</strong> ') +
+    h += '<div class="feedback ' + (est.ok ? 'success' : 'hint') + '" id="frog-fb" tabindex="-1"><p>' + (est.ok ? '<strong>Goed ingeschat!</strong> ' : '<strong>Vergelijk met onze inschatting.</strong> ') +
       'Wij schatten de kans op <strong>' + L.k + '</strong> (' + RISK_K[L.k - 1].label.toLowerCase() + ') en het gevolg op <strong>' + L.g + '</strong> (' + RISK_G[L.g - 1].sub + ').</p></div>';
     h += '<div class="frog-formula" style="margin-top:.9rem">Risico = <span class="fk">' + L.k + '</span> <span class="op">×</span> <span class="fg">' + L.g + '</span> = ' + score + ' ' + zoneChip(score) + '</div>';
     h += '<p>' + L.explain + (L.tunnel && res.tunnel ? ' Jij nam de tunnel al. Slim!' : '') + '</p>';
@@ -3516,10 +3544,14 @@ function frogCheck() {
   frogRenderAnalysis();
   frogRenderTabs();
   frogSave();
+  // de knop is weg na het opnieuw tekenen: de focus gaat naar de feedback, die dan ook wordt voorgelezen
+  var fb = document.getElementById('frog-fb'); if (fb) fb.focus();
 }
 function frogNext() {
   frogSelectLevel(frogState.level + 1);
   document.getElementById('frog-levels').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  // de knop is weg: focus op het spel (pijltjes werken meteen; met Tab kom je bij de voorbeeldspeler)
+  document.getElementById('frog-main').focus({ preventScroll: true });
 }
 function frogReplay() {
   frogMain.setLevel(frogMain.cfg);
