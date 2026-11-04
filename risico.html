@@ -60,6 +60,18 @@ body { font-family: Arial, system-ui, sans-serif; background: var(--bg); color: 
 .nav-brand { font-family: 'Raleway', sans-serif; font-weight: 800; font-size: 1rem; letter-spacing: .06em; color: var(--gold); }
 .nav-sep { color: #555; margin: 0 2px; }
 .nav-page { font-family: 'Raleway', sans-serif; font-weight: 600; font-size: .92rem; color: #bbb; }
+/* Voortgangschip: x van de 9 delen afgewerkt, opent hetzelfde menu als de hamburger */
+.nav-chip {
+  margin-left: auto; display: inline-flex; align-items: center; gap: .35rem; height: 30px; padding: 0 .7rem;
+  font-family: 'Raleway', sans-serif; font-weight: 800; font-size: .8rem; font-variant-numeric: tabular-nums; letter-spacing: .02em;
+  color: var(--gold); background: none; border: 1px solid rgba(174,154,100,.55); border-radius: 15px; cursor: pointer;
+  transition: background .15s, border-color .15s;
+}
+.nav-chip:hover { background: rgba(174,154,100,.12); border-color: var(--gold); }
+.nav-chip:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.nav-chip.all { background: var(--gold); color: var(--primary); border-color: var(--gold); }
+.nav-chip + .nav-hamburger { margin-left: .4rem; }
+@media (pointer: coarse) { .nav-chip { height: 36px; border-radius: 18px; } }
 .nav-hamburger {
   margin-left: auto; background: none; border: none; cursor: pointer;
   display: flex; flex-direction: column; justify-content: center;
@@ -156,6 +168,9 @@ h3.sub-title .sub-step {
   color: var(--gold-dark); margin-right: .2rem;
 }
 p { color: var(--text); margin-bottom: 1rem; text-wrap: pretty; }
+/* onder elke sectietitel: hoeveel delen, hoe lang, en hoe ver je al bent */
+.sec-meta { font-family: 'Raleway', sans-serif; font-weight: 700; font-size: .88rem; color: var(--muted); margin: -.55rem 0 1.1rem; }
+.sec-meta .st.ok { color: var(--z-laag-ink); }
 /* geen koppen met één los woord op de laatste regel */
 h2, h3, h4 { text-wrap: balance; }
 .lead { font-size: 1.08rem; color: var(--muted); margin-bottom: 1.25rem; }
@@ -1319,6 +1334,7 @@ footer .f-inner a:hover { color: var(--gold); }
   <span class="nav-brand">Projectmanagement</span>
   <span class="nav-sep">/</span>
   <span class="nav-page">Risicomanagement</span>
+  <button type="button" class="nav-chip" id="nav-chip" aria-controls="nav-dropdown" aria-expanded="false" onclick="navToggle()"><span aria-hidden="true" id="nav-chip-txt">0/9</span><span class="sr-only" id="nav-chip-sr">Voortgang: 0 van de 9 delen afgewerkt. Open het menu.</span></button>
   <button class="nav-hamburger" id="nav-hamburger" aria-label="Menu" aria-expanded="false" aria-controls="nav-dropdown" onclick="navToggle()">
     <span></span><span></span><span></span>
   </button>
@@ -1347,6 +1363,7 @@ footer .f-inner a:hover { color: var(--gold); }
 <section id="kans-gevolg">
   <div class="badge">Risicoanalyse</div>
   <h2>Risico = Kans × Gevolg</h2>
+  <p class="sec-meta" data-sec="kans-gevolg">2 delen · ongeveer 25 minuten<span class="st"></span></p>
   <div class="nico-intro">
     <div class="nico-intro-text">
       <p class="lead">Elke dag neem je risico's. Je steekt een drukke straat over, je fietst zonder licht naar huis, je gebruikt al jaren hetzelfde wachtwoord. Meestal sta je er niet bij stil. Een projectmanager doet dat wel, en gebruikt daarvoor één eenvoudige formule.</p>
@@ -1518,6 +1535,7 @@ footer .f-inner a:hover { color: var(--gold); }
 <section id="positief-negatief">
   <div class="badge">Risicostrategieën</div>
   <h2>Positieve en negatieve risico's</h2>
+  <p class="sec-meta" data-sec="positief-negatief">2 delen · ongeveer 20 minuten<span class="st"></span></p>
   <p class="lead">Een risico is niet altijd slecht nieuws. Elke gebeurtenis die een gewenst of ongewenst effect heeft op je project, is een risico. <strong>Negatieve risico's</strong> noemen we <strong>bedreigingen</strong>: die probeer je te vermijden, te verkleinen of te beheersen. <strong>Positieve risico's</strong> zijn <strong>kansen</strong>: die wil je niet vermijden, maar omarmen of versterken.</p>
   <p class="pn-term"><strong>Let op, twee betekenissen van "kans".</strong> In Risico = Kans × Gevolg is <span class="pn-kans-p">kans</span> de <em>waarschijnlijkheid</em> dat iets gebeurt (Engels: probability). Hier is <span class="pn-kans-o">een kans</span> een <em>opportuniteit</em>: een gebeurtenis die je doel helpt (Engels: opportunity). Ook een opportuniteit heeft dus een kans dat ze zich voordoet.</p>
 
@@ -1621,6 +1639,7 @@ footer .f-inner a:hover { color: var(--gold); }
 <section id="product-project">
   <div class="badge">Soorten risico's</div>
   <h2>Product- en projectrisico's</h2>
+  <p class="sec-meta" data-sec="product-project">2 delen · ongeveer 15 minuten<span class="st"></span></p>
   <p class="lead">Risico's kan je ook indelen volgens <strong>waar ze toeslaan</strong>. Loopt er iets mis met het eindproduct, of met het project dat het product maakt? Het onderscheid is belangrijk, want je pakt ze anders aan.</p>
   <div class="pp-concepts">
     <div class="pp-concept" data-c="product">
@@ -1693,6 +1712,7 @@ footer .f-inner a:hover { color: var(--gold); }
 <section id="register">
   <div class="badge">Risicobeheer</div>
   <h2>Risicomatrix en risicoregister</h2>
+  <p class="sec-meta" data-sec="register">3 delen · ongeveer 25 minuten<span class="st"></span></p>
   <p class="lead">Risico's kennen is één ding, ze beheren is iets anders. Je schat ze in, je beslist welke je aanpakt en welke je aanvaardt, en je houdt ze bij in een <strong>risicoregister</strong>: per risico de kans en impact, een eigenaar, wanneer het relevant wordt, een preventieve actie en een noodplan. En dan blijf je het opvolgen.</p>
   <div class="rr-steps">
     <div class="rr-step"><div class="q">Hoe groot is het risico?</div><div class="n">1. Inschatten</div><p>Kans en impact op een schaal van 1 tot 5. Dat doe je samen: iedereen ziet het anders.</p></div>
@@ -5684,13 +5704,15 @@ function navToggle() {
   var dd = document.getElementById('nav-dropdown');
   var open = dd.classList.toggle('open');
   btn.setAttribute('aria-expanded', open);
+  document.getElementById('nav-chip').setAttribute('aria-expanded', open);
 }
 function navClose() {
   document.getElementById('nav-dropdown').classList.remove('open');
   document.getElementById('nav-hamburger').setAttribute('aria-expanded', 'false');
+  document.getElementById('nav-chip').setAttribute('aria-expanded', 'false');
 }
 document.addEventListener('click', function(e) {
-  if (!e.target.closest('.nav-hamburger') && !e.target.closest('.nav-dropdown')) navClose();
+  if (!e.target.closest('.nav-hamburger') && !e.target.closest('.nav-chip') && !e.target.closest('.nav-dropdown')) navClose();
 });
 document.addEventListener('keydown', function(e) { if (e.key === 'Escape') navClose(); });
 
@@ -5718,7 +5740,14 @@ function progressRender() {
       n ? n + '/' + s.parts.length + '<span class="sr-only"> delen afgewerkt</span>' : '';
     document.querySelector('.mm-status[data-sec="' + s.id + '"]').innerHTML = !todo.length ? '<span class="ok">✓ Afgewerkt</span>' :
       'Nog te doen: ' + todo.map(function(p) { return '<a href="#' + p + '">' + partName(p) + '</a>'; }).join(', ');
+    var st = document.querySelector('.sec-meta[data-sec="' + s.id + '"] .st');
+    st.className = 'st' + (todo.length ? '' : ' ok');
+    st.textContent = !todo.length ? ' · ✓ afgewerkt' : n ? ' · ' + n + ' van ' + s.parts.length + ' afgewerkt' : '';
   });
+  var doneAll = total - left.length, chip = document.getElementById('nav-chip');
+  document.getElementById('nav-chip-txt').textContent = (left.length ? '' : '✓ ') + doneAll + '/' + total;
+  document.getElementById('nav-chip-sr').textContent = 'Voortgang: ' + doneAll + ' van de ' + total + ' delen afgewerkt. Open het menu.';
+  chip.classList.toggle('all', !left.length);
   var done = total - left.length, go = document.getElementById('resume-go');
   document.getElementById('resume-txt').textContent = 'Je voortgang van vorige keer is bewaard' + (done ? ': je werkte ' + done + ' van de ' + total + ' delen af.' : '.');
   go.href = '#' + (left[0] || 'meenemen');
