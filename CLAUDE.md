@@ -42,7 +42,7 @@ All page content is in **Dutch** (Nederlands).
 Do NOT use em dashes (—, `&mdash;`, `—`) in any user-visible text. Use periods, colons, commas, or parentheses instead.
 Nico is the recurring character; avoid gendered pronouns for Nico (write "Nico").
 Write **Flemish** (Belgian) Dutch, not Netherlands Dutch: interimkantoor / interimkrachten (not uitzendbureau / uitzendkrachten), schuif (not lade), gsm, kan je, plots. Avoid hollow AI phrasing (slogans like "Vier delen, één werkwijze", "X is één ding, Y is iets anders", rhetorical "Het verschil? …", personifications like "het register leeft mee") and anglicisms ("over budget gaan", "Ik zie dat gebeuren"); a language review on 2026-11-04 rewrote 30 such sentences.
-**Text updates** go through `risico-teksten.md` (generated, untracked, header names its commit): the user edits it in place, and the changes are applied by comparing it with the version from that commit.
+**Text updates** go through `risico-teksten.md` (untracked, header names its commit): the user edits it in place, and the changes are applied by comparing it with the version from that commit. Generate it with `python tools/teksten.py risico.html risico-teksten.md` (the script once lived only in a temporary folder and was lost). For the baseline of an older commit, run it on `git show <commit>:risico.html` saved to a temporary file; only the commit in the header then differs. Regenerate the file after every commit that changes page text.
 
 ## Architecture
 Single-file HTML page (`risico.html`) with inline `<style>` and `<script>` — no build step, no framework.
