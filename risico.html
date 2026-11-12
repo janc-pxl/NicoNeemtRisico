@@ -574,6 +574,10 @@ footer .f-inner a:hover { color: var(--gold); }
 /* Twee betekenissen van "kans": blauw = waarschijnlijkheid (zoals in de formule), goud = opportuniteit */
 #positief-negatief > .lead, #pn-munt + p { max-width: 75ch; }
 .pn-term { max-width: 75ch; font-size: .95rem; }
+.pn-video { max-width: 760px; margin: 1.5rem 0 .5rem; }
+.video-wrap { aspect-ratio: 16 / 9; border-radius: 10px; overflow: hidden; background: #000; }
+.video-wrap iframe { display: block; width: 100%; height: 100%; border: none; }
+.pn-video figcaption { margin-top: .45rem; font-family: 'Raleway', sans-serif; font-weight: 700; font-size: .85rem; color: var(--muted); }
 .pn-kans-p { color: var(--c-kans); font-weight: 700; }
 .pn-kans-o { color: var(--c-pos-ink); font-weight: 700; }
 
@@ -1567,6 +1571,13 @@ footer .f-inner a:hover { color: var(--gold); }
   <p class="sec-meta" data-sec="positief-negatief">2 delen · ongeveer 20 minuten<span class="st"></span></p>
   <p class="lead">Een risico is niet altijd slecht nieuws. Elke gebeurtenis die een gewenst of ongewenst effect heeft op je project, is een risico. <strong>Negatieve risico's</strong> noemen we <strong>bedreigingen</strong>: die probeer je te vermijden, te verkleinen of te beheersen. <strong>Positieve risico's</strong> zijn <strong>kansen</strong>: die wil je niet vermijden, maar omarmen of versterken.</p>
   <p class="pn-term"><strong>Let op, twee betekenissen van "kans".</strong> In Risico = Kans × Gevolg is <span class="pn-kans-p">kans</span> de <em>waarschijnlijkheid</em> dat iets gebeurt (Engels: probability). Hier is <span class="pn-kans-o">een kans</span> een <em>opportuniteit</em>: een gebeurtenis die je doel helpt (Engels: opportunity). Ook een opportuniteit heeft dus een kans dat ze zich voordoet.</p>
+  <!-- Uitlegvideo (Panopto van PXL), zelfde 16:9-kader als in TeachBertPERT; laadt pas als ze in beeld komt -->
+  <figure class="pn-video">
+    <div class="video-wrap">
+      <iframe src="https://pxl.cloud.panopto.eu/Panopto/Pages/Embed.aspx?id=8f64ee6e-4c5d-46d9-85ca-b500008d87cb&amp;autoplay=false&amp;offerviewer=true&amp;showtitle=true&amp;showbrand=true&amp;captions=false&amp;interactivity=all" title="Uitlegvideo: positieve en negatieve risico's" loading="lazy" allowfullscreen allow="autoplay"></iframe>
+    </div>
+    <figcaption>Uitlegvideo: positieve en negatieve risico's</figcaption>
+  </figure>
 
   <!-- Deel 1: warming-up -->
   <h3 class="sub-title" id="pn-munt"><span class="sub-step">Deel 1</span> Twee kanten van dezelfde munt</h3>
